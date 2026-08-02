@@ -9,4 +9,10 @@ public class UserProfileDto {
     private String email;
     private String profilePictureBase64;
     private String currency;
+    private Integer age;
+    private String gender;
+    private String occupation;
+    private String primarySourceOfIncome;
+    private Boolean aiConsent;
+    private Boolean consentCompleted;
 }

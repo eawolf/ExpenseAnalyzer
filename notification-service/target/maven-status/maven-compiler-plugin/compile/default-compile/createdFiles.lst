@@ -1,0 +1,4 @@
+com\expenseanalyzer\notification\model\NotificationEvent.class
+com\expenseanalyzer\notification\service\EmailService.class
+com\expenseanalyzer\notification\service\NotificationConsumer.class
+com\expenseanalyzer\notification\NotificationApplication.class

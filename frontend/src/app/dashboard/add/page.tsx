@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/utils/api';
-import { Loader2, GripVertical, X } from 'lucide-react';
+import { Loader2, GripVertical, X, Banknote, Wallet } from 'lucide-react';
 import { useUserProfile } from '@/context/UserProfileContext';
 
 const PREDEFINED_CATEGORIES = [
@@ -17,10 +17,19 @@ export default function AddTransaction() {
   const [type, setType] = useState<'EXPENSE' | 'INCOME'>('EXPENSE');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [animationType, setAnimationType] = useState<'EXPENSE' | 'INCOME' | null>(null);
 
   const [amount, setAmount] = useState('');
   const [merchant, setMerchant] = useState('');
   const [notes, setNotes] = useState('');
+  const [transactionDate, setTransactionDate] = useState('');
+
+  useEffect(() => {
+    const now = new Date();
+    const offset = now.getTimezoneOffset() * 60000;
+    const localISOTime = (new Date(now.getTime() - offset)).toISOString().slice(0, 16);
+    setTransactionDate(localISOTime);
+  }, []);
   
   const [incomeSource, setIncomeSource] = useState('');
   
@@ -91,7 +100,13 @@ export default function AddTransaction() {
           categories: selectedCategories,
           merchant,
           notes,
+          transactionDate: transactionDate ? new Date(transactionDate).toISOString() : undefined
         });
+        setAnimationType('EXPENSE');
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 1500);
+        return;
       } else {
         if (!incomeSource.trim()) {
            setError('Please enter an income source.');
@@ -101,9 +116,14 @@ export default function AddTransaction() {
         await api.post('/incomes', {
           amount: parseFloat(amount),
           source: incomeSource,
+          transactionDate: transactionDate ? new Date(transactionDate).toISOString() : undefined
         });
+        setAnimationType('INCOME');
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 1500);
+        return; // prevent immediate routing
       }
-      router.push('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to add transaction.');
     } finally {
@@ -112,7 +132,38 @@ export default function AddTransaction() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto bg-zinc-900 border border-white/5 rounded-2xl p-8">
+    <div className="max-w-4xl mx-auto bg-zinc-900 border border-white/5 rounded-2xl p-8 relative overflow-hidden">
+      <style>{`
+        @keyframes drop-in {
+          0% { transform: translateY(-50px) scale(1.2); opacity: 0; }
+          20% { opacity: 1; }
+          80% { transform: translateY(40px) scale(0.6); opacity: 1; z-index: 0; }
+          100% { transform: translateY(40px) scale(0.6); opacity: 0; z-index: 0; }
+        }
+        @keyframes fly-out {
+          0% { transform: translateY(40px) scale(0.6); opacity: 0; z-index: 0; }
+          20% { transform: translateY(40px) scale(0.6); opacity: 1; z-index: 0; }
+          80% { opacity: 1; }
+          100% { transform: translateY(-60px) scale(1.4); opacity: 0; }
+        }
+      `}</style>
+
+      {animationType && (
+        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-zinc-900/90 backdrop-blur-sm rounded-2xl">
+          <div className="relative w-32 h-40 flex flex-col items-center justify-end">
+            <div className={`absolute top-0 ${animationType === 'INCOME' ? 'animate-[drop-in_1s_ease-in-out_forwards]' : 'animate-[fly-out_1s_ease-in-out_forwards]'}`}>
+              <Banknote className={`w-16 h-16 ${animationType === 'INCOME' ? 'text-emerald-500' : 'text-rose-500'} drop-shadow-xl`} strokeWidth={1.5} />
+            </div>
+            <div className="relative z-10 animate-bounce">
+              <Wallet className="w-24 h-24 text-amber-600 drop-shadow-2xl" strokeWidth={1.5} />
+            </div>
+          </div>
+          <h3 className={`text-2xl font-bold mt-6 animate-pulse ${animationType === 'INCOME' ? 'text-emerald-400' : 'text-rose-400'}`}>
+            {animationType === 'INCOME' ? 'Income Secured!' : 'Expense Logged!'}
+          </h3>
+        </div>
+      )}
+
       <h2 className="text-2xl font-bold mb-6">Add New Transaction</h2>
       
       <div className="flex bg-zinc-950 p-1 rounded-xl mb-8 border border-white/5">
@@ -147,6 +198,16 @@ export default function AddTransaction() {
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0.00"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-zinc-400 mb-2">Date & Time (Defaults to Now)</label>
+            <input
+              type="datetime-local"
+              className="w-full bg-zinc-950 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500 transition-colors [color-scheme:dark]"
+              value={transactionDate}
+              onChange={(e) => setTransactionDate(e.target.value)}
             />
           </div>
 

@@ -19,12 +19,30 @@ export default function SettingsPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isEditing, setIsEditing] = useState(false);
-  const [editForm, setEditForm] = useState({ name: '', email: '' });
+  const [editForm, setEditForm] = useState({ 
+    name: '', 
+    email: '',
+    age: '',
+    gender: '',
+    occupation: '',
+    occupation: '',
+    primarySourceOfIncome: '',
+    aiConsent: false
+  });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (profile) {
-      setEditForm({ name: profile.name, email: profile.email });
+      setEditForm({ 
+        name: profile.name, 
+        email: profile.email,
+        age: profile.age?.toString() || '',
+        gender: profile.gender || '',
+        occupation: profile.occupation || '',
+        occupation: profile.occupation || '',
+        primarySourceOfIncome: profile.primarySourceOfIncome || '',
+        aiConsent: profile.aiConsent || false
+      });
     }
   }, [profile]);
 
@@ -92,7 +110,11 @@ export default function SettingsPage() {
     if (!token) return;
     setSaving(true);
     try {
-      const res = await api.put('http://localhost:8081/api/auth/me/profile', editForm, {
+      const payload = {
+        ...editForm,
+        age: editForm.age ? parseInt(editForm.age, 10) : null
+      };
+      const res = await api.put('http://localhost:8081/api/auth/me/profile', payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUserProfile(res.data);
@@ -136,7 +158,15 @@ export default function SettingsPage() {
             <button 
               onClick={() => {
                 setIsEditing(false);
-                if (profile) setEditForm({ name: profile.name, email: profile.email });
+                if (profile) setEditForm({ 
+                  name: profile.name, 
+                  email: profile.email,
+                  age: profile.age?.toString() || '',
+                  gender: profile.gender || '',
+                  occupation: profile.occupation || '',
+                  primarySourceOfIncome: profile.primarySourceOfIncome || '',
+                  aiConsent: profile.aiConsent || false
+                });
               }}
               disabled={saving}
               className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl transition-colors font-medium text-sm disabled:opacity-50"
@@ -223,6 +253,72 @@ export default function SettingsPage() {
            <div>
               <label className="block text-sm font-medium text-zinc-400 mb-2">Account ID</label>
               <input type="text" value={profile.id} disabled className="w-full bg-zinc-950 border border-white/10 rounded-xl px-4 py-3 text-zinc-500 cursor-not-allowed font-mono text-xs" />
+           </div>
+           <div>
+              <label className="block text-sm font-medium text-zinc-400 mb-2">Age</label>
+              <input 
+                type="number" 
+                value={isEditing ? editForm.age : (profile.age || '')} 
+                onChange={(e) => setEditForm(prev => ({ ...prev, age: e.target.value }))}
+                disabled={!isEditing || saving} 
+                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "bg-zinc-950 border-white/10 text-zinc-500 cursor-not-allowed" : "bg-zinc-900 border-indigo-500/50 text-white focus:outline-none focus:border-indigo-500")}
+              />
+           </div>
+           <div>
+              <label className="block text-sm font-medium text-zinc-400 mb-2">Gender</label>
+              <select 
+                value={isEditing ? editForm.gender : (profile.gender || '')} 
+                onChange={(e) => setEditForm(prev => ({ ...prev, gender: e.target.value }))}
+                disabled={!isEditing || saving} 
+                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "bg-zinc-950 border-white/10 text-zinc-500 cursor-not-allowed" : "bg-zinc-900 border-indigo-500/50 text-white focus:outline-none focus:border-indigo-500")}
+              >
+                <option value="" disabled>Not specified</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Non-binary">Non-binary</option>
+                <option value="Prefer not to say">Prefer not to say</option>
+              </select>
+           </div>
+           <div>
+              <label className="block text-sm font-medium text-zinc-400 mb-2">Occupation</label>
+              <input 
+                type="text" 
+                value={isEditing ? editForm.occupation : (profile.occupation || '')} 
+                onChange={(e) => setEditForm(prev => ({ ...prev, occupation: e.target.value }))}
+                disabled={!isEditing || saving} 
+                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "bg-zinc-950 border-white/10 text-zinc-500 cursor-not-allowed" : "bg-zinc-900 border-indigo-500/50 text-white focus:outline-none focus:border-indigo-500")}
+              />
+           </div>
+           <div>
+              <label className="block text-sm font-medium text-zinc-400 mb-2">Primary Source of Income</label>
+              <select 
+                value={isEditing ? editForm.primarySourceOfIncome : (profile.primarySourceOfIncome || '')} 
+                onChange={(e) => setEditForm(prev => ({ ...prev, primarySourceOfIncome: e.target.value }))}
+                disabled={!isEditing || saving} 
+                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "bg-zinc-950 border-white/10 text-zinc-500 cursor-not-allowed" : "bg-zinc-900 border-indigo-500/50 text-white focus:outline-none focus:border-indigo-500")}
+              >
+                <option value="" disabled>Not specified</option>
+                <option value="Salary">Salary</option>
+                <option value="Business/Self-Employed">Business / Self-Employed</option>
+                <option value="Investments">Investments</option>
+                <option value="Freelance/Contract">Freelance / Contract</option>
+                <option value="Other">Other</option>
+              </select>
+           </div>
+           <div>
+              <label className="block text-sm font-medium text-zinc-400 mb-2">AI Data Analysis Consent</label>
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-zinc-950 border border-white/10 mt-2">
+                <input 
+                  type="checkbox" 
+                  checked={isEditing ? editForm.aiConsent : (profile.aiConsent || false)}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, aiConsent: e.target.checked }))}
+                  disabled={!isEditing || saving}
+                  className={"w-4 h-4 rounded border-zinc-700 text-indigo-600 focus:ring-indigo-600 focus:ring-offset-zinc-900 " + (!isEditing ? "bg-zinc-800 cursor-not-allowed" : "bg-zinc-900 cursor-pointer")}
+                />
+                <span className="text-sm text-zinc-400">
+                  Allow AI-driven financial insights based on your data.
+                </span>
+              </div>
            </div>
         </div>
       </div>

@@ -9,6 +9,12 @@ interface UserProfile {
   email: string;
   profilePictureBase64?: string;
   currency: string;
+  age?: number;
+  gender?: string;
+  occupation?: string;
+  primarySourceOfIncome?: string;
+  aiConsent?: boolean;
+  consentCompleted?: boolean;
 }
 
 interface UserProfileContextType {

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
@@ -19,9 +20,11 @@ public class DashboardController {
     private final DashboardService dashboardService;
 
     @GetMapping("/summary")
-    public ResponseEntity<DashboardSummaryDto> getSummary() {
+    public ResponseEntity<DashboardSummaryDto> getSummary(
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Integer month) {
         String userIdStr = SecurityContextHolder.getContext().getAuthentication().getName();
         UUID userId = UUID.fromString(userIdStr);
-        return ResponseEntity.ok(dashboardService.getSummary(userId));
+        return ResponseEntity.ok(dashboardService.getSummary(userId, year, month));
     }
 }

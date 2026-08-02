@@ -28,6 +28,23 @@ public class AuthService {
         user.setEmail(request.getEmail());
         user.setName(request.getName());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        
+        user.setPhoneNumber(request.getPhoneNumber());
+        
+        if (request.getSecurityQuestion1() != null && request.getSecurityAnswer1() != null) {
+            user.setSecurityQuestion1(request.getSecurityQuestion1());
+            user.setSecurityAnswer1Hash(passwordEncoder.encode(request.getSecurityAnswer1().toLowerCase().trim()));
+        }
+        
+        if (request.getSecurityQuestion2() != null && request.getSecurityAnswer2() != null) {
+            user.setSecurityQuestion2(request.getSecurityQuestion2());
+            user.setSecurityAnswer2Hash(passwordEncoder.encode(request.getSecurityAnswer2().toLowerCase().trim()));
+        }
+
+        if (request.getSecurityQuestion3() != null && request.getSecurityAnswer3() != null) {
+            user.setSecurityQuestion3(request.getSecurityQuestion3());
+            user.setSecurityAnswer3Hash(passwordEncoder.encode(request.getSecurityAnswer3().toLowerCase().trim()));
+        }
 
         User savedUser = userRepository.save(user);
         String token = jwtService.generateToken(savedUser.getId(), savedUser.getEmail());
@@ -56,6 +73,12 @@ public class AuthService {
                 .email(user.getEmail())
                 .profilePictureBase64(user.getProfilePictureBase64())
                 .currency(user.getCurrency())
+                .age(user.getAge())
+                .gender(user.getGender())
+                .occupation(user.getOccupation())
+                .primarySourceOfIncome(user.getPrimarySourceOfIncome())
+                .aiConsent(user.getAiConsent())
+                .consentCompleted(user.getConsentCompleted())
                 .build();
     }
 
@@ -70,6 +93,10 @@ public class AuthService {
                 .email(saved.getEmail())
                 .profilePictureBase64(saved.getProfilePictureBase64())
                 .currency(saved.getCurrency())
+                .age(saved.getAge())
+                .gender(saved.getGender())
+                .aiConsent(saved.getAiConsent())
+                .consentCompleted(saved.getConsentCompleted())
                 .build();
     }
 
@@ -84,6 +111,10 @@ public class AuthService {
                 .email(saved.getEmail())
                 .profilePictureBase64(saved.getProfilePictureBase64())
                 .currency(saved.getCurrency())
+                .age(saved.getAge())
+                .gender(saved.getGender())
+                .aiConsent(saved.getAiConsent())
+                .consentCompleted(saved.getConsentCompleted())
                 .build();
     }
     
@@ -98,6 +129,10 @@ public class AuthService {
                 .email(saved.getEmail())
                 .profilePictureBase64(saved.getProfilePictureBase64())
                 .currency(saved.getCurrency())
+                .age(saved.getAge())
+                .gender(saved.getGender())
+                .aiConsent(saved.getAiConsent())
+                .consentCompleted(saved.getConsentCompleted())
                 .build();
     }
 
@@ -113,6 +148,21 @@ public class AuthService {
             }
             user.setEmail(request.getEmail());
         }
+        if (request.getAge() != null) {
+            user.setAge(request.getAge());
+        }
+        if (request.getGender() != null) {
+            user.setGender(request.getGender());
+        }
+        if (request.getOccupation() != null) {
+            user.setOccupation(request.getOccupation());
+        }
+        if (request.getPrimarySourceOfIncome() != null) {
+            user.setPrimarySourceOfIncome(request.getPrimarySourceOfIncome());
+        }
+        if (request.getAiConsent() != null) {
+            user.setAiConsent(request.getAiConsent());
+        }
         User saved = userRepository.save(user);
         return com.expenseanalyzer.auth.dto.UserProfileDto.builder()
                 .id(saved.getId())
@@ -120,6 +170,37 @@ public class AuthService {
                 .email(saved.getEmail())
                 .profilePictureBase64(saved.getProfilePictureBase64())
                 .currency(saved.getCurrency())
+                .age(saved.getAge())
+                .gender(saved.getGender())
+                .occupation(saved.getOccupation())
+                .primarySourceOfIncome(saved.getPrimarySourceOfIncome())
+                .aiConsent(saved.getAiConsent())
+                .consentCompleted(saved.getConsentCompleted())
+                .build();
+    }
+
+    public com.expenseanalyzer.auth.dto.UserProfileDto updateConsent(java.util.UUID userId, com.expenseanalyzer.auth.dto.ConsentRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        user.setAge(request.getAge());
+        user.setGender(request.getGender());
+        user.setOccupation(request.getOccupation());
+        user.setPrimarySourceOfIncome(request.getPrimarySourceOfIncome());
+        user.setAiConsent(request.getAiConsent());
+        user.setConsentCompleted(true);
+        User saved = userRepository.save(user);
+        return com.expenseanalyzer.auth.dto.UserProfileDto.builder()
+                .id(saved.getId())
+                .name(saved.getName())
+                .email(saved.getEmail())
+                .profilePictureBase64(saved.getProfilePictureBase64())
+                .currency(saved.getCurrency())
+                .age(saved.getAge())
+                .gender(saved.getGender())
+                .occupation(saved.getOccupation())
+                .primarySourceOfIncome(saved.getPrimarySourceOfIncome())
+                .aiConsent(saved.getAiConsent())
+                .consentCompleted(saved.getConsentCompleted())
                 .build();
     }
 }

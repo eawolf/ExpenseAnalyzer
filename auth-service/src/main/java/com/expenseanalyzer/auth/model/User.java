@@ -23,6 +23,17 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    private String phoneNumber;
+
+    private String securityQuestion1;
+    private String securityAnswer1Hash;
+
+    private String securityQuestion2;
+    private String securityAnswer2Hash;
+
+    private String securityQuestion3;
+    private String securityAnswer3Hash;
+
     private String name;
 
     @Column(columnDefinition = "TEXT")
@@ -33,4 +44,22 @@ public class User {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "age")
+    private Integer age;
+
+    @Column(name = "gender")
+    private String gender;
+
+    @Column(name = "occupation")
+    private String occupation;
+
+    @Column(name = "primary_source_of_income")
+    private String primarySourceOfIncome;
+
+    @Column(name = "ai_consent")
+    private Boolean aiConsent;
+
+    @Column(name = "consent_completed", columnDefinition = "boolean default false")
+    private Boolean consentCompleted = false;
 }

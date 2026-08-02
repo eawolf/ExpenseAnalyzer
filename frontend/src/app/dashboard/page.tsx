@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import api from '@/utils/api';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { ArrowDownRight, ArrowUpRight, Wallet, Loader2 } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, PieChart, Pie, Legend, LineChart, Line } from 'recharts';
+import { ArrowDownRight, ArrowUpRight, Wallet, Loader2, BarChart2, PieChart as PieChartIcon, LineChart as LineChartIcon } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { useUserProfile } from '@/context/UserProfileContext';
+import { useDateFilter } from '@/context/DateFilterContext';
 
 interface Transaction {
   id: string;
@@ -25,14 +26,17 @@ interface SummaryData {
 export default function Dashboard() {
   const [data, setData] = useState<SummaryData | null>(null);
   const [loadingStats, setLoadingStats] = useState(true);
+  const [chartType, setChartType] = useState<'bar' | 'pie' | 'line'>('bar');
   const { userProfile, loading: profileLoading } = useUserProfile();
+  const { selectedYear, selectedMonth } = useDateFilter();
 
   const currencySymbol = userProfile?.currency || '$';
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoadingStats(true);
       try {
-        const res = await api.get('/dashboard/summary');
+        const res = await api.get(`/dashboard/summary?year=${selectedYear}&month=${selectedMonth}`);
         setData(res.data);
       } catch (err) {
         console.error('Failed to fetch summary', err);
@@ -41,7 +45,7 @@ export default function Dashboard() {
       }
     };
     fetchData();
-  }, []);
+  }, [selectedYear, selectedMonth]);
 
   if (loadingStats || !data || profileLoading) {
     return (
@@ -56,6 +60,11 @@ export default function Dashboard() {
     amount: t.amount,
     type: t.type
   }));
+
+  const pieData = [
+    { name: 'Income', value: data.totalIncome, color: '#10b981' },
+    { name: 'Expenses', value: data.totalExpense, color: '#f43f5e' }
+  ].filter(d => d.value > 0);
 
   return (
     <div className="flex flex-col gap-8">
@@ -90,27 +99,100 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Chart */}
         <div className="lg:col-span-2 p-6 rounded-2xl bg-zinc-900 border border-white/5">
-          <h3 className="text-lg font-semibold mb-6">Recent Activity Trend</h3>
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold">Activity Overview</h3>
+            <div className="flex items-center gap-1 bg-zinc-950 p-1 rounded-lg border border-white/10">
+              <button 
+                onClick={() => setChartType('bar')} 
+                className={`p-1.5 rounded-md transition-colors ${chartType === 'bar' ? 'bg-zinc-800 text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
+                title="Bar Chart (Recent Trend)"
+              >
+                <BarChart2 className="w-4 h-4" />
+              </button>
+              <button 
+                onClick={() => setChartType('line')} 
+                className={`p-1.5 rounded-md transition-colors ${chartType === 'line' ? 'bg-zinc-800 text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
+                title="Line Chart (Activity Trajectory)"
+              >
+                <LineChartIcon className="w-4 h-4" />
+              </button>
+              <button 
+                onClick={() => setChartType('pie')} 
+                className={`p-1.5 rounded-md transition-colors ${chartType === 'pie' ? 'bg-zinc-800 text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
+                title="Pie Chart (Income vs Expense)"
+              >
+                <PieChartIcon className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
           <div className="h-72 w-full">
-            {chartData.length > 0 ? (
-                <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                    <XAxis dataKey="name" stroke="#52525b" fontSize={12} tickLine={false} axisLine={false} />
-                    <YAxis stroke="#52525b" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `${currencySymbol}${val}`} />
-                    <Tooltip 
-                      cursor={{fill: '#27272a'}}
-                      contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '8px' }} 
-                      formatter={(value) => [`${currencySymbol}${value}`, 'Amount']}
-                    />
-                    <Bar dataKey="amount" radius={[4, 4, 0, 0]}>
-                      {chartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.type === 'INCOME' ? '#10b981' : '#f43f5e'} />
-                      ))}
-                    </Bar>
-                </BarChart>
-                </ResponsiveContainer>
+            {chartType === 'bar' ? (
+              chartData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                      <XAxis dataKey="name" stroke="#52525b" fontSize={12} tickLine={false} axisLine={false} />
+                      <YAxis stroke="#52525b" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `${currencySymbol}${val}`} />
+                      <Tooltip 
+                        cursor={{fill: '#27272a'}}
+                        contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '8px' }} 
+                        formatter={(value) => [`${currencySymbol}${value}`, 'Amount']}
+                      />
+                      <Bar dataKey="amount" radius={[4, 4, 0, 0]}>
+                        {chartData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.type === 'INCOME' ? '#10b981' : '#f43f5e'} />
+                        ))}
+                      </Bar>
+                  </BarChart>
+                  </ResponsiveContainer>
+              ) : (
+                  <div className="flex h-full items-center justify-center text-zinc-500">No activity yet.</div>
+              )
+            ) : chartType === 'line' ? (
+              chartData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                      <XAxis dataKey="name" stroke="#52525b" fontSize={12} tickLine={false} axisLine={false} />
+                      <YAxis stroke="#52525b" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `${currencySymbol}${val}`} />
+                      <Tooltip 
+                        cursor={{stroke: '#3f3f46', strokeWidth: 1, strokeDasharray: '4 4'}}
+                        contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '8px' }} 
+                        formatter={(value) => [`${currencySymbol}${value}`, 'Amount']}
+                      />
+                      <Line type="monotone" dataKey="amount" stroke="#6366f1" strokeWidth={3} dot={{ r: 4, fill: '#6366f1', strokeWidth: 0 }} activeDot={{ r: 6, strokeWidth: 0 }} />
+                  </LineChart>
+                  </ResponsiveContainer>
+              ) : (
+                  <div className="flex h-full items-center justify-center text-zinc-500">No activity yet.</div>
+              )
             ) : (
-                <div className="flex h-full items-center justify-center text-zinc-500">No activity yet.</div>
+              pieData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={pieData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={90}
+                        paddingAngle={5}
+                        dataKey="value"
+                        stroke="none"
+                      >
+                        {pieData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip 
+                        contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '8px', color: '#fff' }}
+                        itemStyle={{ color: '#fff' }}
+                        formatter={(value: number) => [`${currencySymbol}${value.toFixed(2)}`, 'Total']}
+                      />
+                      <Legend verticalAlign="bottom" height={36} iconType="circle" />
+                    </PieChart>
+                  </ResponsiveContainer>
+              ) : (
+                  <div className="flex h-full items-center justify-center text-zinc-500">No activity yet.</div>
+              )
             )}
           </div>
         </div>

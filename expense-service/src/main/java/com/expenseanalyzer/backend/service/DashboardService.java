@@ -20,9 +20,9 @@ public class DashboardService {
     private final ExpenseService expenseService;
     private final IncomeService incomeService;
 
-    public DashboardSummaryDto getSummary(UUID userId) {
-        List<Expense> expenses = expenseService.getExpenses(userId);
-        List<Income> incomes = incomeService.getIncomes(userId);
+    public DashboardSummaryDto getSummary(UUID userId, Integer year, Integer month) {
+        List<Expense> expenses = expenseService.getExpenses(userId, year, month);
+        List<Income> incomes = incomeService.getIncomes(userId, year, month);
 
         BigDecimal totalExpense = expenses.stream()
                 .map(Expense::getAmount)

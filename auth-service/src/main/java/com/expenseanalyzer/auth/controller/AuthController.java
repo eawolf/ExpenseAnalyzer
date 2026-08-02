@@ -60,4 +60,11 @@ public class AuthController {
             @RequestBody ProfileUpdateRequest request) {
         return ResponseEntity.ok(authService.updateProfile(userId, request));
     }
+
+    @PutMapping("/me/consent")
+    public ResponseEntity<UserProfileDto> updateConsent(
+            @RequestAttribute("userId") UUID userId,
+            @RequestBody com.expenseanalyzer.auth.dto.ConsentRequest request) {
+        return ResponseEntity.ok(authService.updateConsent(userId, request));
+    }
 }

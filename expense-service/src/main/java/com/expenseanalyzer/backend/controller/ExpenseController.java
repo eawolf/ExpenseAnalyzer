@@ -20,10 +20,12 @@ public class ExpenseController {
     private final ExpenseService expenseService;
 
     @GetMapping
-    public ResponseEntity<List<Expense>> getExpenses() {
+    public ResponseEntity<List<Expense>> getExpenses(
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Integer month) {
         String userIdStr = SecurityContextHolder.getContext().getAuthentication().getName();
         UUID userId = UUID.fromString(userIdStr);
-        return ResponseEntity.ok(expenseService.getExpenses(userId));
+        return ResponseEntity.ok(expenseService.getExpenses(userId, year, month));
     }
 
     @PostMapping
@@ -39,5 +41,12 @@ public class ExpenseController {
         UUID userId = UUID.fromString(userIdStr);
         expenseService.deleteExpense(userId, id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Expense> updateExpense(@PathVariable UUID id, @Valid @RequestBody ExpenseDto dto) {
+        String userIdStr = SecurityContextHolder.getContext().getAuthentication().getName();
+        UUID userId = UUID.fromString(userIdStr);
+        return ResponseEntity.ok(expenseService.updateExpense(userId, id, dto));
     }
 }

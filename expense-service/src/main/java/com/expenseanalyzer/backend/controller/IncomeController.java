@@ -20,10 +20,12 @@ public class IncomeController {
     private final IncomeService incomeService;
 
     @GetMapping
-    public ResponseEntity<List<Income>> getIncomes() {
+    public ResponseEntity<List<Income>> getIncomes(
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Integer month) {
         String userIdStr = SecurityContextHolder.getContext().getAuthentication().getName();
         UUID userId = UUID.fromString(userIdStr);
-        return ResponseEntity.ok(incomeService.getIncomes(userId));
+        return ResponseEntity.ok(incomeService.getIncomes(userId, year, month));
     }
 
     @PostMapping
@@ -39,5 +41,12 @@ public class IncomeController {
         UUID userId = UUID.fromString(userIdStr);
         incomeService.deleteIncome(userId, id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Income> updateIncome(@PathVariable UUID id, @Valid @RequestBody IncomeDto dto) {
+        String userIdStr = SecurityContextHolder.getContext().getAuthentication().getName();
+        UUID userId = UUID.fromString(userIdStr);
+        return ResponseEntity.ok(incomeService.updateIncome(userId, id, dto));
     }
 }
