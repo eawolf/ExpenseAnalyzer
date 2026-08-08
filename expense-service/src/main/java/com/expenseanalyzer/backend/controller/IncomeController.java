@@ -21,11 +21,11 @@ public class IncomeController {
 
     @GetMapping
     public ResponseEntity<List<Income>> getIncomes(
-            @RequestParam(required = false) Integer year,
-            @RequestParam(required = false) Integer month) {
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate startDate,
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate endDate) {
         String userIdStr = SecurityContextHolder.getContext().getAuthentication().getName();
         UUID userId = UUID.fromString(userIdStr);
-        return ResponseEntity.ok(incomeService.getIncomes(userId, year, month));
+        return ResponseEntity.ok(incomeService.getIncomes(userId, startDate, endDate));
     }
 
     @PostMapping

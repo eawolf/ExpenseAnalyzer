@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import api from '@/utils/api';
-import { Loader2, Trash2, TrendingUp, Search, Filter, Check, Edit2, X } from 'lucide-react';
+import { Loader2, Trash2, TrendingUp, Search, Filter, Check, Edit2, X, ArrowUpRight } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import ConfirmModal from '@/components/ConfirmModal';
 import { useUserProfile } from '@/context/UserProfileContext';
 import { useDateFilter } from '@/context/DateFilterContext';
+import CustomDatePicker from '@/components/CustomDatePicker';
 
 interface Income {
   id: string;
@@ -23,26 +24,39 @@ export default function IncomesPage() {
   const [showFilter, setShowFilter] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [editingIncome, setEditingIncome] = useState<Income | null>(null);
-  const [editFormData, setEditFormData] = useState({ amount: '', source: '', transactionDate: '' });
+  const [editFormData, setEditFormData] = useState<{ amount: string; source: string; transactionDate: Date | null }>({ amount: '', source: '', transactionDate: null });
   const [isSaving, setIsSaving] = useState(false);
   const { userProfile } = useUserProfile();
   const { selectedYear, selectedMonth } = useDateFilter();
+  const filterRef = useRef<HTMLDivElement>(null);
 
   const currencySymbol = userProfile?.currency || '$';
 
-  const fetchIncomes = async () => {
-    setLoading(true);
-    try {
-      const res = await api.get(`/incomes?year=${selectedYear}&month=${selectedMonth}`);
-      setIncomes(res.data);
-    } catch (err) {
-      console.error('Failed to fetch incomes', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+        setShowFilter(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
+    const fetchIncomes = async () => {
+      try {
+        const start = new Date(selectedYear, selectedMonth - 1, 1);
+        const end = new Date(selectedYear, selectedMonth, 0);
+        
+        const url = `/incomes?startDate=${format(start, 'yyyy-MM-dd')}&endDate=${format(end, 'yyyy-MM-dd')}`;
+        const res = await api.get(url);
+        setIncomes(res.data);
+      } catch (err) {
+        console.error('Failed to fetch incomes', err);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchIncomes();
   }, [selectedYear, selectedMonth]);
 
@@ -63,7 +77,7 @@ export default function IncomesPage() {
     setEditFormData({
       amount: income.amount.toString(),
       source: income.source || '',
-      transactionDate: income.transactionDate ? format(parseISO(income.transactionDate), "yyyy-MM-dd'T'HH:mm") : ''
+      transactionDate: income.transactionDate ? parseISO(income.transactionDate) : null
     });
   };
 
@@ -75,7 +89,7 @@ export default function IncomesPage() {
       const payload = {
         amount: Number(editFormData.amount),
         source: editFormData.source,
-        transactionDate: editFormData.transactionDate ? new Date(editFormData.transactionDate).toISOString() : undefined
+        transactionDate: editFormData.transactionDate ? format(editFormData.transactionDate, "yyyy-MM-dd'T'HH:mm:ss") : undefined
       };
       const res = await api.put(`/incomes/${editingIncome.id}`, payload);
       setIncomes(prev => prev.map(inc => inc.id === editingIncome.id ? res.data : inc));
@@ -105,7 +119,7 @@ export default function IncomesPage() {
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
+        <Loader2 className="w-8 h-8 text-primary animate-spin" />
       </div>
     );
   }
@@ -119,47 +133,47 @@ export default function IncomesPage() {
         </h2>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-zinc-900 border border-white/5 p-4 rounded-2xl mb-8">
+      <div className="flex flex-col md:flex-row gap-4 justify-between items-center glass-panel p-4 rounded-2xl mb-8">
         <div className="relative w-full md:w-96">
-          <Search className="w-5 h-5 absolute left-3 top-3 text-zinc-500" />
+          <Search className="w-5 h-5 absolute left-3 top-3 text-muted-foreground" />
           <input 
             type="text"
             placeholder="Search by source..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-zinc-950 border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors"
+            className="w-full bg-input border border-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
           />
         </div>
-        <div className="relative w-full md:w-auto">
+        <div className="relative w-full md:w-auto" ref={filterRef}>
           <button 
             onClick={() => setShowFilter(!showFilter)}
-            className={`flex items-center justify-center gap-2 px-4 py-2.5 hover:bg-zinc-700 text-white text-sm font-medium rounded-xl transition-colors w-full md:w-auto ${showFilter || selectedFilters.length > 0 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-zinc-800'}`}
+            className={`flex items-center justify-center gap-2 px-4 py-2.5 hover:bg-accent hover:text-accent-foreground text-sm font-medium rounded-xl transition-colors w-full md:w-auto ${showFilter || selectedFilters.length > 0 ? 'bg-emerald-500/20 text-emerald-500 border border-emerald-500/30' : 'bg-card border border-border text-foreground'}`}
           >
             <Filter className="w-4 h-4" />
             Filter {selectedFilters.length > 0 && `(${selectedFilters.length})`}
           </button>
           
           {showFilter && (
-            <div className="absolute right-0 mt-2 w-64 bg-zinc-900 border border-white/10 rounded-xl shadow-xl z-50 p-4 animate-in fade-in slide-in-from-top-2">
-              <h4 className="text-sm font-semibold text-zinc-300 mb-3">Filter by Source</h4>
+            <div className="absolute right-0 mt-2 w-64 glass-popup rounded-xl shadow-xl z-50 p-4 animate-in fade-in slide-in-from-top-2">
+              <h4 className="text-sm font-semibold text-foreground mb-3">Filter by Source</h4>
               {allSources.length > 0 ? (
-                <div className="flex flex-col gap-2 max-h-60 overflow-y-auto">
+                <div className="flex flex-col gap-2 max-h-60 overflow-y-auto scroll-3d-list">
                   {allSources.map(src => (
-                    <label key={src} className="flex items-center gap-3 cursor-pointer group" onClick={() => toggleFilter(src)}>
-                      <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${selectedFilters.includes(src) ? 'bg-emerald-500 border-emerald-500' : 'border-zinc-500 group-hover:border-zinc-400'}`}>
-                        {selectedFilters.includes(src) && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
+                    <label key={src} className="flex items-center gap-3 p-2 -mx-2 rounded-lg cursor-pointer group hover:bg-accent/50 transition-colors scroll-3d-item" onClick={() => toggleFilter(src)}>
+                      <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${selectedFilters.includes(src) ? 'bg-emerald-500 border-emerald-500' : 'border-foreground/30 group-hover:border-foreground/50'}`}>
+                        {selectedFilters.includes(src) && <Check className="w-3 h-3 text-primary-foreground" strokeWidth={3} />}
                       </div>
-                      <span className="text-sm text-zinc-300 group-hover:text-white transition-colors">{src}</span>
+                      <span className="text-sm text-foreground transition-colors">{src}</span>
                     </label>
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-zinc-500 italic">No sources available.</p>
+                <p className="text-sm text-muted-foreground italic">No sources available.</p>
               )}
               {selectedFilters.length > 0 && (
                 <button 
                   onClick={() => setSelectedFilters([])}
-                  className="w-full mt-4 py-2 text-xs font-medium text-zinc-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
+                  className="w-full mt-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground bg-accent hover:bg-accent/80 rounded-lg transition-colors"
                 >
                   Clear Filters
                 </button>
@@ -169,46 +183,45 @@ export default function IncomesPage() {
         </div>
       </div>
 
-      <div className="bg-zinc-900 border border-white/5 rounded-2xl overflow-hidden">
+      {/* Scrollable Container */}
+      <div className="flex flex-col gap-4 overflow-y-auto pr-2 pb-2 max-h-[calc(100vh-250px)] mt-4">
         {filteredIncomes.length > 0 ? (
-          <div className="divide-y divide-white/5">
-            {filteredIncomes.map((income) => (
-              <div key={income.id} className="p-4 sm:p-6 flex items-center justify-between hover:bg-white/[0.02] transition-colors group">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
-                    <span className="text-emerald-400 font-bold text-lg">+</span>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-white text-lg">{income.source}</h4>
-                    <p className="text-sm text-zinc-400">
-                      {format(parseISO(income.transactionDate), 'MMM dd, yyyy')}
-                    </p>
-                  </div>
+          filteredIncomes.map((income) => (
+            <div key={income.id} className="flex items-center justify-between p-4 rounded-xl glass-card-etched hover:bg-accent/30 transition-colors group border border-border/10">
+              <div className="flex items-center gap-4 flex-1">
+                <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
+                  <ArrowUpRight className="w-5 h-5 text-emerald-500" />
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-xl text-emerald-400 mr-4">+{currencySymbol}{income.amount.toFixed(2)}</span>
-                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button
-                      onClick={() => startEdit(income)}
-                      className="p-2 text-zinc-500 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition-all"
-                      title="Edit Income"
-                    >
-                      <Edit2 className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={() => setDeleteTarget(income.id)}
-                      className="p-2 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all"
-                      title="Delete Income"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
-                  </div>
+                <div className="min-w-[200px]">
+                  <p className="font-semibold text-foreground">{income.source || 'Unknown Source'}</p>
+                  <p className="text-sm text-muted-foreground truncate max-w-[200px]">{format(parseISO(income.transactionDate), 'MMM dd, yyyy h:mm a')}</p>
                 </div>
               </div>
-            ))}
-          </div>
+
+              <div className="flex items-center gap-6">
+                <span className="font-semibold text-emerald-500 min-w-[100px] text-right">+{currencySymbol}{income.amount.toFixed(2)}</span>
+                
+                <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity min-w-[80px]">
+                  <button 
+                    onClick={() => startEdit(income)}
+                    className="p-2 bg-card hover:bg-accent text-muted-foreground rounded-lg transition-colors border border-border"
+                    title="Edit Income"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+                  <button 
+                    onClick={() => setDeleteTarget(income.id)}
+                    className="p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 rounded-lg transition-colors"
+                    title="Delete Income"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))
         ) : (
-          <div className="p-12 text-center text-zinc-500">
+          <div className="flex justify-center p-8 text-muted-foreground">
             No income found.
           </div>
         )}
@@ -224,47 +237,46 @@ export default function IncomesPage() {
 
       {editingIncome && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-zinc-900 border border-white/10 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
-            <div className="flex items-center justify-between p-6 border-b border-white/5">
-              <h3 className="text-xl font-bold text-white">Edit Income</h3>
-              <button onClick={() => setEditingIncome(null)} className="text-zinc-500 hover:text-white transition-colors">
+          <div className="bg-card border border-border rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
+            <div className="flex items-center justify-between p-6 border-b border-border">
+              <h3 className="text-xl font-bold text-foreground">Edit Income</h3>
+              <button onClick={() => setEditingIncome(null)} className="text-muted-foreground hover:text-foreground transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <form onSubmit={handleEditSave} className="p-6 flex flex-col gap-4">
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">Amount</label>
+                <label className="block text-sm font-medium text-foreground mb-1">Amount</label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500">{currencySymbol}</span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/70">{currencySymbol}</span>
                   <input 
                     type="number" step="0.01" required
                     value={editFormData.amount} onChange={(e) => setEditFormData({...editFormData, amount: e.target.value})}
-                    className="w-full bg-zinc-950 border border-white/10 rounded-xl pl-8 pr-4 py-2.5 text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-input border border-border rounded-xl pl-8 pr-4 py-2.5 text-foreground focus:outline-none focus:border-emerald-500"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">Date & Time</label>
-                <input 
-                  type="datetime-local"
-                  value={editFormData.transactionDate} onChange={(e) => setEditFormData({...editFormData, transactionDate: e.target.value})}
-                  className="w-full bg-zinc-950 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 [color-scheme:dark]"
+                <label className="block text-sm font-medium text-foreground mb-1">Date</label>
+                <CustomDatePicker 
+                  selected={editFormData.transactionDate} 
+                  onChange={(date) => setEditFormData({...editFormData, transactionDate: date})}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">Source</label>
+                <label className="block text-sm font-medium text-foreground mb-1">Source</label>
                 <input 
                   type="text" required
                   value={editFormData.source} onChange={(e) => setEditFormData({...editFormData, source: e.target.value})}
-                  className="w-full bg-zinc-950 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-input border border-border rounded-xl px-4 py-2.5 text-foreground focus:outline-none focus:border-emerald-500"
                 />
               </div>
               
               <div className="flex items-center justify-end gap-3 mt-4">
-                <button type="button" onClick={() => setEditingIncome(null)} className="px-4 py-2 rounded-xl text-sm font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-colors">
+                <button type="button" onClick={() => setEditingIncome(null)} className="px-4 py-2 rounded-xl text-sm font-medium text-foreground hover:bg-accent transition-colors">
                   Cancel
                 </button>
-                <button type="submit" disabled={isSaving} className="px-6 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium transition-colors flex items-center gap-2">
+                <button type="submit" disabled={isSaving} className="px-6 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-primary-foreground text-sm font-medium transition-colors flex items-center gap-2">
                   {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
                   Save Changes
                 </button>

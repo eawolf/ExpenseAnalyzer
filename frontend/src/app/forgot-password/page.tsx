@@ -109,11 +109,11 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white/5 border border-white/10 rounded-3xl p-8 backdrop-blur-xl">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-card border border-border rounded-3xl p-8 backdrop-blur-xl shadow-xl">
         
         {step < 5 && (
-          <Link href="/login" className="inline-flex items-center text-sm text-neutral-400 hover:text-white mb-8 transition-colors">
+          <Link href="/login" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to login
           </Link>
@@ -128,23 +128,23 @@ export default function ForgotPasswordPage() {
         {step === 1 && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
             <div>
-              <h1 className="text-2xl font-semibold text-white mb-2">Forgot Password</h1>
-              <p className="text-neutral-400 text-sm">Enter your email or phone number to find your account.</p>
+              <h1 className="text-2xl font-semibold text-foreground mb-2">Forgot Password</h1>
+              <p className="text-muted-foreground text-sm">Enter your email or phone number to find your account.</p>
             </div>
             <div className="space-y-2">
-              <label className="text-sm text-neutral-400">Email or Phone Number</label>
+              <label className="text-sm text-muted-foreground">Email or Phone Number</label>
               <input 
                 type="text" 
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                className="w-full bg-input border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                 placeholder="john@example.com"
               />
             </div>
             <button 
               onClick={() => { if(identifier) setStep(2); }}
               disabled={!identifier}
-              className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-medium py-3 rounded-xl transition-colors disabled:opacity-50"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-3 rounded-xl transition-colors disabled:opacity-50 shadow-md"
             >
               Continue
             </button>
@@ -154,32 +154,32 @@ export default function ForgotPasswordPage() {
         {step === 2 && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
             <div>
-              <h1 className="text-2xl font-semibold text-white mb-2">Choose Recovery Method</h1>
-              <p className="text-neutral-400 text-sm">How would you like to reset your password?</p>
+              <h1 className="text-2xl font-semibold text-foreground mb-2">Choose Recovery Method</h1>
+              <p className="text-muted-foreground text-sm">How would you like to reset your password?</p>
             </div>
             
             <div className="space-y-3">
-              <button onClick={() => setMethod('EMAIL')} className={`w-full flex items-center p-4 rounded-xl border transition-all ${method === 'EMAIL' ? 'bg-indigo-500/20 border-indigo-500 text-white' : 'bg-white/5 border-white/10 text-neutral-300 hover:bg-white/10'}`}>
-                <Mail className="w-5 h-5 mr-3 text-indigo-400" />
+              <button onClick={() => setMethod('EMAIL')} className={`w-full flex items-center p-4 rounded-xl border transition-all ${method === 'EMAIL' ? 'bg-primary/20 border-primary text-foreground' : 'bg-card border-border text-muted-foreground hover:bg-accent'}`}>
+                <Mail className="w-5 h-5 mr-3 text-primary" />
                 <div className="text-left">
                   <div className="font-medium">Email OTP</div>
-                  <div className="text-xs text-neutral-500">Send a code to your registered email</div>
+                  <div className="text-xs text-muted-foreground">Send a code to your registered email</div>
                 </div>
               </button>
 
-              <button onClick={() => setMethod('SMS')} className={`w-full flex items-center p-4 rounded-xl border transition-all ${method === 'SMS' ? 'bg-indigo-500/20 border-indigo-500 text-white' : 'bg-white/5 border-white/10 text-neutral-300 hover:bg-white/10'}`}>
-                <MessageSquare className="w-5 h-5 mr-3 text-indigo-400" />
+              <button onClick={() => setMethod('SMS')} className={`w-full flex items-center p-4 rounded-xl border transition-all ${method === 'SMS' ? 'bg-primary/20 border-primary text-foreground' : 'bg-card border-border text-muted-foreground hover:bg-accent'}`}>
+                <MessageSquare className="w-5 h-5 mr-3 text-primary" />
                 <div className="text-left">
                   <div className="font-medium">SMS OTP</div>
-                  <div className="text-xs text-neutral-500">Send a code to your phone number</div>
+                  <div className="text-xs text-muted-foreground">Send a code to your phone number</div>
                 </div>
               </button>
 
-              <button onClick={() => setMethod('QUESTIONS')} className={`w-full flex items-center p-4 rounded-xl border transition-all ${method === 'QUESTIONS' ? 'bg-indigo-500/20 border-indigo-500 text-white' : 'bg-white/5 border-white/10 text-neutral-300 hover:bg-white/10'}`}>
-                <ShieldQuestion className="w-5 h-5 mr-3 text-indigo-400" />
+              <button onClick={() => setMethod('QUESTIONS')} className={`w-full flex items-center p-4 rounded-xl border transition-all ${method === 'QUESTIONS' ? 'bg-primary/20 border-primary text-foreground' : 'bg-card border-border text-muted-foreground hover:bg-accent'}`}>
+                <ShieldQuestion className="w-5 h-5 mr-3 text-primary" />
                 <div className="text-left">
                   <div className="font-medium">Security Questions</div>
-                  <div className="text-xs text-neutral-500">Answer 2 out of 3 questions</div>
+                  <div className="text-xs text-muted-foreground">Answer 2 out of 3 questions</div>
                 </div>
               </button>
             </div>
@@ -190,7 +190,7 @@ export default function ForgotPasswordPage() {
                 else handleRequestRecovery();
               }}
               disabled={!method || loading}
-              className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-medium py-3 rounded-xl transition-colors disabled:opacity-50"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-3 rounded-xl transition-colors disabled:opacity-50"
             >
               {loading ? 'Processing...' : 'Continue'}
             </button>
@@ -200,8 +200,8 @@ export default function ForgotPasswordPage() {
         {step === 3 && method !== 'QUESTIONS' && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
             <div>
-              <h1 className="text-2xl font-semibold text-white mb-2">Enter OTP</h1>
-              <p className="text-neutral-400 text-sm">We've sent a 6-digit code to your {method.toLowerCase()}.</p>
+              <h1 className="text-2xl font-semibold text-foreground mb-2">Enter OTP</h1>
+              <p className="text-muted-foreground text-sm">We've sent a 6-digit code to your {method.toLowerCase()}.</p>
             </div>
             <div className="space-y-2">
               <input 
@@ -209,14 +209,14 @@ export default function ForgotPasswordPage() {
                 maxLength={6}
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-center tracking-widest text-2xl font-mono"
+                className="w-full bg-input border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all text-center tracking-widest text-2xl font-mono"
                 placeholder="000000"
               />
             </div>
             <button 
               onClick={() => setStep(4)}
               disabled={otp.length !== 6}
-              className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-medium py-3 rounded-xl transition-colors disabled:opacity-50"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-3 rounded-xl transition-colors disabled:opacity-50"
             >
               Verify Code
             </button>
@@ -226,27 +226,27 @@ export default function ForgotPasswordPage() {
         {step === 3 && method === 'QUESTIONS' && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
             <div>
-              <h1 className="text-2xl font-semibold text-white mb-2">Security Questions</h1>
-              <p className="text-neutral-400 text-sm">Answer at least 2 of your security questions.</p>
+              <h1 className="text-2xl font-semibold text-foreground mb-2">Security Questions</h1>
+              <p className="text-muted-foreground text-sm">Answer at least 2 of your security questions.</p>
             </div>
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm text-neutral-400">What is your mother's maiden name?</label>
-                <input type="text" onChange={(e) => setAnswers({...answers, q1: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white" />
+                <label className="text-sm text-muted-foreground">What is your mother's maiden name?</label>
+                <input type="text" onChange={(e) => setAnswers({...answers, q1: e.target.value})} className="w-full bg-input border border-border rounded-xl px-4 py-2 text-foreground" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm text-neutral-400">What was the name of your first pet?</label>
-                <input type="text" onChange={(e) => setAnswers({...answers, q2: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white" />
+                <label className="text-sm text-muted-foreground">What was the name of your first pet?</label>
+                <input type="text" onChange={(e) => setAnswers({...answers, q2: e.target.value})} className="w-full bg-input border border-border rounded-xl px-4 py-2 text-foreground" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm text-neutral-400">What city were you born in?</label>
-                <input type="text" onChange={(e) => setAnswers({...answers, q3: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white" />
+                <label className="text-sm text-muted-foreground">What city were you born in?</label>
+                <input type="text" onChange={(e) => setAnswers({...answers, q3: e.target.value})} className="w-full bg-input border border-border rounded-xl px-4 py-2 text-foreground" />
               </div>
             </div>
             <button 
               onClick={handleVerifyQuestions}
               disabled={loading}
-              className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-medium py-3 rounded-xl transition-colors disabled:opacity-50"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-3 rounded-xl transition-colors disabled:opacity-50"
             >
               {loading ? 'Verifying...' : 'Verify Answers'}
             </button>
@@ -256,36 +256,36 @@ export default function ForgotPasswordPage() {
         {step === 4 && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
             <div>
-              <h1 className="text-2xl font-semibold text-white mb-2">New Password</h1>
-              <p className="text-neutral-400 text-sm">Enter your new secure password.</p>
+              <h1 className="text-2xl font-semibold text-foreground mb-2">New Password</h1>
+              <p className="text-muted-foreground text-sm">Enter your new secure password.</p>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-sm text-neutral-400 mb-1.5 block">New Password</label>
+                <label className="text-sm text-muted-foreground mb-1.5 block">New Password</label>
                 <div className="relative">
                   <input 
                     type={showNewPassword ? "text" : "password"} 
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-12 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                    className="w-full bg-input border border-border rounded-xl px-4 py-3 pr-12 text-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                     placeholder="••••••••"
                   />
-                  <button type="button" onClick={() => setShowNewPassword(!showNewPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white transition-colors">
+                  <button type="button" onClick={() => setShowNewPassword(!showNewPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
                     {showNewPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
               </div>
               <div>
-                <label className="text-sm text-neutral-400 mb-1.5 block">Confirm New Password</label>
+                <label className="text-sm text-muted-foreground mb-1.5 block">Confirm New Password</label>
                 <div className="relative">
                   <input 
                     type={showConfirmPassword ? "text" : "password"} 
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-12 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                    className="w-full bg-input border border-border rounded-xl px-4 py-3 pr-12 text-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                     placeholder="••••••••"
                   />
-                  <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white transition-colors">
+                  <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
                     {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
@@ -294,7 +294,7 @@ export default function ForgotPasswordPage() {
             <button 
               onClick={handleResetPassword}
               disabled={newPassword.length < 8 || loading}
-              className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-medium py-3 rounded-xl transition-colors disabled:opacity-50"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-3 rounded-xl transition-colors disabled:opacity-50"
             >
               {loading ? 'Resetting...' : 'Reset Password'}
             </button>
@@ -306,11 +306,11 @@ export default function ForgotPasswordPage() {
             <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
               <CheckCircle2 className="w-10 h-10 text-green-500" />
             </div>
-            <h1 className="text-2xl font-semibold text-white">Password Reset!</h1>
-            <p className="text-neutral-400">Your password has been successfully changed.</p>
+            <h1 className="text-2xl font-semibold text-foreground">Password Reset!</h1>
+            <p className="text-muted-foreground">Your password has been successfully changed.</p>
             <button 
               onClick={() => router.push('/login')}
-              className="w-full bg-white text-black hover:bg-neutral-200 font-medium py-3 rounded-xl transition-colors"
+              className="w-full bg-foreground text-background hover:bg-foreground/90 font-medium py-3 rounded-xl transition-colors"
             >
               Continue to Login
             </button>

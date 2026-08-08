@@ -29,12 +29,11 @@ public class ExpenseService {
         return expenseRepository.save(expense);
     }
 
-    public List<Expense> getExpenses(UUID userId, Integer year, Integer month) {
-        if (year != null && month != null) {
-            YearMonth yearMonth = YearMonth.of(year, month);
-            LocalDateTime startDate = yearMonth.atDay(1).atStartOfDay();
-            LocalDateTime endDate = yearMonth.atEndOfMonth().atTime(23, 59, 59, 999999999);
-            return expenseRepository.findByUserIdAndTransactionDateBetweenOrderByTransactionDateDesc(userId, startDate, endDate);
+    public List<Expense> getExpenses(UUID userId, java.time.LocalDate startDate, java.time.LocalDate endDate) {
+        if (startDate != null && endDate != null) {
+            LocalDateTime start = startDate.atStartOfDay();
+            LocalDateTime end = endDate.atTime(23, 59, 59, 999999999);
+            return expenseRepository.findByUserIdAndTransactionDateBetweenOrderByTransactionDateDesc(userId, start, end);
         }
         return expenseRepository.findByUserIdOrderByTransactionDateDesc(userId);
     }

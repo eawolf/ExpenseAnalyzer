@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import api from '@/utils/api';
 import { format, parseISO } from 'date-fns';
 import { Search, Filter, Loader2, ArrowDownRight, Tag, Trash2, Check, Edit2, X } from 'lucide-react';
 import { useUserProfile } from '@/context/UserProfileContext';
 import { useDateFilter } from '@/context/DateFilterContext';
+import CustomDatePicker from '@/components/CustomDatePicker';
 
 interface Expense {
   id: string;
@@ -23,21 +24,35 @@ export default function Expenses() {
   const [showFilter, setShowFilter] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
-  const [editFormData, setEditFormData] = useState({ amount: '', merchant: '', categories: '', notes: '', transactionDate: '' });
+  const [editFormData, setEditFormData] = useState<{ amount: string; merchant: string; categories: string; notes: string; transactionDate: Date | null }>({ amount: '', merchant: '', categories: '', notes: '', transactionDate: null });
   const [isSaving, setIsSaving] = useState(false);
   const { userProfile } = useUserProfile();
   const { selectedYear, selectedMonth } = useDateFilter();
+  const filterRef = useRef<HTMLDivElement>(null);
   
   const currencySymbol = userProfile?.currency || '$';
 
   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+        setShowFilter(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
     const fetchExpenses = async () => {
-      setLoading(true);
       try {
-        const res = await api.get(`/expenses?year=${selectedYear}&month=${selectedMonth}`);
+        const start = new Date(selectedYear, selectedMonth - 1, 1);
+        const end = new Date(selectedYear, selectedMonth, 0);
+        
+        const url = `/expenses?startDate=${format(start, 'yyyy-MM-dd')}&endDate=${format(end, 'yyyy-MM-dd')}`;
+        const res = await api.get(url);
         setExpenses(res.data);
       } catch (err) {
-        console.error('Failed to load expenses', err);
+        console.error('Failed to fetch expenses', err);
       } finally {
         setLoading(false);
       }
@@ -83,7 +98,7 @@ export default function Expenses() {
       merchant: expense.merchant || '',
       categories: expense.categories ? expense.categories.join(', ') : '',
       notes: expense.notes || '',
-      transactionDate: expense.transactionDate ? format(parseISO(expense.transactionDate), "yyyy-MM-dd'T'HH:mm") : ''
+      transactionDate: expense.transactionDate ? parseISO(expense.transactionDate) : null
     });
   };
 
@@ -92,14 +107,13 @@ export default function Expenses() {
     if (!editingExpense) return;
     setIsSaving(true);
     try {
-      const payload = {
-        amount: Number(editFormData.amount),
+      const res = await api.put(`/expenses/${editingExpense.id}`, {
+        amount: parseFloat(editFormData.amount),
         merchant: editFormData.merchant,
-        categories: editFormData.categories.split(',').map(s => s.trim()).filter(s => s.length > 0),
         notes: editFormData.notes,
-        transactionDate: editFormData.transactionDate ? new Date(editFormData.transactionDate).toISOString() : undefined
-      };
-      const res = await api.put(`/expenses/${editingExpense.id}`, payload);
+        transactionDate: editFormData.transactionDate ? format(editFormData.transactionDate, "yyyy-MM-dd'T'HH:mm:ss") : undefined,
+        categories: editFormData.categories.split(',').map(c => c.trim()).filter(c => c)
+      });
       setExpenses(prev => prev.map(exp => exp.id === editingExpense.id ? res.data : exp));
       setEditingExpense(null);
     } catch (err) {
@@ -114,47 +128,47 @@ export default function Expenses() {
     <div className="max-w-6xl mx-auto flex flex-col gap-8">
       
       {/* Header Actions */}
-      <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-zinc-900 border border-white/5 p-4 rounded-2xl">
+      <div className="flex flex-col md:flex-row gap-4 justify-between items-center glass-panel p-4 rounded-2xl">
         <div className="relative w-full md:w-96">
-          <Search className="w-5 h-5 absolute left-3 top-3 text-zinc-500" />
+          <Search className="w-5 h-5 absolute left-3 top-3 text-muted-foreground" />
           <input 
             type="text"
             placeholder="Search by merchant, category, notes..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-zinc-950 border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors"
+            className="w-full bg-input border border-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
           />
         </div>
-        <div className="relative">
+        <div className="relative" ref={filterRef}>
           <button 
             onClick={() => setShowFilter(!showFilter)}
-            className={`flex items-center gap-2 px-4 py-2.5 hover:bg-zinc-700 text-white text-sm font-medium rounded-xl transition-colors w-full md:w-auto ${showFilter || selectedFilters.length > 0 ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30' : 'bg-zinc-800'}`}
+            className={`flex items-center gap-2 px-4 py-2.5 hover:bg-accent hover:text-accent-foreground text-sm font-medium rounded-xl transition-colors w-full md:w-auto ${showFilter || selectedFilters.length > 0 ? 'bg-primary/20 text-primary border border-primary/30' : 'bg-card border border-border text-foreground'}`}
           >
             <Filter className="w-4 h-4" />
             Filter {selectedFilters.length > 0 && `(${selectedFilters.length})`}
           </button>
           
           {showFilter && (
-            <div className="absolute right-0 mt-2 w-64 bg-zinc-900 border border-white/10 rounded-xl shadow-xl z-50 p-4 animate-in fade-in slide-in-from-top-2">
-              <h4 className="text-sm font-semibold text-zinc-300 mb-3">Filter by Category</h4>
+            <div className="absolute right-0 mt-2 w-64 glass-popup rounded-xl z-50 p-4 animate-in fade-in slide-in-from-top-2">
+              <h4 className="text-sm font-semibold text-foreground mb-3">Filter by Category</h4>
               {allCategories.length > 0 ? (
-                <div className="flex flex-col gap-2 max-h-60 overflow-y-auto">
+                <div className="flex flex-col gap-2 max-h-60 overflow-y-auto scroll-3d-list">
                   {allCategories.map(cat => (
-                    <label key={cat} className="flex items-center gap-3 cursor-pointer group" onClick={() => toggleFilter(cat)}>
-                      <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${selectedFilters.includes(cat) ? 'bg-indigo-500 border-indigo-500' : 'border-zinc-500 group-hover:border-zinc-400'}`}>
-                        {selectedFilters.includes(cat) && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
+                    <label key={cat} className="flex items-center gap-3 p-2 -mx-2 rounded-lg cursor-pointer group hover:bg-accent/50 transition-colors scroll-3d-item" onClick={() => toggleFilter(cat)}>
+                      <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${selectedFilters.includes(cat) ? 'bg-primary border-primary' : 'border-foreground/30 group-hover:border-foreground/50'}`}>
+                        {selectedFilters.includes(cat) && <Check className="w-3 h-3 text-primary-foreground" strokeWidth={3} />}
                       </div>
-                      <span className="text-sm text-zinc-300 group-hover:text-white transition-colors">{cat}</span>
+                      <span className="text-sm text-foreground transition-colors">{cat}</span>
                     </label>
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-zinc-500 italic">No categories available.</p>
+                <p className="text-sm text-muted-foreground italic">No categories available.</p>
               )}
               {selectedFilters.length > 0 && (
                 <button 
                   onClick={() => setSelectedFilters([])}
-                  className="w-full mt-4 py-2 text-xs font-medium text-zinc-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
+                  className="w-full mt-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground bg-accent hover:bg-accent/80 rounded-lg transition-colors"
                 >
                   Clear Filters
                 </button>
@@ -164,149 +178,127 @@ export default function Expenses() {
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-zinc-900 border border-white/5 rounded-2xl overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-zinc-950/50 border-b border-white/5 text-zinc-400 text-sm">
-                <th className="p-4 font-medium">Merchant / Details</th>
-                <th className="p-4 font-medium">Categories</th>
-                <th className="p-4 font-medium">Date</th>
-                <th className="p-4 font-medium text-right">Amount</th>
-                <th className="p-4 w-12"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <tr>
-                  <td colSpan={4} className="p-8 text-center">
-                    <Loader2 className="w-8 h-8 text-indigo-500 animate-spin mx-auto" />
-                  </td>
-                </tr>
-              ) : filteredExpenses.length > 0 ? (
-                filteredExpenses.map(expense => (
-                  <tr key={expense.id} className="border-b border-white/5 hover:bg-white/5 transition-colors group">
-                    <td className="p-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-rose-500/10 flex items-center justify-center flex-shrink-0">
-                          <ArrowDownRight className="w-5 h-5 text-rose-400" />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-white">{expense.merchant || 'Unknown Merchant'}</p>
-                          {expense.notes && <p className="text-sm text-zinc-500 truncate max-w-xs">{expense.notes}</p>}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <div className="flex flex-wrap gap-1.5 max-w-[200px]">
-                        {expense.categories && expense.categories.length > 0 ? (
-                           expense.categories.map((cat, idx) => (
-                             <span key={idx} className="inline-flex items-center gap-1 bg-zinc-800 text-zinc-300 px-2 py-1 rounded-md text-xs font-medium whitespace-nowrap">
-                               <Tag className="w-3 h-3 opacity-50" />
-                               {cat}
-                             </span>
-                           ))
-                        ) : (
-                           <span className="text-zinc-500 text-sm italic">Uncategorized</span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="p-4 text-sm text-zinc-400">
-                      {format(parseISO(expense.transactionDate), 'MMM dd, yyyy h:mm a')}
-                    </td>
-                    <td className="p-4 text-right">
-                      <span className="font-semibold text-rose-400">-{currencySymbol}{expense.amount.toFixed(2)}</span>
-                    </td>
-                    <td className="p-4 text-right">
-                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
-                        <button 
-                          onClick={() => startEdit(expense)}
-                          className="p-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg transition-colors"
-                          title="Edit Expense"
-                        >
-                          <Edit2 className="w-4 h-4" />
-                        </button>
-                        <button 
-                          onClick={() => handleDelete(expense.id)}
-                          className="p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg transition-colors"
-                          title="Delete Expense"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={5} className="p-8 text-center text-zinc-500">
-                    No expenses found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+      {/* Scrollable Container */}
+      <div className="flex flex-col gap-4 overflow-y-auto pr-2 pb-2 max-h-[calc(100vh-250px)] mt-4">
+        {loading ? (
+          <div className="flex justify-center p-8">
+            <Loader2 className="w-8 h-8 text-primary animate-spin" />
+          </div>
+        ) : filteredExpenses.length > 0 ? (
+          filteredExpenses.map(expense => (
+            <div key={expense.id} className="flex items-center justify-between p-4 rounded-xl glass-card-etched hover:bg-accent/30 transition-colors group border border-border/10">
+              <div className="flex items-center gap-4 flex-1">
+                <div className="w-10 h-10 rounded-full bg-rose-500/10 flex items-center justify-center flex-shrink-0">
+                  <ArrowDownRight className="w-5 h-5 text-rose-500" />
+                </div>
+                <div className="min-w-[200px]">
+                  <p className="font-semibold text-foreground">{expense.merchant || 'Unknown Merchant'}</p>
+                  {expense.notes && <p className="text-sm text-muted-foreground truncate max-w-xs">{expense.notes}</p>}
+                </div>
+                
+                <div className="flex flex-wrap gap-1.5 min-w-[200px] flex-1">
+                  {expense.categories && expense.categories.length > 0 ? (
+                      expense.categories.map((cat, idx) => (
+                        <span key={idx} className="inline-flex items-center gap-1 bg-accent text-accent-foreground px-2 py-1 rounded-md text-xs font-medium whitespace-nowrap">
+                          <Tag className="w-3 h-3 opacity-50" />
+                          {cat}
+                        </span>
+                      ))
+                  ) : (
+                      <span className="text-muted-foreground text-sm italic">Uncategorized</span>
+                  )}
+                </div>
+
+                <div className="text-sm text-muted-foreground min-w-[150px]">
+                  {format(parseISO(expense.transactionDate), 'MMM dd, yyyy h:mm a')}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-6">
+                <span className="font-semibold text-rose-500 min-w-[100px] text-right">-{currencySymbol}{expense.amount.toFixed(2)}</span>
+                
+                <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity min-w-[80px]">
+                  <button 
+                    onClick={() => startEdit(expense)}
+                    className="p-2 bg-card hover:bg-accent text-muted-foreground rounded-lg transition-colors border border-border"
+                    title="Edit Expense"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+                  <button 
+                    onClick={() => handleDelete(expense.id)}
+                    className="p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 rounded-lg transition-colors"
+                    title="Delete Expense"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="flex justify-center p-8 text-muted-foreground">
+            No expenses found.
+          </div>
+        )}
       </div>
       {editingExpense && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-zinc-900 border border-white/10 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
-            <div className="flex items-center justify-between p-6 border-b border-white/5">
-              <h3 className="text-xl font-bold text-white">Edit Expense</h3>
-              <button onClick={() => setEditingExpense(null)} className="text-zinc-500 hover:text-white transition-colors">
+          <div className="bg-card border border-border rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
+            <div className="flex items-center justify-between p-6 border-b border-border">
+              <h3 className="text-xl font-bold text-foreground">Edit Expense</h3>
+              <button onClick={() => setEditingExpense(null)} className="text-muted-foreground hover:text-foreground transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <form onSubmit={handleEditSave} className="p-6 flex flex-col gap-4">
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">Amount</label>
+                <label className="block text-sm font-medium text-foreground mb-1">Amount</label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500">{currencySymbol}</span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/70">{currencySymbol}</span>
                   <input 
                     type="number" step="0.01" required
                     value={editFormData.amount} onChange={(e) => setEditFormData({...editFormData, amount: e.target.value})}
-                    className="w-full bg-zinc-950 border border-white/10 rounded-xl pl-8 pr-4 py-2.5 text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-input border border-border rounded-xl pl-8 pr-4 py-2.5 text-foreground focus:outline-none focus:border-primary"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">Date & Time</label>
-                <input 
-                  type="datetime-local"
-                  value={editFormData.transactionDate} onChange={(e) => setEditFormData({...editFormData, transactionDate: e.target.value})}
-                  className="w-full bg-zinc-950 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-indigo-500 [color-scheme:dark]"
+                <label className="block text-sm font-medium text-foreground mb-1">Date</label>
+                <CustomDatePicker 
+                  selected={editFormData.transactionDate} 
+                  onChange={(date) => setEditFormData({...editFormData, transactionDate: date})}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">Merchant</label>
+                <label className="block text-sm font-medium text-foreground mb-1">Merchant (Optional)</label>
                 <input 
-                  type="text" required
+                  type="text"
                   value={editFormData.merchant} onChange={(e) => setEditFormData({...editFormData, merchant: e.target.value})}
-                  className="w-full bg-zinc-950 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-input border border-border rounded-xl px-4 py-2.5 text-foreground focus:outline-none focus:border-primary"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">Categories (comma separated)</label>
+                <label className="block text-sm font-medium text-foreground mb-1">Categories (comma separated)</label>
                 <input 
                   type="text"
                   value={editFormData.categories} onChange={(e) => setEditFormData({...editFormData, categories: e.target.value})}
-                  className="w-full bg-zinc-950 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-input border border-border rounded-xl px-4 py-2.5 text-foreground focus:outline-none focus:border-primary"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">Notes</label>
+                <label className="block text-sm font-medium text-foreground mb-1">Notes (Optional)</label>
                 <textarea 
                   value={editFormData.notes} onChange={(e) => setEditFormData({...editFormData, notes: e.target.value})}
-                  className="w-full bg-zinc-950 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-indigo-500 min-h-[80px]"
+                  className="w-full bg-input border border-border rounded-xl px-4 py-2.5 text-foreground focus:outline-none focus:border-primary min-h-[80px]"
                 />
               </div>
               
               <div className="flex items-center justify-end gap-3 mt-4">
-                <button type="button" onClick={() => setEditingExpense(null)} className="px-4 py-2 rounded-xl text-sm font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-colors">
+                <button type="button" onClick={() => setEditingExpense(null)} className="px-4 py-2 rounded-xl text-sm font-medium text-foreground hover:bg-accent transition-colors">
                   Cancel
                 </button>
-                <button type="submit" disabled={isSaving} className="px-6 py-2 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium transition-colors flex items-center gap-2">
+                <button type="submit" disabled={isSaving} className="px-6 py-2 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium transition-colors flex items-center gap-2">
                   {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
                   Save Changes
                 </button>

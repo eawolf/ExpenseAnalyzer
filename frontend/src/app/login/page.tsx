@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { quotes, Quote } from '@/utils/quotes';
-import { Quote as QuoteIcon, Eye, EyeOff } from 'lucide-react';
+import ThemeToggle from '@/components/ThemeToggle';
+import { Quote as QuoteIcon, Eye, EyeOff, ArrowLeft, Mail, Lock } from 'lucide-react';
 
 function LoginForm() {
   const router = useRouter();
@@ -60,132 +61,149 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen w-full flex bg-neutral-950 flex-col-reverse lg:flex-row">
+    <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row font-sans selection:bg-primary/30">
       
       {/* Left Column: Interactive Quotes */}
-      <div className="hidden lg:flex lg:flex-1 relative overflow-hidden [mask-image:linear-gradient(to_left,transparent,black_30%)]">
+      <div className="hidden md:flex flex-1 relative bg-card items-center justify-center p-12 overflow-hidden perspective-1000">
         
         {/* Unified Background Gradients */}
-        <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-purple-500/10 rounded-full blur-[120px] -translate-y-1/3 -translate-x-1/4"></div>
-        <div className="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[100px] translate-y-1/3"></div>
+        <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-purple-500/10 rounded-full blur-[120px] -translate-y-1/3 -translate-x-1/4 z-0"></div>
+        <div className="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] translate-y-1/3 z-0"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-purple-500/5 z-0" />
 
-        <div className="relative w-full h-full flex flex-col justify-center items-center p-12">
+        <div className="relative w-full h-full flex flex-col justify-center items-center p-12 z-10">
           {quote && (
-            <div className="group relative w-full max-w-lg p-10 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl transition-all duration-700 hover:bg-white/10 overflow-hidden cursor-default">
+            <div 
+              className="group relative w-full max-w-lg p-10 rounded-3xl bg-card border border-border backdrop-blur-xl shadow-2xl transition-all duration-300 ease-out hover:shadow-[0_20px_40px_rgba(99,102,241,0.2)] cursor-default z-10"
+              style={{ transform: "perspective(1000px) rotateX(0deg) rotateY(0deg)", transformStyle: "preserve-3d" }}
+              onMouseMove={(e) => {
+                const card = e.currentTarget;
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = ((y - centerY) / centerY) * -10;
+                const rotateY = ((x - centerX) / centerX) * 10;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+              }}
+              onMouseLeave={(e) => {
+                const card = e.currentTarget;
+                card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
+              }}
+            >
+              <QuoteIcon className="w-12 h-12 text-primary/40 absolute top-8 left-8" style={{ transform: "translateZ(30px)" }} />
               
-              <QuoteIcon className="w-12 h-12 text-indigo-500/30 absolute top-8 left-8" />
-              
-              <div className="relative z-10 pt-8">
-                <p className="text-3xl font-medium text-white leading-relaxed tracking-tight transition-transform duration-500 group-hover:-translate-y-2">
+              <div className="relative z-10 pt-8" style={{ transform: "translateZ(40px)" }}>
+                <p className="text-3xl font-medium text-foreground leading-relaxed tracking-tight">
                   "{quote.question}"
                 </p>
                 
-                <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-in-out opacity-0 group-hover:opacity-100">
+                <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-in-out opacity-0 group-hover:opacity-100 mt-2">
                   <div className="overflow-hidden">
-                    <p className="text-xl text-indigo-300 mt-4 font-medium italic">
+                    <p className="text-xl text-primary mt-2 font-medium italic">
                       {quote.answer}
                     </p>
                     <div className="mt-6 flex items-center gap-3">
-                      <div className="h-px w-8 bg-indigo-500/50"></div>
-                      <p className="text-sm font-semibold text-neutral-400 uppercase tracking-wider">{quote.author}</p>
+                      <div className="h-px w-8 bg-primary/50"></div>
+                      <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">{quote.author}</p>
                     </div>
                   </div>
                 </div>
-              </div>
-              
-              <div className="absolute bottom-6 right-8 opacity-100 group-hover:opacity-0 transition-opacity duration-300">
-                <span className="text-xs text-neutral-500 animate-pulse tracking-wider uppercase font-medium">Hover to reveal</span>
               </div>
             </div>
           )}
         </div>
       </div>
 
-      {/* Right Column: Form */}
-      <div className="flex-1 flex flex-col justify-center px-8 sm:px-12 lg:px-20 relative">
-        {/* Logo at Top Right */}
-        <div className="absolute top-8 right-8 sm:top-12 sm:right-12">
-          <Link href="/" className="flex items-center gap-2 group flex-row-reverse">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white shadow-lg group-hover:shadow-indigo-500/25 transition-all">
+      {/* Right Column: Login Form */}
+      <div className="flex-1 flex flex-col justify-center px-8 sm:px-12 lg:px-20 relative z-10 bg-background">
+        <div className="absolute top-6 right-6 z-50">
+          <ThemeToggle />
+        </div>
+        <Link href="/" className="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group">
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+          <span className="text-sm font-medium">Back to Home</span>
+        </Link>
+
+        <div className="w-full max-w-sm mx-auto mt-12 md:mt-0">
+          <div className="flex flex-col items-center mb-8">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white shadow-lg mb-4">
               E
             </div>
-            <span className="font-bold tracking-tight text-white group-hover:text-indigo-400 transition-colors text-lg">ExpenseAnalyzer</span>
-          </Link>
-        </div>
-
-        <div className="w-full max-w-md mx-auto mt-16 lg:mt-0 z-10">
-          <div className="mb-10 text-left">
-            <h2 className="text-3xl font-bold tracking-tight text-white mb-2">Welcome Back</h2>
-            <p className="text-neutral-400">Sign in to your account and continue your financial journey.</p>
+            <h2 className="text-3xl font-bold tracking-tight text-foreground mb-2">Welcome Back</h2>
+            <p className="text-muted-foreground text-center text-sm">
+              Enter your credentials to access your account
+            </p>
           </div>
 
           {registered && (
-            <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-4 py-3 text-sm text-emerald-400 mb-6">
+            <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-3 text-sm text-emerald-500 mb-6 text-center">
               Registration successful! Please log in.
             </div>
           )}
 
           {error && (
-            <div className="rounded-lg bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400 mb-6">
+            <div className="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-500 mb-6 text-center font-medium">
               {error}
             </div>
           )}
 
-          <form className="space-y-5" onSubmit={handleSubmit}>
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-1.5 text-left">Email Address</label>
-              <input
-                id="email"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="block w-full rounded-xl border border-white/10 bg-neutral-900 px-4 py-3.5 text-white placeholder-neutral-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-colors text-left"
-                placeholder="you@example.com"
-              />
+              <label className="block text-sm font-medium text-muted-foreground mb-1.5 ml-1">Email</label>
+              <div className="relative group">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors pointer-events-none" />
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="block w-full rounded-xl border border-border bg-card/50 px-4 py-3.5 pl-12 text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all"
+                  placeholder="you@example.com"
+                />
+              </div>
             </div>
             <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-sm font-medium text-neutral-300 text-left">Password</label>
-                <Link href="/forgot-password" className="text-sm font-medium text-indigo-400 hover:text-indigo-300 transition-colors">
+              <div className="flex items-center justify-between mb-1.5 px-1">
+                <label className="block text-sm font-medium text-muted-foreground">Password</label>
+                <Link href="/forgot-password" className="text-sm font-medium text-primary hover:text-primary/80 transition-colors">
                   Forgot Password?
                 </Link>
               </div>
-              <div className="relative">
+              <div className="relative group">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors pointer-events-none" />
                 <input
-                  id="password"
                   type={showPassword ? "text" : "password"}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full rounded-xl border border-white/10 bg-neutral-900 px-4 py-3.5 pr-12 text-white placeholder-neutral-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-colors text-left"
+                  className="block w-full rounded-xl border border-border bg-card/50 px-4 py-3.5 pl-12 pr-12 text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all"
                   placeholder="••••••••"
                 />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white transition-colors">
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
             </div>
 
             <button
-              id="login-btn"
               type="submit"
               disabled={loading}
-              className="w-full rounded-xl bg-indigo-600 px-4 py-3.5 mt-2 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 focus:ring-offset-neutral-950 transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="w-full rounded-xl bg-primary px-4 py-3.5 mt-2 text-sm font-semibold text-primary-foreground shadow-lg hover:opacity-90 transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Signing in…' : 'Sign in'}
             </button>
           </form>
 
-          <p className="mt-8 text-sm text-neutral-400 text-center">
+          <p className="mt-8 text-sm text-muted-foreground text-center">
             Don't have an account?{' '}
-            <Link href="/signup" className="font-semibold text-indigo-400 hover:text-indigo-300 transition-colors">
+            <Link href="/signup" className="font-semibold text-primary hover:text-primary/80 transition-colors">
               Sign up
             </Link>
           </p>
         </div>
       </div>
-
     </div>
   );
 }
@@ -193,7 +211,7 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen w-full flex items-center justify-center bg-neutral-950">
+      <div className="min-h-screen w-full flex items-center justify-center bg-background">
         <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     }>

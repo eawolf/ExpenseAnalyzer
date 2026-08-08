@@ -1,0 +1,57 @@
+import React from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { Calendar as CalendarIcon } from 'lucide-react';
+
+interface CustomDatePickerProps {
+  selected?: Date | null;
+  startDate?: Date | null;
+  endDate?: Date | null;
+  selectsRange?: boolean;
+  onChange: (date: Date | null | [Date | null, Date | null]) => void;
+  showTimeSelect?: boolean;
+  showMonthYearPicker?: boolean;
+  placeholderText?: string;
+  className?: string;
+  required?: boolean;
+}
+
+export default function CustomDatePicker({
+  selected,
+  startDate,
+  endDate,
+  selectsRange = false,
+  onChange,
+  showTimeSelect = false,
+  showMonthYearPicker = false,
+  placeholderText = 'Select date',
+  className = '',
+  required = false
+}: CustomDatePickerProps) {
+  return (
+    <div className="relative w-full">
+      <DatePicker
+        selected={selected}
+        startDate={startDate}
+        endDate={endDate}
+        selectsRange={selectsRange}
+        onChange={onChange as any}
+        showTimeSelect={showTimeSelect}
+        showMonthYearPicker={showMonthYearPicker}
+        dateFormat={
+          showMonthYearPicker
+            ? 'MMMM yyyy'
+            : showTimeSelect
+            ? 'MMMM d, yyyy h:mm aa'
+            : 'MMMM d, yyyy'
+        }
+        placeholderText={placeholderText}
+        required={required}
+        className={`block w-full rounded-xl border border-border bg-input px-4 py-3.5 pl-12 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors ${className}`}
+        calendarClassName="custom-calendar-popup"
+        popperClassName="custom-calendar-popper"
+      />
+      <CalendarIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
+    </div>
+  );
+}

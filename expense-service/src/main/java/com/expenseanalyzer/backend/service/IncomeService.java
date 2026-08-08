@@ -27,12 +27,11 @@ public class IncomeService {
         return incomeRepository.save(income);
     }
 
-    public List<Income> getIncomes(UUID userId, Integer year, Integer month) {
-        if (year != null && month != null) {
-            YearMonth yearMonth = YearMonth.of(year, month);
-            LocalDateTime startDate = yearMonth.atDay(1).atStartOfDay();
-            LocalDateTime endDate = yearMonth.atEndOfMonth().atTime(23, 59, 59, 999999999);
-            return incomeRepository.findByUserIdAndTransactionDateBetweenOrderByTransactionDateDesc(userId, startDate, endDate);
+    public List<Income> getIncomes(UUID userId, java.time.LocalDate startDate, java.time.LocalDate endDate) {
+        if (startDate != null && endDate != null) {
+            LocalDateTime start = startDate.atStartOfDay();
+            LocalDateTime end = endDate.atTime(23, 59, 59, 999999999);
+            return incomeRepository.findByUserIdAndTransactionDateBetweenOrderByTransactionDateDesc(userId, start, end);
         }
         return incomeRepository.findByUserIdOrderByTransactionDateDesc(userId);
     }

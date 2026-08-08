@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { Loader2, DollarSign, Euro, PoundSterling, IndianRupee, JapaneseYen } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { Loader2, DollarSign, Euro, PoundSterling, IndianRupee, JapaneseYen, ChevronDown } from 'lucide-react';
 import api from '@/utils/api';
 import { useUserProfile } from '@/context/UserProfileContext';
 
@@ -27,10 +27,23 @@ export default function CurrencySelector() {
   const { userProfile, setUserProfile } = useUserProfile();
   const [loadingCurrency, setLoadingCurrency] = useState(false);
   const [previousCurrency, setPreviousCurrency] = useState<string | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   if (!userProfile) return null;
 
   const changeCurrency = async (newCurrency: string) => {
+    setIsOpen(false);
     if (userProfile.currency === newCurrency) return;
     setPreviousCurrency(userProfile.currency);
     setLoadingCurrency(true);
@@ -55,28 +68,44 @@ export default function CurrencySelector() {
   return (
     <div className="flex items-center gap-3">
       {showConversion && (
-        <div className="hidden md:flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 px-3 py-1.5 rounded-lg text-xs font-medium text-indigo-300 animate-in fade-in slide-in-from-right-2">
+        <div className="hidden md:flex items-center gap-2 bg-primary/10 border border-primary/20 px-3 py-1.5 rounded-lg text-xs font-medium text-primary animate-in fade-in slide-in-from-right-2">
           <span>1 {getCurrencyLabel(previousCurrency)} = {conversionRate} {getCurrencyLabel(userProfile.currency)}</span>
-          <span className="text-indigo-500/30">|</span>
+          <span className="text-primary/30">|</span>
           <span>1 {getCurrencyLabel(userProfile.currency)} = {reverseRate} {getCurrencyLabel(previousCurrency)}</span>
         </div>
       )}
-      <div className="flex items-center gap-2 bg-zinc-900 border border-white/10 rounded-xl px-2 py-1.5">
-        {loadingCurrency ? (
-          <Loader2 className="w-4 h-4 text-zinc-400 animate-spin" />
-        ) : (
-          <span className="text-zinc-400 font-medium text-sm">{userProfile.currency}</span>
-        )}
-        <select 
-          value={userProfile.currency}
-          onChange={(e) => changeCurrency(e.target.value)}
+      <div className="relative" ref={dropdownRef}>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
           disabled={loadingCurrency}
-          className="appearance-none bg-transparent text-sm text-zinc-300 font-medium focus:outline-none cursor-pointer disabled:opacity-50"
+          className="flex items-center gap-2 glass-panel rounded-xl px-3 py-2 hover:bg-accent transition-colors disabled:opacity-50"
         >
-          {CURRENCIES.map(c => (
-            <option key={c.symbol} value={c.symbol} className="bg-zinc-900 text-zinc-300">{c.label} ({c.symbol})</option>
-          ))}
-        </select>
+          {loadingCurrency ? (
+            <Loader2 className="w-4 h-4 text-muted-foreground animate-spin" />
+          ) : (
+            <span className="text-muted-foreground font-medium text-sm">{userProfile.currency}</span>
+          )}
+          <span className="text-sm text-foreground font-medium flex items-center gap-1">
+            {getCurrencyLabel(userProfile.currency)}
+            <ChevronDown className="w-3 h-3 opacity-50" />
+          </span>
+        </button>
+
+        {isOpen && (
+          <div className="absolute right-0 top-full mt-2 w-40 glass-popup rounded-xl py-2 z-[100] animate-in fade-in slide-in-from-top-2">
+            {CURRENCIES.map(c => (
+              <button
+                key={c.symbol}
+                onClick={() => changeCurrency(c.symbol)}
+                className={`w-full flex items-center justify-between px-4 py-2 text-sm transition-colors hover:bg-accent
+                  ${userProfile.currency === c.symbol ? 'bg-primary/10 text-primary font-medium' : 'text-foreground'}`}
+              >
+                <span>{c.label}</span>
+                <span className="text-muted-foreground">{c.symbol}</span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

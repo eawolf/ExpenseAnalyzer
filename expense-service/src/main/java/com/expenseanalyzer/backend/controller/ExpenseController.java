@@ -21,11 +21,11 @@ public class ExpenseController {
 
     @GetMapping
     public ResponseEntity<List<Expense>> getExpenses(
-            @RequestParam(required = false) Integer year,
-            @RequestParam(required = false) Integer month) {
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate startDate,
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate endDate) {
         String userIdStr = SecurityContextHolder.getContext().getAuthentication().getName();
         UUID userId = UUID.fromString(userIdStr);
-        return ResponseEntity.ok(expenseService.getExpenses(userId, year, month));
+        return ResponseEntity.ok(expenseService.getExpenses(userId, startDate, endDate));
     }
 
     @PostMapping

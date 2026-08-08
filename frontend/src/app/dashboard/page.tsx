@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import api from '@/utils/api';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, PieChart, Pie, Legend, LineChart, Line } from 'recharts';
-import { ArrowDownRight, ArrowUpRight, Wallet, Loader2, BarChart2, PieChart as PieChartIcon, LineChart as LineChartIcon } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, PieChart, Pie, Legend, LineChart, Line, AreaChart, Area } from 'recharts';
+import { ArrowDownRight, ArrowUpRight, Wallet, Loader2, BarChart2, PieChart as PieChartIcon, LineChart as LineChartIcon, ExternalLink, TrendingUp, TrendingDown, Coins, Receipt } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
+import { useRouter } from 'next/navigation';
 import { useUserProfile } from '@/context/UserProfileContext';
 import { useDateFilter } from '@/context/DateFilterContext';
+import CustomDatePicker from '@/components/CustomDatePicker';
 
 interface Transaction {
   id: string;
@@ -24,9 +26,14 @@ interface SummaryData {
 }
 
 export default function Dashboard() {
+  const router = useRouter();
   const [data, setData] = useState<SummaryData | null>(null);
+  const [chartSummaryData, setChartSummaryData] = useState<SummaryData | null>(null);
   const [loadingStats, setLoadingStats] = useState(true);
+  const [loadingChart, setLoadingChart] = useState(false);
   const [chartType, setChartType] = useState<'bar' | 'pie' | 'line'>('bar');
+  const [chartStartDate, setChartStartDate] = useState<Date | null>(null);
+  const [chartEndDate, setChartEndDate] = useState<Date | null>(null);
   const { userProfile, loading: profileLoading } = useUserProfile();
   const { selectedYear, selectedMonth } = useDateFilter();
 
@@ -36,7 +43,10 @@ export default function Dashboard() {
     const fetchData = async () => {
       setLoadingStats(true);
       try {
-        const res = await api.get(`/dashboard/summary?year=${selectedYear}&month=${selectedMonth}`);
+        const start = new Date(selectedYear, selectedMonth - 1, 1);
+        const end = new Date(selectedYear, selectedMonth, 0);
+        const url = `/dashboard/summary?startDate=${format(start, 'yyyy-MM-dd')}&endDate=${format(end, 'yyyy-MM-dd')}`;
+        const res = await api.get(url);
         setData(res.data);
       } catch (err) {
         console.error('Failed to fetch summary', err);
@@ -47,179 +57,307 @@ export default function Dashboard() {
     fetchData();
   }, [selectedYear, selectedMonth]);
 
+  useEffect(() => {
+    const fetchChartData = async () => {
+      if (!chartStartDate || !chartEndDate) {
+        setChartSummaryData(null);
+        return;
+      }
+      setLoadingChart(true);
+      try {
+        const url = `/dashboard/summary?startDate=${format(chartStartDate, 'yyyy-MM-dd')}&endDate=${format(chartEndDate, 'yyyy-MM-dd')}`;
+        const res = await api.get(url);
+        setChartSummaryData(res.data);
+      } catch (err) {
+        console.error('Failed to fetch chart summary', err);
+      } finally {
+        setLoadingChart(false);
+      }
+    };
+    fetchChartData();
+  }, [chartStartDate, chartEndDate]);
+
   if (loadingStats || !data || profileLoading) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
+        <Loader2 className="w-8 h-8 text-primary animate-spin" />
       </div>
     );
   }
 
-  const chartData = data.recentTransactions.slice(0, 7).reverse().map(t => ({
-    name: format(parseISO(t.date), 'MMM dd'),
+  const activeData = chartSummaryData || data;
+
+  const chartData = activeData.recentTransactions.slice(0, 7).reverse().map((t, i) => ({
+    name: `${format(parseISO(t.date), 'MMM dd')} - ${t.merchant || t.source || 'Transaction'} ${i}`,
+    displayDate: format(parseISO(t.date), 'MMM dd'),
     amount: t.amount,
     type: t.type
   }));
 
+  const incomeSparklineData = activeData.recentTransactions.filter(t => t.type === 'INCOME').slice(0, 10).reverse().map(t => ({ amount: t.amount }));
+  const expenseSparklineData = activeData.recentTransactions.filter(t => t.type === 'EXPENSE').slice(0, 10).reverse().map(t => ({ amount: t.amount }));
+
+  const recentIncomes = activeData.recentTransactions.filter(t => t.type === 'INCOME').slice(0, 3);
+  const recentExpenses = activeData.recentTransactions.filter(t => t.type === 'EXPENSE').slice(0, 3);
+
   const pieData = [
-    { name: 'Income', value: data.totalIncome, color: '#10b981' },
-    { name: 'Expenses', value: data.totalExpense, color: '#f43f5e' }
+    { name: 'Income', value: activeData.totalIncome, color: '#10b981' },
+    { name: 'Expenses', value: activeData.totalExpense, color: '#f43f5e' }
   ].filter(d => d.value > 0);
 
   return (
     <div className="flex flex-col gap-8">
       {/* Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="p-6 rounded-2xl bg-zinc-900 border border-white/5 shadow-sm relative overflow-hidden group">
-           <div className="absolute top-0 right-0 p-4 opacity-10">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+        <div className="p-6 rounded-2xl glass-panel relative overflow-hidden group">
+           <div className="absolute top-0 right-0 p-4 opacity-5 dark:opacity-10 text-foreground">
               <Wallet className="w-24 h-24" />
            </div>
-           <p className="text-zinc-400 text-sm font-medium mb-1 relative z-10">Total Balance</p>
-           <h2 className="text-3xl font-bold text-white relative z-10">{currencySymbol}{data.balance.toFixed(2)}</h2>
+           <p className="text-muted-foreground text-sm font-medium mb-1 relative z-10">Total Balance</p>
+           <h2 className="text-3xl font-bold text-foreground relative z-10">{currencySymbol}{data.balance.toFixed(2)}</h2>
         </div>
         
-        <div className="p-6 rounded-2xl bg-zinc-900 border border-white/5 shadow-sm relative overflow-hidden">
-           <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center mb-4">
-              <ArrowUpRight className="w-5 h-5 text-emerald-400" />
+        <div className="p-6 rounded-2xl glass-panel relative overflow-hidden flex items-center justify-between">
+           <div>
+             <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center mb-4">
+                <ArrowUpRight className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
+             </div>
+             <p className="text-muted-foreground text-sm font-medium mb-1">Total Income</p>
+             <h2 className="text-2xl font-bold text-foreground">{currencySymbol}{data.totalIncome.toFixed(2)}</h2>
            </div>
-           <p className="text-zinc-400 text-sm font-medium mb-1">Total Income</p>
-           <h2 className="text-2xl font-bold text-white">{currencySymbol}{data.totalIncome.toFixed(2)}</h2>
+           <div className="flex flex-col items-end justify-center relative z-10">
+             <div className="flex items-center gap-1 bg-emerald-500/10 text-emerald-500 px-2.5 py-1 rounded-full text-sm font-medium">
+               <TrendingUp className="w-4 h-4" />
+               +12.5%
+             </div>
+             <span className="text-xs text-muted-foreground mt-2">vs last month</span>
+           </div>
+           <div className="absolute -right-8 -bottom-8 opacity-5 dark:opacity-10 pointer-events-none z-0">
+             <div className="animate-float-icon">
+               <Coins className="w-40 h-40 text-emerald-500" strokeWidth={1.5} />
+             </div>
+           </div>
         </div>
 
-        <div className="p-6 rounded-2xl bg-zinc-900 border border-white/5 shadow-sm relative overflow-hidden">
-           <div className="w-10 h-10 rounded-full bg-rose-500/10 flex items-center justify-center mb-4">
-              <ArrowDownRight className="w-5 h-5 text-rose-400" />
+        <div className="p-6 rounded-2xl glass-panel relative overflow-hidden flex items-center justify-between">
+           <div>
+             <div className="w-10 h-10 rounded-full bg-rose-500/10 flex items-center justify-center mb-4">
+                <ArrowDownRight className="w-5 h-5 text-rose-500 dark:text-rose-400" />
+             </div>
+             <p className="text-muted-foreground text-sm font-medium mb-1">Total Expenses</p>
+             <h2 className="text-2xl font-bold text-foreground">{currencySymbol}{data.totalExpense.toFixed(2)}</h2>
            </div>
-           <p className="text-zinc-400 text-sm font-medium mb-1">Total Expenses</p>
-           <h2 className="text-2xl font-bold text-white">{currencySymbol}{data.totalExpense.toFixed(2)}</h2>
+           <div className="flex flex-col items-end justify-center relative z-10">
+             <div className="flex items-center gap-1 bg-rose-500/10 text-rose-500 px-2.5 py-1 rounded-full text-sm font-medium">
+               <TrendingDown className="w-4 h-4" />
+               -4.2%
+             </div>
+             <span className="text-xs text-muted-foreground mt-2">vs last month</span>
+           </div>
+           <div className="absolute -right-8 -bottom-8 opacity-5 dark:opacity-10 pointer-events-none z-0">
+             <div className="animate-float-icon-delayed">
+               <Receipt className="w-40 h-40 text-rose-500" strokeWidth={1.5} />
+             </div>
+           </div>
         </div>
       </div>
 
       {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10 items-start">
         {/* Chart */}
-        <div className="lg:col-span-2 p-6 rounded-2xl bg-zinc-900 border border-white/5">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold">Activity Overview</h3>
-            <div className="flex items-center gap-1 bg-zinc-950 p-1 rounded-lg border border-white/10">
+        <div className="lg:col-span-2 p-6 rounded-2xl glass-panel sticky top-24">
+          <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+            <h3 className="text-lg font-semibold text-foreground">Activity Overview</h3>
+            <div className="flex items-center gap-4">
+              <div className="w-56">
+                <CustomDatePicker
+                  selectsRange={true}
+                  startDate={chartStartDate}
+                  endDate={chartEndDate}
+                  onChange={(update: any) => {
+                    const [start, end] = update;
+                    setChartStartDate(start);
+                    setChartEndDate(end);
+                  }}
+                  placeholderText="Filter Chart Dates"
+                  className="bg-background border-border py-1.5 pl-10 text-sm shadow-sm"
+                />
+              </div>
+              <div className="flex items-center gap-1 bg-background p-1 rounded-lg border border-border shadow-sm">
               <button 
                 onClick={() => setChartType('bar')} 
-                className={`p-1.5 rounded-md transition-colors ${chartType === 'bar' ? 'bg-zinc-800 text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
+                className={`p-1.5 rounded-md transition-colors ${chartType === 'bar' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-accent'}`}
                 title="Bar Chart (Recent Trend)"
               >
                 <BarChart2 className="w-4 h-4" />
               </button>
               <button 
                 onClick={() => setChartType('line')} 
-                className={`p-1.5 rounded-md transition-colors ${chartType === 'line' ? 'bg-zinc-800 text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
+                className={`p-1.5 rounded-md transition-colors ${chartType === 'line' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-accent'}`}
                 title="Line Chart (Activity Trajectory)"
               >
                 <LineChartIcon className="w-4 h-4" />
               </button>
               <button 
                 onClick={() => setChartType('pie')} 
-                className={`p-1.5 rounded-md transition-colors ${chartType === 'pie' ? 'bg-zinc-800 text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
+                className={`p-1.5 rounded-md transition-colors ${chartType === 'pie' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-accent'}`}
                 title="Pie Chart (Income vs Expense)"
               >
                 <PieChartIcon className="w-4 h-4" />
               </button>
+              </div>
             </div>
           </div>
-          <div className="h-72 w-full">
+          <div className="h-72 w-full relative">
+            {loadingChart && (
+              <div className="absolute inset-0 bg-background/50 flex items-center justify-center z-10 rounded-xl backdrop-blur-sm">
+                <Loader2 className="w-6 h-6 text-primary animate-spin" />
+              </div>
+            )}
             {chartType === 'bar' ? (
               chartData.length > 0 ? (
                   <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                      <XAxis dataKey="name" stroke="#52525b" fontSize={12} tickLine={false} axisLine={false} />
-                      <YAxis stroke="#52525b" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `${currencySymbol}${val}`} />
+                      <defs>
+                        <linearGradient id="glassIncome" x1="0" y1="0" x2="1" y2="1">
+                          <stop offset="0%" stopColor="#10b981" stopOpacity={0.8} />
+                          <stop offset="100%" stopColor="#10b981" stopOpacity={0.3} />
+                        </linearGradient>
+                        <linearGradient id="glassExpense" x1="0" y1="0" x2="1" y2="1">
+                          <stop offset="0%" stopColor="#f43f5e" stopOpacity={0.8} />
+                          <stop offset="100%" stopColor="#f43f5e" stopOpacity={0.3} />
+                        </linearGradient>
+                        <filter id="glassShadowBar" x="-20%" y="-20%" width="140%" height="140%">
+                          <feDropShadow dx="0" dy="6" stdDeviation="8" floodColor="#000" floodOpacity="0.15" />
+                        </filter>
+                      </defs>
+                      <XAxis dataKey="name" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => val.split(' - ')[0]} />
+                      <YAxis stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `${currencySymbol}${val}`} />
                       <Tooltip 
-                        cursor={{fill: '#27272a'}}
-                        contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '8px' }} 
+                        cursor={{fill: 'var(--accent)', opacity: 0.5}}
+                        contentStyle={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--foreground)' }} 
+                        itemStyle={{ color: 'var(--foreground)' }}
                         formatter={(value) => [`${currencySymbol}${value}`, 'Amount']}
                       />
-                      <Bar dataKey="amount" radius={[4, 4, 0, 0]}>
+                      <Bar dataKey="amount" radius={[6, 6, 0, 0]}>
                         {chartData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.type === 'INCOME' ? '#10b981' : '#f43f5e'} />
+                          <Cell 
+                            key={`cell-${index}`} 
+                            fill={entry.type === 'INCOME' ? 'url(#glassIncome)' : 'url(#glassExpense)'} 
+                            stroke="rgba(255,255,255,0.4)" 
+                            strokeWidth={1}
+                            filter="url(#glassShadowBar)"
+                          />
                         ))}
                       </Bar>
                   </BarChart>
                   </ResponsiveContainer>
               ) : (
-                  <div className="flex h-full items-center justify-center text-zinc-500">No activity yet.</div>
+                  <div className="flex h-full items-center justify-center text-muted-foreground">No activity yet.</div>
               )
             ) : chartType === 'line' ? (
               chartData.length > 0 ? (
                   <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                      <XAxis dataKey="name" stroke="#52525b" fontSize={12} tickLine={false} axisLine={false} />
-                      <YAxis stroke="#52525b" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `${currencySymbol}${val}`} />
+                      <XAxis dataKey="name" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => val.split(' - ')[0]} />
+                      <YAxis stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `${currencySymbol}${val}`} />
                       <Tooltip 
-                        cursor={{stroke: '#3f3f46', strokeWidth: 1, strokeDasharray: '4 4'}}
-                        contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '8px' }} 
+                        cursor={{stroke: 'var(--border)', strokeWidth: 1, strokeDasharray: '4 4'}}
+                        contentStyle={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--foreground)' }} 
+                        itemStyle={{ color: 'var(--foreground)' }}
                         formatter={(value) => [`${currencySymbol}${value}`, 'Amount']}
                       />
-                      <Line type="monotone" dataKey="amount" stroke="#6366f1" strokeWidth={3} dot={{ r: 4, fill: '#6366f1', strokeWidth: 0 }} activeDot={{ r: 6, strokeWidth: 0 }} />
+                      <Line type="monotone" dataKey="amount" stroke="var(--primary)" strokeWidth={3} dot={{ r: 4, fill: 'var(--primary)', strokeWidth: 0 }} activeDot={{ r: 6, strokeWidth: 0 }} />
                   </LineChart>
                   </ResponsiveContainer>
               ) : (
-                  <div className="flex h-full items-center justify-center text-zinc-500">No activity yet.</div>
+                  <div className="flex h-full items-center justify-center text-muted-foreground">No activity yet.</div>
               )
             ) : (
               pieData.length > 0 ? (
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
+                      <defs>
+                        {pieData.map((entry, index) => (
+                          <linearGradient key={`grad-${index}`} id={`glassPie-${index}`} x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stopColor={entry.color} stopOpacity={0.85} />
+                            <stop offset="100%" stopColor={entry.color} stopOpacity={0.25} />
+                          </linearGradient>
+                        ))}
+                        <filter id="glassShadowPie" x="-20%" y="-20%" width="140%" height="140%">
+                          <feDropShadow dx="0" dy="8" stdDeviation="12" floodColor="#000" floodOpacity="0.2" />
+                        </filter>
+                      </defs>
                       <Pie
                         data={pieData}
                         cx="50%"
                         cy="50%"
-                        innerRadius={60}
-                        outerRadius={90}
-                        paddingAngle={5}
+                        innerRadius={65}
+                        outerRadius={95}
+                        paddingAngle={6}
                         dataKey="value"
                         stroke="none"
                       >
                         {pieData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
+                          <Cell 
+                            key={`cell-${index}`} 
+                            fill={`url(#glassPie-${index})`} 
+                            stroke="rgba(255,255,255,0.4)" 
+                            strokeWidth={1.5}
+                            filter="url(#glassShadowPie)"
+                          />
                         ))}
                       </Pie>
                       <Tooltip 
-                        contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '8px', color: '#fff' }}
-                        itemStyle={{ color: '#fff' }}
-                        formatter={(value: number) => [`${currencySymbol}${value.toFixed(2)}`, 'Total']}
+                        contentStyle={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--foreground)' }}
+                        itemStyle={{ color: 'var(--foreground)' }}
+                        formatter={(value: any) => [`${currencySymbol}${Number(value).toFixed(2)}`, 'Amount']}
                       />
                       <Legend verticalAlign="bottom" height={36} iconType="circle" />
                     </PieChart>
                   </ResponsiveContainer>
               ) : (
-                  <div className="flex h-full items-center justify-center text-zinc-500">No activity yet.</div>
+                  <div className="flex h-full items-center justify-center text-muted-foreground">No activity yet.</div>
               )
             )}
           </div>
         </div>
 
         {/* Transactions */}
-        <div className="p-6 rounded-2xl bg-zinc-900 border border-white/5">
-          <h3 className="text-lg font-semibold mb-6">Recent Transactions</h3>
-          <div className="flex flex-col gap-4">
-            {data.recentTransactions.length > 0 ? (
-                data.recentTransactions.map(t => (
-                  <div key={t.id} className="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer">
+        <div className="p-6 rounded-2xl glass-panel max-h-[calc(100vh-220px)] flex flex-col">
+          <div className="flex items-center justify-between mb-6 shrink-0">
+            <h3 className="text-lg font-semibold text-foreground">Recent Transactions</h3>
+            <button 
+              onClick={() => router.push('/dashboard/expenses')}
+              className="text-sm font-medium text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
+            >
+              View <ExternalLink className="w-3 h-3" />
+            </button>
+          </div>
+                <div className="flex flex-col gap-4 overflow-y-auto pr-2 pb-2 scroll-3d-list">
+                  {data.recentTransactions.length > 0 ? (
+                      data.recentTransactions.map(t => (
+                        <div 
+                          key={t.id} 
+                          onClick={() => router.push(`/dashboard/${t.type === 'INCOME' ? 'incomes' : 'expenses'}`)}
+                          className="flex items-center justify-between p-4 rounded-xl glass-card-etched hover:bg-accent/30 transition-colors cursor-pointer group scroll-3d-item"
+                        >
                     <div className="flex items-center gap-3">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center ${t.type === 'INCOME' ? 'bg-emerald-500/10' : 'bg-rose-500/10'}`}>
-                         {t.type === 'INCOME' ? <ArrowUpRight className="w-5 h-5 text-emerald-400" /> : <ArrowDownRight className="w-5 h-5 text-rose-400" />}
+                         {t.type === 'INCOME' ? <ArrowUpRight className="w-5 h-5 text-emerald-500 dark:text-emerald-400 group-hover:scale-110 transition-transform" /> : <ArrowDownRight className="w-5 h-5 text-rose-500 dark:text-rose-400 group-hover:scale-110 transition-transform" />}
                       </div>
                       <div>
-                        <p className="font-medium text-white">{t.title}</p>
-                        <p className="text-xs text-zinc-500">{format(parseISO(t.date), 'MMM dd, yyyy h:mm a')}</p>
+                        <p className="font-medium text-foreground">{t.title}</p>
+                        <p className="text-xs text-muted-foreground">{format(parseISO(t.date), 'MMM dd, yyyy h:mm a')}</p>
                       </div>
                     </div>
-                    <span className={`font-semibold ${t.type === 'INCOME' ? 'text-emerald-400' : 'text-rose-400'}`}>
+                    <span className={`font-semibold ${t.type === 'INCOME' ? 'text-emerald-500 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400'}`}>
                        {t.type === 'INCOME' ? '+' : '-'}{currencySymbol}{t.amount.toFixed(2)}
                     </span>
                   </div>
                 ))
             ) : (
-                <p className="text-zinc-500 text-center py-4">No recent transactions.</p>
+                <p className="text-muted-foreground text-center py-4">No recent transactions.</p>
             )}
           </div>
         </div>

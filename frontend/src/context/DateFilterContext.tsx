@@ -13,7 +13,7 @@ const DateFilterContext = createContext<DateFilterContextType | undefined>(undef
 export function DateFilterProvider({ children }: { children: ReactNode }) {
   const currentDate = new Date();
   const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear());
-  const [selectedMonth, setSelectedMonth] = useState(currentDate.getMonth() + 1); // 1-12
+  const [selectedMonth, setSelectedMonth] = useState(currentDate.getMonth() + 1);
 
   const setDateFilter = (year: number, month: number) => {
     setSelectedYear(year);

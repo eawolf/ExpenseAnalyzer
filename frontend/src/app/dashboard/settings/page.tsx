@@ -130,26 +130,26 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
+        <Loader2 className="w-8 h-8 text-primary animate-spin" />
       </div>
     );
   }
 
   if (!profile) {
-    return <div className="text-zinc-500 text-center">Failed to load profile.</div>;
+    return <div className="text-foreground text-center">Failed to load profile.</div>;
   }
 
   return (
     <div className="max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-2xl font-bold flex items-center gap-2">
-          <UserIcon className="w-6 h-6 text-indigo-400" />
+          <UserIcon className="w-6 h-6 text-primary" />
           Profile Settings
         </h2>
         {!isEditing ? (
           <button 
             onClick={() => setIsEditing(true)}
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl transition-colors font-medium text-sm"
+            className="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl transition-colors font-medium text-sm"
           >
             Edit Profile
           </button>
@@ -169,14 +169,14 @@ export default function SettingsPage() {
                 });
               }}
               disabled={saving}
-              className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl transition-colors font-medium text-sm disabled:opacity-50"
+              className="px-4 py-2 bg-card border border-border hover:bg-accent text-foreground rounded-xl transition-colors font-medium text-sm disabled:opacity-50"
             >
               Cancel
             </button>
             <button 
               onClick={handleSaveProfile}
               disabled={saving}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl transition-colors font-medium text-sm flex items-center gap-2 disabled:opacity-50"
+              className="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl transition-colors font-medium text-sm flex items-center gap-2 disabled:opacity-50"
             >
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
               Save Changes
@@ -185,13 +185,13 @@ export default function SettingsPage() {
         )}
       </div>
 
-      <div className="bg-zinc-900 border border-white/5 rounded-2xl p-6 sm:p-8">
-        <div className="flex flex-col sm:flex-row items-center gap-8 mb-8 pb-8 border-b border-white/5">
+      <div className="glass-panel rounded-2xl p-6 sm:p-8">
+        <div className="flex flex-col sm:flex-row items-center gap-8 mb-8 pb-8 border-b border-border">
           <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
             {profile.profilePictureBase64 ? (
-              <img src={profile.profilePictureBase64} alt="Profile" className="w-32 h-32 rounded-full object-cover border-4 border-zinc-800" />
+              <img src={profile.profilePictureBase64} alt="Profile" className="w-32 h-32 rounded-full object-cover border-4 border-border" />
             ) : (
-              <div className="w-32 h-32 rounded-full bg-indigo-500/20 border-4 border-zinc-800 flex items-center justify-center text-5xl font-bold text-indigo-400">
+              <div className="w-32 h-32 rounded-full bg-primary/20 border-4 border-border flex items-center justify-center text-5xl font-bold text-primary">
                 {getInitials(profile.name)}
               </div>
             )}
@@ -214,9 +214,9 @@ export default function SettingsPage() {
             className="hidden" 
           />
           <div className="text-center sm:text-left">
-            <h3 className="text-2xl font-bold text-white">{profile.name}</h3>
-            <p className="text-zinc-400">{profile.email}</p>
-            <p className="text-xs text-zinc-500 mt-2">Max file size: 2MB</p>
+            <h3 className="text-2xl font-bold text-foreground">{profile.name}</h3>
+            <p className="text-foreground/80">{profile.email}</p>
+            <p className="text-xs text-foreground/60 mt-2">Max file size: 2MB</p>
             {profile.profilePictureBase64 && (
                <button 
                   onClick={removePicture}
@@ -231,46 +231,46 @@ export default function SettingsPage() {
 
         <div className="space-y-6">
            <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-2">Full Name</label>
+              <label className="block text-sm font-medium text-foreground mb-2">Full Name</label>
               <input 
                 type="text" 
                 value={isEditing ? editForm.name : profile.name} 
                 onChange={(e) => setEditForm(prev => ({ ...prev, name: e.target.value }))}
                 disabled={!isEditing || saving} 
-                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "bg-zinc-950 border-white/10 text-zinc-500 cursor-not-allowed" : "bg-zinc-900 border-indigo-500/50 text-white focus:outline-none focus:border-indigo-500")}
+                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "bg-accent/50 border-border text-foreground/80 cursor-not-allowed" : "bg-input border-primary/50 text-foreground focus:outline-none focus:border-primary")}
               />
            </div>
            <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-2">Email Address</label>
+              <label className="block text-sm font-medium text-foreground mb-2">Email Address</label>
               <input 
                 type="email" 
                 value={isEditing ? editForm.email : profile.email} 
                 onChange={(e) => setEditForm(prev => ({ ...prev, email: e.target.value }))}
                 disabled={!isEditing || saving} 
-                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "bg-zinc-950 border-white/10 text-zinc-500 cursor-not-allowed" : "bg-zinc-900 border-indigo-500/50 text-white focus:outline-none focus:border-indigo-500")}
+                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "bg-accent/50 border-border text-foreground/80 cursor-not-allowed" : "bg-input border-primary/50 text-foreground focus:outline-none focus:border-primary")}
               />
            </div>
            <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-2">Account ID</label>
-              <input type="text" value={profile.id} disabled className="w-full bg-zinc-950 border border-white/10 rounded-xl px-4 py-3 text-zinc-500 cursor-not-allowed font-mono text-xs" />
+              <label className="block text-sm font-medium text-foreground mb-2">Account ID</label>
+              <input type="text" value={profile.id} disabled className="w-full bg-accent/50 border border-border rounded-xl px-4 py-3 text-foreground/80 cursor-not-allowed font-mono text-xs" />
            </div>
            <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-2">Age</label>
+              <label className="block text-sm font-medium text-foreground mb-2">Age</label>
               <input 
                 type="number" 
                 value={isEditing ? editForm.age : (profile.age || '')} 
                 onChange={(e) => setEditForm(prev => ({ ...prev, age: e.target.value }))}
                 disabled={!isEditing || saving} 
-                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "bg-zinc-950 border-white/10 text-zinc-500 cursor-not-allowed" : "bg-zinc-900 border-indigo-500/50 text-white focus:outline-none focus:border-indigo-500")}
+                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "bg-accent/50 border-border text-foreground/80 cursor-not-allowed" : "bg-input border-primary/50 text-foreground focus:outline-none focus:border-primary")}
               />
            </div>
            <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-2">Gender</label>
+              <label className="block text-sm font-medium text-foreground mb-2">Gender</label>
               <select 
                 value={isEditing ? editForm.gender : (profile.gender || '')} 
                 onChange={(e) => setEditForm(prev => ({ ...prev, gender: e.target.value }))}
                 disabled={!isEditing || saving} 
-                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "bg-zinc-950 border-white/10 text-zinc-500 cursor-not-allowed" : "bg-zinc-900 border-indigo-500/50 text-white focus:outline-none focus:border-indigo-500")}
+                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "bg-accent/50 border-border text-foreground/80 cursor-not-allowed" : "bg-input border-primary/50 text-foreground focus:outline-none focus:border-primary")}
               >
                 <option value="" disabled>Not specified</option>
                 <option value="Male">Male</option>
@@ -280,22 +280,22 @@ export default function SettingsPage() {
               </select>
            </div>
            <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-2">Occupation</label>
+              <label className="block text-sm font-medium text-foreground mb-2">Occupation</label>
               <input 
                 type="text" 
                 value={isEditing ? editForm.occupation : (profile.occupation || '')} 
                 onChange={(e) => setEditForm(prev => ({ ...prev, occupation: e.target.value }))}
                 disabled={!isEditing || saving} 
-                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "bg-zinc-950 border-white/10 text-zinc-500 cursor-not-allowed" : "bg-zinc-900 border-indigo-500/50 text-white focus:outline-none focus:border-indigo-500")}
+                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "bg-accent/50 border-border text-foreground/80 cursor-not-allowed" : "bg-input border-primary/50 text-foreground focus:outline-none focus:border-primary")}
               />
            </div>
            <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-2">Primary Source of Income</label>
+              <label className="block text-sm font-medium text-foreground mb-2">Primary Source of Income</label>
               <select 
                 value={isEditing ? editForm.primarySourceOfIncome : (profile.primarySourceOfIncome || '')} 
                 onChange={(e) => setEditForm(prev => ({ ...prev, primarySourceOfIncome: e.target.value }))}
                 disabled={!isEditing || saving} 
-                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "bg-zinc-950 border-white/10 text-zinc-500 cursor-not-allowed" : "bg-zinc-900 border-indigo-500/50 text-white focus:outline-none focus:border-indigo-500")}
+                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "bg-accent/50 border-border text-foreground/80 cursor-not-allowed" : "bg-input border-primary/50 text-foreground focus:outline-none focus:border-primary")}
               >
                 <option value="" disabled>Not specified</option>
                 <option value="Salary">Salary</option>
@@ -306,16 +306,16 @@ export default function SettingsPage() {
               </select>
            </div>
            <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-2">AI Data Analysis Consent</label>
-              <div className="flex items-center gap-3 p-4 rounded-xl bg-zinc-950 border border-white/10 mt-2">
+              <label className="block text-sm font-medium text-foreground mb-2">AI Data Analysis Consent</label>
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-accent/50 border border-border mt-2">
                 <input 
                   type="checkbox" 
                   checked={isEditing ? editForm.aiConsent : (profile.aiConsent || false)}
                   onChange={(e) => setEditForm(prev => ({ ...prev, aiConsent: e.target.checked }))}
                   disabled={!isEditing || saving}
-                  className={"w-4 h-4 rounded border-zinc-700 text-indigo-600 focus:ring-indigo-600 focus:ring-offset-zinc-900 " + (!isEditing ? "bg-zinc-800 cursor-not-allowed" : "bg-zinc-900 cursor-pointer")}
+                  className={"w-4 h-4 rounded border-border text-primary focus:ring-primary focus:ring-offset-background " + (!isEditing ? "bg-muted cursor-not-allowed" : "bg-input cursor-pointer")}
                 />
-                <span className="text-sm text-zinc-400">
+                <span className="text-sm text-foreground/90">
                   Allow AI-driven financial insights based on your data.
                 </span>
               </div>

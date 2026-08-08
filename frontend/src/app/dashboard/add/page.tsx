@@ -3,8 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/utils/api';
+import { format } from 'date-fns';
 import { Loader2, GripVertical, X, Banknote, Wallet } from 'lucide-react';
 import { useUserProfile } from '@/context/UserProfileContext';
+import CustomDatePicker from '@/components/CustomDatePicker';
 
 const PREDEFINED_CATEGORIES = [
   '🍔 Food & Dining', '🚗 Transportation', '🏠 Rent/Mortgage', '💡 Utilities', 
@@ -22,13 +24,10 @@ export default function AddTransaction() {
   const [amount, setAmount] = useState('');
   const [merchant, setMerchant] = useState('');
   const [notes, setNotes] = useState('');
-  const [transactionDate, setTransactionDate] = useState('');
+  const [transactionDate, setTransactionDate] = useState<Date | null>(new Date());
 
   useEffect(() => {
-    const now = new Date();
-    const offset = now.getTimezoneOffset() * 60000;
-    const localISOTime = (new Date(now.getTime() - offset)).toISOString().slice(0, 16);
-    setTransactionDate(localISOTime);
+    // Already defaults to now
   }, []);
   
   const [incomeSource, setIncomeSource] = useState('');
@@ -100,7 +99,7 @@ export default function AddTransaction() {
           categories: selectedCategories,
           merchant,
           notes,
-          transactionDate: transactionDate ? new Date(transactionDate).toISOString() : undefined
+          transactionDate: transactionDate ? format(transactionDate, "yyyy-MM-dd'T'HH:mm:ss") : undefined
         });
         setAnimationType('EXPENSE');
         setTimeout(() => {
@@ -116,7 +115,7 @@ export default function AddTransaction() {
         await api.post('/incomes', {
           amount: parseFloat(amount),
           source: incomeSource,
-          transactionDate: transactionDate ? new Date(transactionDate).toISOString() : undefined
+          transactionDate: transactionDate ? format(transactionDate, "yyyy-MM-dd'T'HH:mm:ss") : undefined
         });
         setAnimationType('INCOME');
         setTimeout(() => {
@@ -132,7 +131,7 @@ export default function AddTransaction() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto bg-zinc-900 border border-white/5 rounded-2xl p-8 relative overflow-hidden">
+    <div className="max-w-4xl mx-auto bg-card border border-border rounded-2xl p-8 relative overflow-hidden">
       <style>{`
         @keyframes drop-in {
           0% { transform: translateY(-50px) scale(1.2); opacity: 0; }
@@ -149,7 +148,7 @@ export default function AddTransaction() {
       `}</style>
 
       {animationType && (
-        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-zinc-900/90 backdrop-blur-sm rounded-2xl">
+        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-background/90 backdrop-blur-sm rounded-2xl">
           <div className="relative w-32 h-40 flex flex-col items-center justify-end">
             <div className={`absolute top-0 ${animationType === 'INCOME' ? 'animate-[drop-in_1s_ease-in-out_forwards]' : 'animate-[fly-out_1s_ease-in-out_forwards]'}`}>
               <Banknote className={`w-16 h-16 ${animationType === 'INCOME' ? 'text-emerald-500' : 'text-rose-500'} drop-shadow-xl`} strokeWidth={1.5} />
@@ -166,15 +165,15 @@ export default function AddTransaction() {
 
       <h2 className="text-2xl font-bold mb-6">Add New Transaction</h2>
       
-      <div className="flex bg-zinc-950 p-1 rounded-xl mb-8 border border-white/5">
+      <div className="flex bg-background p-1 rounded-xl mb-8 border border-border">
         <button
-          className={"flex-1 py-2 text-sm font-medium rounded-lg transition-colors " + (type === 'EXPENSE' ? 'bg-zinc-800 text-white' : 'text-zinc-500 hover:text-white')}
+          className={"flex-1 py-2 text-sm font-medium rounded-lg transition-colors " + (type === 'EXPENSE' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground')}
           onClick={() => setType('EXPENSE')}
         >
           Expense
         </button>
         <button
-          className={"flex-1 py-2 text-sm font-medium rounded-lg transition-colors " + (type === 'INCOME' ? 'bg-zinc-800 text-white' : 'text-zinc-500 hover:text-white')}
+          className={"flex-1 py-2 text-sm font-medium rounded-lg transition-colors " + (type === 'INCOME' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground')}
           onClick={() => setType('INCOME')}
         >
           Income
@@ -188,13 +187,13 @@ export default function AddTransaction() {
         {/* Left Side: Basic Form */}
         <div className="flex-1 flex flex-col gap-6">
           <div>
-            <label className="block text-sm font-medium text-zinc-400 mb-2">Amount ({currencySymbol})</label>
+            <label className="block text-sm font-medium text-muted-foreground mb-2">Amount ({currencySymbol})</label>
             <input
               type="number"
               step="0.01"
               required
               min="0.01"
-              className="w-full bg-zinc-950 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500 transition-colors"
+              className="w-full bg-input border border-border rounded-xl p-3 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0.00"
@@ -202,22 +201,21 @@ export default function AddTransaction() {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-zinc-400 mb-2">Date & Time (Defaults to Now)</label>
-            <input
-              type="datetime-local"
-              className="w-full bg-zinc-950 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500 transition-colors [color-scheme:dark]"
-              value={transactionDate}
-              onChange={(e) => setTransactionDate(e.target.value)}
+            <label className="block text-sm font-medium text-muted-foreground mb-2">Date (Defaults to Today)</label>
+            <CustomDatePicker
+              selected={transactionDate}
+              onChange={(date) => setTransactionDate(date)}
+              required
             />
           </div>
 
           {type === 'INCOME' ? (
             <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-2">Income Source</label>
+              <label className="block text-sm font-medium text-muted-foreground mb-2">Income Source</label>
               <input
                 type="text"
                 required
-                className="w-full bg-zinc-950 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500 transition-colors"
+                className="w-full bg-input border border-border rounded-xl p-3 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
                 value={incomeSource}
                 onChange={(e) => setIncomeSource(e.target.value)}
                 placeholder="e.g., 💼 Salary, 👨‍💻 Freelance"
@@ -226,19 +224,19 @@ export default function AddTransaction() {
           ) : (
             <>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">Merchant (Optional)</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-2">Merchant (Optional)</label>
                 <input
                   type="text"
-                  className="w-full bg-zinc-950 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500 transition-colors"
+                  className="w-full bg-input border border-border rounded-xl p-3 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
                   value={merchant}
                   onChange={(e) => setMerchant(e.target.value)}
                   placeholder="e.g., Amazon, Starbucks"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">Notes (Optional)</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-2">Notes (Optional)</label>
                 <textarea
-                  className="w-full bg-zinc-950 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500 transition-colors"
+                  className="w-full bg-input border border-border rounded-xl p-3 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   rows={3}
@@ -251,7 +249,7 @@ export default function AddTransaction() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-indigo-600 text-white font-medium py-3 rounded-xl hover:bg-indigo-700 transition-colors flex justify-center items-center mt-2"
+            className="w-full bg-primary text-primary-foreground font-medium py-3 rounded-xl hover:opacity-90 transition-colors flex justify-center items-center mt-2"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Add " + (type === 'EXPENSE' ? 'Expense' : 'Income')}
           </button>
@@ -267,17 +265,17 @@ export default function AddTransaction() {
               onDrop={(e) => handleDrop(e, 'selected')}
               onDragOver={handleDragOver}
             >
-              <h3 className="text-sm font-medium text-indigo-400 mb-3">Selected Categories (Drop here)</h3>
+              <h3 className="text-sm font-medium text-primary mb-3">Selected Categories (Drop here)</h3>
               <div className="flex flex-wrap gap-2">
                 {selectedCategories.length === 0 && (
-                   <p className="text-xs text-zinc-500 italic">Drag categories here...</p>
+                   <p className="text-xs text-muted-foreground italic">Drag categories here...</p>
                 )}
                 {selectedCategories.map(cat => (
                   <div 
                     key={cat}
                     draggable
                     onDragStart={(e) => handleDragStart(e, cat, 'selected')}
-                    className="flex items-center gap-1 bg-indigo-600 text-white px-3 py-1.5 rounded-full text-sm font-medium shadow-sm cursor-grab active:cursor-grabbing hover:bg-indigo-500 transition-colors"
+                    className="flex items-center gap-1 bg-primary text-primary-foreground px-3 py-1.5 rounded-full text-sm font-medium shadow-sm cursor-grab active:cursor-grabbing hover:opacity-90 transition-colors"
                   >
                     <GripVertical className="w-3 h-3 opacity-50" />
                     {cat}
@@ -293,7 +291,7 @@ export default function AddTransaction() {
             <div className="flex gap-2">
               <input
                 type="text"
-                className="flex-1 bg-zinc-950 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors"
+                className="flex-1 bg-input border border-border rounded-xl px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
                 value={customCategory}
                 onChange={(e) => setCustomCategory(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addCustomCategory())}
@@ -302,7 +300,7 @@ export default function AddTransaction() {
               <button 
                 type="button" 
                 onClick={addCustomCategory}
-                className="bg-zinc-800 text-white px-4 py-2 rounded-xl text-sm hover:bg-zinc-700 transition-colors"
+                className="bg-accent text-accent-foreground border border-border px-4 py-2 rounded-xl text-sm hover:opacity-80 transition-colors"
               >
                 Add
               </button>
@@ -310,18 +308,18 @@ export default function AddTransaction() {
 
             {/* Available Zone */}
             <div 
-              className="bg-zinc-950 border border-white/5 rounded-2xl p-4 flex flex-col flex-1"
+              className="bg-background border border-border rounded-2xl p-4 flex flex-col flex-1"
               onDrop={(e) => handleDrop(e, 'available')}
               onDragOver={handleDragOver}
             >
-              <h3 className="text-sm font-medium text-zinc-400 mb-3">Available Categories</h3>
+              <h3 className="text-sm font-medium text-muted-foreground mb-3">Available Categories</h3>
               <div className="flex flex-wrap gap-2">
                 {availableCategories.map(cat => (
                   <div 
                     key={cat}
                     draggable
                     onDragStart={(e) => handleDragStart(e, cat, 'available')}
-                    className="flex items-center gap-1 bg-zinc-800 text-zinc-300 px-3 py-1.5 rounded-full text-sm cursor-grab active:cursor-grabbing hover:bg-zinc-700 hover:text-white transition-colors border border-white/5"
+                    className="flex items-center gap-1 bg-accent text-accent-foreground px-3 py-1.5 rounded-full text-sm cursor-grab active:cursor-grabbing hover:opacity-80 transition-colors border border-border"
                   >
                     <GripVertical className="w-3 h-3 opacity-50" />
                     {cat}
