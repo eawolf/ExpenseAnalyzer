@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
+import LiveViewers from '@/components/LiveViewers';
 
 export default function Home() {
   return (
@@ -97,8 +98,12 @@ export default function Home() {
         </div>
       </section>
       
-      <footer className="py-8 text-center text-muted-foreground text-sm border-t border-border">
-        <p>&copy; {new Date().getFullYear()} ExpenseAnalyzer. All rights reserved.</p>
+      <footer className="py-8 border-t border-border bg-background">
+        <div className="max-w-5xl mx-auto px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+          <p>&copy; {new Date().getFullYear()} ExpenseAnalyzer. All rights reserved.</p>
+          
+          <LiveViewers />
+        </div>
       </footer>
     </div>
   );

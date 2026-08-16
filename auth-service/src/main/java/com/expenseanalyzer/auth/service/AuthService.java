@@ -10,6 +10,8 @@ import com.expenseanalyzer.auth.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
 
 @Service
 @RequiredArgsConstructor
@@ -64,6 +66,7 @@ public class AuthService {
         return new AuthResponse(token, user.getId().toString(), user.getName(), user.getEmail(), user.getCurrency());
     }
 
+    @Cacheable(value = "userProfile", key = "#userId")
     public com.expenseanalyzer.auth.dto.UserProfileDto getProfile(java.util.UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -82,6 +85,7 @@ public class AuthService {
                 .build();
     }
 
+    @CacheEvict(value = "userProfile", key = "#userId")
     public com.expenseanalyzer.auth.dto.UserProfileDto updateProfilePicture(java.util.UUID userId, String base64Image) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -100,6 +104,7 @@ public class AuthService {
                 .build();
     }
 
+    @CacheEvict(value = "userProfile", key = "#userId")
     public com.expenseanalyzer.auth.dto.UserProfileDto removeProfilePicture(java.util.UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -118,6 +123,7 @@ public class AuthService {
                 .build();
     }
     
+    @CacheEvict(value = "userProfile", key = "#userId")
     public com.expenseanalyzer.auth.dto.UserProfileDto updateCurrency(java.util.UUID userId, String currency) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -136,6 +142,7 @@ public class AuthService {
                 .build();
     }
 
+    @CacheEvict(value = "userProfile", key = "#userId")
     public com.expenseanalyzer.auth.dto.UserProfileDto updateProfile(java.util.UUID userId, ProfileUpdateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));

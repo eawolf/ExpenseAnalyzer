@@ -1,9 +1,11 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import { Loader2, User as UserIcon, Camera } from 'lucide-react';
 import axios from 'axios';
+import { DEFAULT_AVATARS } from '@/utils/avatars';
 import { useUserProfile } from '@/context/UserProfileContext';
 
 interface UserProfile {
@@ -14,6 +16,7 @@ interface UserProfile {
 }
 
 export default function SettingsPage() {
+  const { t } = useTranslation();
   const { userProfile: profile, setUserProfile, loading } = useUserProfile();
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -73,11 +76,11 @@ export default function SettingsPage() {
     if (!token) return;
     setUploading(true);
     try {
-      const res = await axios.put('http://localhost:8081/api/auth/me/picture', 
+      const res = await axios.put('/api-proxy/auth/auth/me/picture', 
         { base64Image: base64Str }, 
         { headers: { Authorization: `Bearer ${token}` }}
       );
-      setProfile(res.data);
+      setUserProfile(res.data);
       alert('Profile picture updated successfully! Please refresh the page to see changes everywhere.');
     } catch (err) {
       console.error('Failed to upload picture', err);
@@ -92,7 +95,7 @@ export default function SettingsPage() {
     if (!token) return;
     setUploading(true);
     try {
-      const res = await axios.delete('http://localhost:8081/api/auth/me/picture', 
+      const res = await axios.delete('/api-proxy/auth/auth/me/picture', 
         { headers: { Authorization: `Bearer ${token}` }}
       );
       setUserProfile(res.data);
@@ -114,7 +117,7 @@ export default function SettingsPage() {
         ...editForm,
         age: editForm.age ? parseInt(editForm.age, 10) : null
       };
-      const res = await api.put('http://localhost:8081/api/auth/me/profile', payload, {
+      const res = await api.put('/api-proxy/auth/auth/me/profile', payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUserProfile(res.data);
@@ -144,7 +147,7 @@ export default function SettingsPage() {
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-2xl font-bold flex items-center gap-2">
           <UserIcon className="w-6 h-6 text-primary" />
-          Profile Settings
+          {t('profileSettings', 'Profile Settings')}
         </h2>
         {!isEditing ? (
           <button 
@@ -185,9 +188,9 @@ export default function SettingsPage() {
         )}
       </div>
 
-      <div className="glass-panel rounded-2xl p-6 sm:p-8">
+      <div className="glass-card-etched rounded-2xl p-6 sm:p-8">
         <div className="flex flex-col sm:flex-row items-center gap-8 mb-8 pb-8 border-b border-border">
-          <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+          <div className="relative group cursor-pointer flex-shrink-0" onClick={() => fileInputRef.current?.click()}>
             {profile.profilePictureBase64 ? (
               <img src={profile.profilePictureBase64} alt="Profile" className="w-32 h-32 rounded-full object-cover border-4 border-border" />
             ) : (
@@ -227,6 +230,22 @@ export default function SettingsPage() {
                </button>
             )}
           </div>
+          
+          <div className="mt-4 sm:mt-0 sm:ml-auto text-center sm:text-right">
+            <p className="text-sm text-foreground/60 mb-3">Or choose default:</p>
+            <div className="flex flex-wrap justify-center sm:justify-end gap-2">
+              {DEFAULT_AVATARS.map((avatar, idx) => (
+                <button 
+                  key={idx}
+                  onClick={() => uploadPicture(avatar)}
+                  disabled={uploading}
+                  className={`w-10 h-10 rounded-full overflow-hidden border-2 transition-transform hover:scale-110 ${profile.profilePictureBase64 === avatar ? 'border-primary scale-110' : 'border-transparent'}`}
+                >
+                  <img src={avatar} alt={`Avatar ${idx+1}`} className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         <div className="space-y-6">
@@ -237,7 +256,7 @@ export default function SettingsPage() {
                 value={isEditing ? editForm.name : profile.name} 
                 onChange={(e) => setEditForm(prev => ({ ...prev, name: e.target.value }))}
                 disabled={!isEditing || saving} 
-                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "bg-accent/50 border-border text-foreground/80 cursor-not-allowed" : "bg-input border-primary/50 text-foreground focus:outline-none focus:border-primary")}
+                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "glass-card-etched text-foreground/80 cursor-not-allowed" : "glass-panel border-primary/50 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30")}
               />
            </div>
            <div>
@@ -247,30 +266,30 @@ export default function SettingsPage() {
                 value={isEditing ? editForm.email : profile.email} 
                 onChange={(e) => setEditForm(prev => ({ ...prev, email: e.target.value }))}
                 disabled={!isEditing || saving} 
-                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "bg-accent/50 border-border text-foreground/80 cursor-not-allowed" : "bg-input border-primary/50 text-foreground focus:outline-none focus:border-primary")}
+                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "glass-card-etched text-foreground/80 cursor-not-allowed" : "glass-panel border-primary/50 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30")}
               />
            </div>
            <div>
               <label className="block text-sm font-medium text-foreground mb-2">Account ID</label>
-              <input type="text" value={profile.id} disabled className="w-full bg-accent/50 border border-border rounded-xl px-4 py-3 text-foreground/80 cursor-not-allowed font-mono text-xs" />
+              <input type="text" value={profile.id} disabled className="w-full glass-card-etched rounded-xl px-4 py-3 text-foreground/80 cursor-not-allowed font-mono text-xs" />
            </div>
            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">Age</label>
+              <label className="block text-sm font-medium text-foreground mb-2">{t('age', 'Age')}</label>
               <input 
                 type="number" 
                 value={isEditing ? editForm.age : (profile.age || '')} 
                 onChange={(e) => setEditForm(prev => ({ ...prev, age: e.target.value }))}
                 disabled={!isEditing || saving} 
-                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "bg-accent/50 border-border text-foreground/80 cursor-not-allowed" : "bg-input border-primary/50 text-foreground focus:outline-none focus:border-primary")}
+                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "glass-card-etched text-foreground/80 cursor-not-allowed" : "glass-panel border-primary/50 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30")}
               />
            </div>
            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">Gender</label>
+              <label className="block text-sm font-medium text-foreground mb-2">{t('gender', 'Gender')}</label>
               <select 
                 value={isEditing ? editForm.gender : (profile.gender || '')} 
                 onChange={(e) => setEditForm(prev => ({ ...prev, gender: e.target.value }))}
                 disabled={!isEditing || saving} 
-                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "bg-accent/50 border-border text-foreground/80 cursor-not-allowed" : "bg-input border-primary/50 text-foreground focus:outline-none focus:border-primary")}
+                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "glass-card-etched text-foreground/80 cursor-not-allowed" : "glass-panel border-primary/50 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30")}
               >
                 <option value="" disabled>Not specified</option>
                 <option value="Male">Male</option>
@@ -280,22 +299,22 @@ export default function SettingsPage() {
               </select>
            </div>
            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">Occupation</label>
+              <label className="block text-sm font-medium text-foreground mb-2">{t('occupation', 'Occupation')}</label>
               <input 
                 type="text" 
                 value={isEditing ? editForm.occupation : (profile.occupation || '')} 
                 onChange={(e) => setEditForm(prev => ({ ...prev, occupation: e.target.value }))}
                 disabled={!isEditing || saving} 
-                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "bg-accent/50 border-border text-foreground/80 cursor-not-allowed" : "bg-input border-primary/50 text-foreground focus:outline-none focus:border-primary")}
+                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "glass-card-etched text-foreground/80 cursor-not-allowed" : "glass-panel border-primary/50 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30")}
               />
            </div>
            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">Primary Source of Income</label>
+              <label className="block text-sm font-medium text-foreground mb-2">{t('primarySourceOfIncome', 'Primary Source of Income')}</label>
               <select 
                 value={isEditing ? editForm.primarySourceOfIncome : (profile.primarySourceOfIncome || '')} 
                 onChange={(e) => setEditForm(prev => ({ ...prev, primarySourceOfIncome: e.target.value }))}
                 disabled={!isEditing || saving} 
-                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "bg-accent/50 border-border text-foreground/80 cursor-not-allowed" : "bg-input border-primary/50 text-foreground focus:outline-none focus:border-primary")}
+                className={"w-full border rounded-xl px-4 py-3 transition-colors " + (!isEditing ? "glass-card-etched text-foreground/80 cursor-not-allowed" : "glass-panel border-primary/50 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30")}
               >
                 <option value="" disabled>Not specified</option>
                 <option value="Salary">Salary</option>
@@ -307,7 +326,7 @@ export default function SettingsPage() {
            </div>
            <div>
               <label className="block text-sm font-medium text-foreground mb-2">AI Data Analysis Consent</label>
-              <div className="flex items-center gap-3 p-4 rounded-xl bg-accent/50 border border-border mt-2">
+              <div className="flex items-center gap-3 p-4 rounded-xl glass-card-etched mt-2">
                 <input 
                   type="checkbox" 
                   checked={isEditing ? editForm.aiConsent : (profile.aiConsent || false)}

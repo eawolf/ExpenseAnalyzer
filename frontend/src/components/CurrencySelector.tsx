@@ -49,7 +49,7 @@ export default function CurrencySelector() {
     setLoadingCurrency(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await api.put('http://localhost:8081/api/auth/me/currency', { currency: newCurrency }, {
+      const res = await api.put('/api-proxy/auth/auth/me/currency', { currency: newCurrency }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUserProfile(res.data);

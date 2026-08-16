@@ -1,0 +1,14 @@
+config:
+  target: "http://localhost:8081"
+  phases:
+    - duration: 10
+      arrivalRate: 5
+      name: "Warm up"
+    - duration: 20
+      arrivalRate: 20
+      name: "Stress test"
+scenarios:
+  - name: "Health check"
+    flow:
+      - get:
+          url: "/api/auth/live-viewers"

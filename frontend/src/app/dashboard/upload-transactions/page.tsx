@@ -180,9 +180,12 @@ export default function UploadTransactionsPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[--color-primary] to-[--color-secondary]">
-            Upload Transactions
-          </h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[--color-primary] to-[--color-secondary]">
+              Upload Transactions
+            </h1>
+            <span className="text-[10px] font-bold bg-indigo-500/20 text-indigo-400 px-2 py-0.5 rounded border border-indigo-500/30 uppercase tracking-widest shadow-sm">Beta</span>
+          </div>
           <p className="text-[--color-text-muted] mt-2">
             Upload a screenshot of your UPI app (e.g. GPay) to automatically extract your expenses using AI.
           </p>
@@ -193,7 +196,7 @@ export default function UploadTransactionsPage() {
         
         {/* Upload Section */}
         <div className="lg:col-span-1 space-y-4">
-          <div className="glass-card p-6">
+          <div className="glass-panel p-6">
             <h2 className="text-xl font-semibold mb-4 text-[--color-text]">Upload Screenshot</h2>
             
             <div 
@@ -233,7 +236,7 @@ export default function UploadTransactionsPage() {
               <button
                 onClick={processImage}
                 disabled={isProcessing}
-                className="btn-primary w-full mt-6 py-3"
+                className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all shadow-md hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:pointer-events-none w-full mt-6 py-3"
               >
                 {isProcessing ? (
                   <span className="flex items-center justify-center">
@@ -260,7 +263,7 @@ export default function UploadTransactionsPage() {
 
         {/* Results Section */}
         <div className="lg:col-span-2">
-          <div className="glass-card p-6 h-full flex flex-col">
+          <div className="glass-panel p-6 h-full flex flex-col">
             <h2 className="text-xl font-semibold mb-4 text-[--color-text]">Extracted Data</h2>
             
             {!transactions ? (
@@ -295,7 +298,7 @@ export default function UploadTransactionsPage() {
                       {transactions.length === 0 ? (
                         <tr>
                           <td colSpan={6} className="p-8 text-center text-[--color-text-muted]">
-                            No transactions found in this image.
+                            No new transactions found in this image.
                           </td>
                         </tr>
                       ) : (
@@ -306,7 +309,7 @@ export default function UploadTransactionsPage() {
                                 type="date" 
                                 value={t.transaction_date}
                                 onChange={(e) => updateTransaction(idx, 'transaction_date', e.target.value)}
-                                className="input-field py-2 text-sm w-full"
+                                className="bg-[--color-input] border border-[--color-border] rounded-lg px-3 focus:outline-none focus:ring-2 focus:ring-[--color-primary]/50 transition-all text-[--color-foreground] py-2 text-sm w-full"
                               />
                             </td>
                             <td className="px-4 py-3">
@@ -314,7 +317,7 @@ export default function UploadTransactionsPage() {
                                 type="text" 
                                 value={t.merchant}
                                 onChange={(e) => updateTransaction(idx, 'merchant', e.target.value)}
-                                className="input-field py-2 text-sm w-full"
+                                className="bg-[--color-input] border border-[--color-border] rounded-lg px-3 focus:outline-none focus:ring-2 focus:ring-[--color-primary]/50 transition-all text-[--color-foreground] py-2 text-sm w-full"
                               />
                             </td>
                             <td className="px-4 py-3">
@@ -325,7 +328,7 @@ export default function UploadTransactionsPage() {
                             <td className="px-4 py-3">
                               <input 
                                 type="text"
-                                className="input-field py-2 text-sm w-full"
+                                className="bg-[--color-input] border border-[--color-border] rounded-lg px-3 focus:outline-none focus:ring-2 focus:ring-[--color-primary]/50 transition-all text-[--color-foreground] py-2 text-sm w-full"
                                 value={t.category}
                                 onChange={(e) => updateTransaction(idx, 'category', e.target.value)}
                                 disabled={t.type === 'INCOME'}
@@ -340,7 +343,7 @@ export default function UploadTransactionsPage() {
                                   type="number" 
                                   value={t.amount}
                                   onChange={(e) => updateTransaction(idx, 'amount', parseFloat(e.target.value) || 0)}
-                                  className="input-field py-2 pl-8 text-sm w-full font-medium text-right"
+                                  className="bg-[--color-input] border border-[--color-border] rounded-lg px-3 focus:outline-none focus:ring-2 focus:ring-[--color-primary]/50 transition-all text-[--color-foreground] py-2 pl-8 text-sm w-full font-medium text-right"
                                 />
                               </div>
                             </td>
@@ -366,7 +369,7 @@ export default function UploadTransactionsPage() {
                   <div className="flex gap-3">
                     <button 
                       onClick={() => setTransactions(null)}
-                      className="btn-secondary px-6"
+                      className="bg-zinc-800/50 hover:bg-zinc-800 text-zinc-300 font-semibold rounded-xl transition-all shadow-sm hover:shadow active:scale-95 border border-zinc-700 disabled:opacity-50 disabled:pointer-events-none py-2 px-6"
                       disabled={isSaving}
                     >
                       Cancel
@@ -374,7 +377,7 @@ export default function UploadTransactionsPage() {
                     <button 
                       onClick={handleSaveAll}
                       disabled={transactions.length === 0 || isSaving}
-                      className="btn-primary px-8 flex items-center"
+                      className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all shadow-md hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:pointer-events-none py-2 px-8 flex items-center"
                     >
                       {isSaving ? (
                         <>

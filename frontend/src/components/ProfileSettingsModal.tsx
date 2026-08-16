@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { Camera, Loader2, X } from 'lucide-react';
 import api from '@/utils/api';
 import { useUserProfile } from '@/context/UserProfileContext';
+import { DEFAULT_AVATARS } from '@/utils/avatars';
 
 interface ProfileSettingsModalProps {
   isOpen: boolean;
@@ -43,7 +44,7 @@ export default function ProfileSettingsModal({ isOpen, onClose }: ProfileSetting
     setLoadingPic(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await api.put('http://localhost:8081/api/auth/me/picture', { base64Image: base64Str }, {
+      const res = await api.put('/api-proxy/auth/auth/me/picture', { base64Image: base64Str }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUserProfile(res.data);
@@ -59,7 +60,7 @@ export default function ProfileSettingsModal({ isOpen, onClose }: ProfileSetting
     setLoadingPic(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await api.delete('http://localhost:8081/api/auth/me/picture', {
+      const res = await api.delete('/api-proxy/auth/auth/me/picture', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUserProfile(res.data);
@@ -91,7 +92,7 @@ export default function ProfileSettingsModal({ isOpen, onClose }: ProfileSetting
           
           {/* Avatar Section */}
           <div className="flex flex-col items-center gap-4">
-            <div className="relative group">
+            <div className="relative group flex-shrink-0">
               <div className="w-24 h-24 rounded-full bg-zinc-800 border-2 border-indigo-500/30 flex items-center justify-center overflow-hidden">
                 {loadingPic ? (
                   <Loader2 className="w-6 h-6 text-indigo-400 animate-spin" />
@@ -132,6 +133,22 @@ export default function ProfileSettingsModal({ isOpen, onClose }: ProfileSetting
                 Remove Picture
               </button>
             )}
+
+            <div className="w-full mt-2">
+              <p className="text-sm text-zinc-400 mb-3 text-center">Or select a default avatar:</p>
+              <div className="flex flex-wrap justify-center gap-3">
+                {DEFAULT_AVATARS.map((avatar, idx) => (
+                  <button 
+                    key={idx}
+                    onClick={() => uploadPicture(avatar)}
+                    disabled={loadingPic}
+                    className={`w-12 h-12 rounded-full overflow-hidden border-2 transition-transform hover:scale-110 ${userProfile.profilePictureBase64 === avatar ? 'border-indigo-500 scale-110' : 'border-transparent'}`}
+                  >
+                    <img src={avatar} alt={`Avatar ${idx+1}`} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
 

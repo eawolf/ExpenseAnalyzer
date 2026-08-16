@@ -44,12 +44,16 @@ export const UserProfileProvider = ({ children }: { children: React.ReactNode })
         return;
       }
       try {
-        const res = await axios.get('http://localhost:8081/api/auth/me', {
+        const res = await axios.get('/api-proxy/auth/auth/me', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setUserProfile(res.data);
-      } catch (err) {
+      } catch (err: any) {
         console.error('Failed to load user profile', err);
+        if (err.response?.status === 401 || err.response?.status === 403 || err.response?.status === 400) {
+          localStorage.removeItem('token');
+          router.push('/login');
+        }
       } finally {
         setLoading(false);
       }

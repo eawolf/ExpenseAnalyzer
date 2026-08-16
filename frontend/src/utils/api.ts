@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api', // Default to expense-service
+  baseURL: '/api-proxy/expenses', // Proxy to expense-service
 });
 
 api.interceptors.request.use((config) => {
@@ -31,7 +31,7 @@ api.interceptors.response.use(
 );
 
 export const authApi = axios.create({
-  baseURL: 'http://localhost:8081/api', // For auth-service
+  baseURL: '/api-proxy/auth', // For auth-service
 });
 
 authApi.interceptors.response.use(

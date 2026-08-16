@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import { format, parseISO } from 'date-fns';
 import { Search, Filter, Loader2, ArrowDownRight, Tag, Trash2, Check, Edit2, X } from 'lucide-react';
@@ -18,6 +19,7 @@ interface Expense {
 }
 
 export default function Expenses() {
+  const { t } = useTranslation();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -150,7 +152,7 @@ export default function Expenses() {
           
           {showFilter && (
             <div className="absolute right-0 mt-2 w-64 glass-popup rounded-xl z-50 p-4 animate-in fade-in slide-in-from-top-2">
-              <h4 className="text-sm font-semibold text-foreground mb-3">Filter by Category</h4>
+              <h4 className="text-sm font-semibold text-foreground mb-3">{t('filter', 'Filter')} by Category</h4>
               {allCategories.length > 0 ? (
                 <div className="flex flex-col gap-2 max-h-60 overflow-y-auto scroll-3d-list">
                   {allCategories.map(cat => (
@@ -170,7 +172,7 @@ export default function Expenses() {
                   onClick={() => setSelectedFilters([])}
                   className="w-full mt-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground bg-accent hover:bg-accent/80 rounded-lg transition-colors"
                 >
-                  Clear Filters
+                  {t('clearFilters', 'Clear Filters')}
                 </button>
               )}
             </div>
@@ -221,7 +223,7 @@ export default function Expenses() {
                   <button 
                     onClick={() => startEdit(expense)}
                     className="p-2 bg-card hover:bg-accent text-muted-foreground rounded-lg transition-colors border border-border"
-                    title="Edit Expense"
+                    title="{t('editExpense', 'Edit Expense')}"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
@@ -238,7 +240,7 @@ export default function Expenses() {
           ))
         ) : (
           <div className="flex justify-center p-8 text-muted-foreground">
-            No expenses found.
+            {t('noExpensesFound', 'No expenses found.')}
           </div>
         )}
       </div>
@@ -246,14 +248,14 @@ export default function Expenses() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
           <div className="bg-card border border-border rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
             <div className="flex items-center justify-between p-6 border-b border-border">
-              <h3 className="text-xl font-bold text-foreground">Edit Expense</h3>
+              <h3 className="text-xl font-bold text-foreground">{t('editExpense', 'Edit Expense')}</h3>
               <button onClick={() => setEditingExpense(null)} className="text-muted-foreground hover:text-foreground transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <form onSubmit={handleEditSave} className="p-6 flex flex-col gap-4">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Amount</label>
+                <label className="block text-sm font-medium text-foreground mb-1">{t('amount', 'Amount')}</label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/70">{currencySymbol}</span>
                   <input 
@@ -264,14 +266,14 @@ export default function Expenses() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Date</label>
+                <label className="block text-sm font-medium text-foreground mb-1">{t('date', 'Date')}</label>
                 <CustomDatePicker 
                   selected={editFormData.transactionDate} 
                   onChange={(date) => setEditFormData({...editFormData, transactionDate: date})}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Merchant (Optional)</label>
+                <label className="block text-sm font-medium text-foreground mb-1">{t('merchantOptional', 'Merchant (Optional)')}</label>
                 <input 
                   type="text"
                   value={editFormData.merchant} onChange={(e) => setEditFormData({...editFormData, merchant: e.target.value})}
@@ -279,7 +281,7 @@ export default function Expenses() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Categories (comma separated)</label>
+                <label className="block text-sm font-medium text-foreground mb-1">{t('categoriesComma', 'Categories (comma separated)')}</label>
                 <input 
                   type="text"
                   value={editFormData.categories} onChange={(e) => setEditFormData({...editFormData, categories: e.target.value})}
@@ -287,7 +289,7 @@ export default function Expenses() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Notes (Optional)</label>
+                <label className="block text-sm font-medium text-foreground mb-1">{t('notesOptional', 'Notes (Optional)')}</label>
                 <textarea 
                   value={editFormData.notes} onChange={(e) => setEditFormData({...editFormData, notes: e.target.value})}
                   className="w-full bg-input border border-border rounded-xl px-4 py-2.5 text-foreground focus:outline-none focus:border-primary min-h-[80px]"

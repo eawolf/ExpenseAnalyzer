@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -62,11 +64,27 @@ public class DashboardService {
                 .limit(10)
                 .collect(Collectors.toList());
 
+        Map<String, BigDecimal> categoryTotals = new HashMap<>();
+        for (Expense e : expenses) {
+            String cat = e.getCategories() != null && !e.getCategories().isEmpty() ? e.getCategories().get(0) : "Uncategorized";
+            categoryTotals.put(cat, categoryTotals.getOrDefault(cat, BigDecimal.ZERO).add(e.getAmount()));
+        }
+
+        List<DashboardSummaryDto.CategorySummaryDto> topCategories = categoryTotals.entrySet().stream()
+                .map(entry -> DashboardSummaryDto.CategorySummaryDto.builder()
+                        .name(entry.getKey())
+                        .total(entry.getValue())
+                        .build())
+                .sorted(Comparator.comparing(DashboardSummaryDto.CategorySummaryDto::getTotal).reversed())
+                .limit(3)
+                .collect(Collectors.toList());
+
         return DashboardSummaryDto.builder()
                 .totalIncome(totalIncome)
                 .totalExpense(totalExpense)
                 .balance(balance)
                 .recentTransactions(recentTransactions)
+                .topCategories(topCategories)
                 .build();
     }
 }

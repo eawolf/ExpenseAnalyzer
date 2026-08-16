@@ -14,6 +14,7 @@ interface CustomDatePickerProps {
   placeholderText?: string;
   className?: string;
   required?: boolean;
+  dateFormat?: string;
 }
 
 export default function CustomDatePicker({
@@ -26,7 +27,8 @@ export default function CustomDatePicker({
   showMonthYearPicker = false,
   placeholderText = 'Select date',
   className = '',
-  required = false
+  required = false,
+  dateFormat
 }: CustomDatePickerProps) {
   return (
     <div className="relative w-full">
@@ -39,11 +41,13 @@ export default function CustomDatePicker({
         showTimeSelect={showTimeSelect}
         showMonthYearPicker={showMonthYearPicker}
         dateFormat={
-          showMonthYearPicker
-            ? 'MMMM yyyy'
-            : showTimeSelect
-            ? 'MMMM d, yyyy h:mm aa'
-            : 'MMMM d, yyyy'
+          dateFormat || (
+            showMonthYearPicker
+              ? 'MMM yyyy'
+              : showTimeSelect
+              ? 'MMM d, yyyy h:mm aa'
+              : 'MMM d, yyyy'
+          )
         }
         placeholderText={placeholderText}
         required={required}

@@ -87,8 +87,19 @@ public class ForgotPasswordService {
             otp.setUsed(true);
             otpRepository.save(otp);
         } else if (request.getResetToken() != null) {
-            Optional<ResetToken> tokenOpt = resetTokenRepository.findByTokenHashAndUsedFalse(passwordEncoder.encode(request.getResetToken())); // Actually we should query unhashed or match it manually.
-            // Simplified for this implementation
+            java.util.List<ResetToken> activeTokens = resetTokenRepository.findByUserAndUsedFalse(user);
+            Optional<ResetToken> validToken = activeTokens.stream()
+                .filter(t -> t.getExpiresAt().isAfter(LocalDateTime.now()))
+                .filter(t -> passwordEncoder.matches(request.getResetToken(), t.getTokenHash()))
+                .findFirst();
+
+            if (validToken.isEmpty()) {
+                throw new IllegalArgumentException("Invalid or expired Reset Token");
+            }
+            
+            ResetToken token = validToken.get();
+            token.setUsed(true);
+            resetTokenRepository.save(token);
         } else {
             throw new IllegalArgumentException("Must provide OTP or Reset Token");
         }

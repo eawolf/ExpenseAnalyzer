@@ -15,6 +15,14 @@ public class DashboardSummaryDto {
     private BigDecimal totalExpense;
     private BigDecimal balance;
     private List<TransactionDto> recentTransactions;
+    private List<CategorySummaryDto> topCategories;
+
+    @Data
+    @Builder
+    public static class CategorySummaryDto {
+        private String name;
+        private BigDecimal total;
+    }
 
     @Data
     @Builder

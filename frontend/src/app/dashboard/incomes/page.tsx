@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import { Loader2, Trash2, TrendingUp, Search, Filter, Check, Edit2, X, ArrowUpRight } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
@@ -17,6 +18,7 @@ interface Income {
 }
 
 export default function IncomesPage() {
+  const { t } = useTranslation();
   const [incomes, setIncomes] = useState<Income[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
@@ -155,7 +157,7 @@ export default function IncomesPage() {
           
           {showFilter && (
             <div className="absolute right-0 mt-2 w-64 glass-popup rounded-xl shadow-xl z-50 p-4 animate-in fade-in slide-in-from-top-2">
-              <h4 className="text-sm font-semibold text-foreground mb-3">Filter by Source</h4>
+              <h4 className="text-sm font-semibold text-foreground mb-3">{t('filter', 'Filter')} by Source</h4>
               {allSources.length > 0 ? (
                 <div className="flex flex-col gap-2 max-h-60 overflow-y-auto scroll-3d-list">
                   {allSources.map(src => (
@@ -175,7 +177,7 @@ export default function IncomesPage() {
                   onClick={() => setSelectedFilters([])}
                   className="w-full mt-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground bg-accent hover:bg-accent/80 rounded-lg transition-colors"
                 >
-                  Clear Filters
+                  {t('clearFilters', 'Clear Filters')}
                 </button>
               )}
             </div>
@@ -205,7 +207,7 @@ export default function IncomesPage() {
                   <button 
                     onClick={() => startEdit(income)}
                     className="p-2 bg-card hover:bg-accent text-muted-foreground rounded-lg transition-colors border border-border"
-                    title="Edit Income"
+                    title="{t('editIncome', 'Edit Income')}"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
@@ -239,14 +241,14 @@ export default function IncomesPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
           <div className="bg-card border border-border rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
             <div className="flex items-center justify-between p-6 border-b border-border">
-              <h3 className="text-xl font-bold text-foreground">Edit Income</h3>
+              <h3 className="text-xl font-bold text-foreground">{t('editIncome', 'Edit Income')}</h3>
               <button onClick={() => setEditingIncome(null)} className="text-muted-foreground hover:text-foreground transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <form onSubmit={handleEditSave} className="p-6 flex flex-col gap-4">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Amount</label>
+                <label className="block text-sm font-medium text-foreground mb-1">{t('amount', 'Amount')}</label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/70">{currencySymbol}</span>
                   <input 
@@ -257,7 +259,7 @@ export default function IncomesPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Date</label>
+                <label className="block text-sm font-medium text-foreground mb-1">{t('date', 'Date')}</label>
                 <CustomDatePicker 
                   selected={editFormData.transactionDate} 
                   onChange={(date) => setEditFormData({...editFormData, transactionDate: date})}

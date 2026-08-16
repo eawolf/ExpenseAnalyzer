@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, PlusCircle, Settings, LogOut, ArrowLeft, ArrowRight, LayoutDashboard, Receipt, TrendingUp, Loader2, ChevronLeft, ChevronRight, Target, Upload } from 'lucide-react';
+import { Home, PlusCircle, Settings, LogOut, ArrowLeft, ArrowRight, LayoutDashboard, Receipt, TrendingUp, Loader2, ChevronLeft, ChevronRight, Target, Upload, DollarSign, Euro, PoundSterling, IndianRupee, JapaneseYen } from 'lucide-react';
 import ProfileSettingsModal from '@/components/ProfileSettingsModal';
 import CurrencySelector from '@/components/CurrencySelector';
+import { LanguageSelector } from '@/components/LanguageSelector';
 import ConsentModal from '@/components/ConsentModal';
 import ThemeToggle from '@/components/ThemeToggle';
 import { UserProfileProvider, useUserProfile } from '@/context/UserProfileContext';
@@ -15,6 +17,7 @@ import CustomDatePicker from '@/components/CustomDatePicker';
 function DashboardInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { t } = useTranslation();
   const { userProfile, setUserProfile, loading } = useUserProfile();
   const { selectedYear, selectedMonth, setDateFilter } = useDateFilter();
   const [isProfileModalOpen, setProfileModalOpen] = useState(false);
@@ -29,12 +32,23 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
     window.location.href = '/login';
   };
 
+  const getCurrencyIcon = (symbol: string | undefined) => {
+    switch (symbol) {
+      case '€': return Euro;
+      case '£': return PoundSterling;
+      case '₹': return IndianRupee;
+      case '¥': return JapaneseYen;
+      case '$':
+      default: return DollarSign;
+    }
+  };
+
   const navItems = [
-    { name: 'Financial Pulse', href: '/dashboard', icon: LayoutDashboard },
-    { name: 'Expenses', href: '/dashboard/expenses', icon: Receipt },
-    { name: 'Income', href: '/dashboard/incomes', icon: TrendingUp },
-    { name: 'Savings', href: '/dashboard/savings', icon: Target },
-    { name: 'Settings', href: '/dashboard/settings', icon: Settings },
+    { name: t('dashboard'), href: '/dashboard', icon: LayoutDashboard },
+    { name: t('expenses'), href: '/dashboard/expenses', icon: getCurrencyIcon(userProfile?.currency) },
+    { name: t('incomes'), href: '/dashboard/incomes', icon: TrendingUp },
+    { name: t('savings'), href: '/dashboard/savings', icon: Target },
+    { name: t('settings'), href: '/dashboard/settings', icon: Settings },
   ];
 
   const getInitials = (name: string) => {
@@ -43,16 +57,8 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
   };
 
   const getPageTitle = (path: string) => {
-    switch (path) {
-      case '/dashboard': return 'Overview';
-      case '/dashboard/add': return 'Manual Entry';
-      case '/dashboard/upload-transactions': return 'Scan Receipt';
-      case '/dashboard/expenses': return 'Expenses';
-      case '/dashboard/incomes': return 'Incomes';
-      case '/dashboard/savings': return 'Savings Goals';
-      case '/dashboard/settings': return 'Settings';
-      default: return path.split('/').pop()?.replace('-', ' ') || '';
-    }
+    const route = path.split('/').pop()?.replace('-', ' ') || '';
+    return t(route.toLowerCase()) || route;
   };
 
   if (loading) {
@@ -117,7 +123,7 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
               className={`flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-zinc-400 hover:text-red-400 hover:bg-red-500/10 transition-colors ${isSidebarCollapsed ? 'justify-center' : ''}`}
             >
               <LogOut className="w-5 h-5 shrink-0" />
-              {!isSidebarCollapsed && <span>Logout</span>}
+              {!isSidebarCollapsed && <span>{t('logout')}</span>}
             </button>
         </div>
       </aside>
@@ -149,6 +155,7 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
                   className="bg-transparent border-none py-1.5 pl-10 text-sm focus:ring-0 shadow-none"
                 />
               </div>
+              <LanguageSelector />
               <CurrencySelector />
               <ThemeToggle />
               {userProfile && <span className="text-sm font-medium text-muted-foreground">{userProfile.name}</span>}

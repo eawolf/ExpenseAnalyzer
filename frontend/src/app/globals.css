@@ -60,6 +60,18 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Make interactive elements feel clickable globally (Tailwind v4 reset override) */
+button,
+a,
+[role="button"],
+select,
+input[type="submit"],
+input[type="button"],
+input[type="reset"],
+input[type="checkbox"],
+input[type="radio"] {
+  cursor: pointer;
+}
 
 
 /* 3D Glass Card Utility */

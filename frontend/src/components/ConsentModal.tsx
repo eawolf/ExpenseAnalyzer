@@ -31,7 +31,7 @@ export default function ConsentModal() {
     setSaving(true);
     const token = localStorage.getItem('token');
     try {
-      const res = await api.put('http://localhost:8081/api/auth/me/consent', {
+      const res = await api.put('/api-proxy/auth/auth/me/consent', {
         age: parseInt(form.age, 10),
         gender: form.gender,
         occupation: form.occupation,

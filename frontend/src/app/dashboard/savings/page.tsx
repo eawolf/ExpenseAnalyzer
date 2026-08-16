@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import { Target, Loader2, Trophy, AlertTriangle, Edit2, CheckCircle2, Trash2, PiggyBank, Coins } from 'lucide-react';
 import { useUserProfile } from '@/context/UserProfileContext';
@@ -15,6 +16,7 @@ interface SavingsGoal {
 }
 
 export default function SavingsPage() {
+  const { t } = useTranslation();
   const [goal, setGoal] = useState<SavingsGoal | null>(null);
   const [balance, setBalance] = useState<number>(0);
   const [loading, setLoading] = useState(true);
@@ -210,7 +212,7 @@ export default function SavingsPage() {
 
         {/* Current Balance Card */}
         <div className="p-6 rounded-2xl glass-card-etched relative overflow-hidden">
-          <h3 className="text-muted-foreground text-sm font-medium mb-4 relative z-10">Current Savings (Balance)</h3>
+          <h3 className="text-muted-foreground text-sm font-medium mb-4 relative z-10">{t('currentSavings', 'Current Savings')} (Balance)</h3>
           <h2 className={`text-4xl font-bold relative z-10 ${balance >= 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
             {balance >= 0 ? '+' : '-'}{currencySymbol}{Math.abs(balance).toFixed(2)}
           </h2>

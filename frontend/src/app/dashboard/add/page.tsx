@@ -204,7 +204,11 @@ export default function AddTransaction() {
             <label className="block text-sm font-medium text-muted-foreground mb-2">Date (Defaults to Today)</label>
             <CustomDatePicker
               selected={transactionDate}
-              onChange={(date) => setTransactionDate(date)}
+              onChange={(date) => {
+                if (!Array.isArray(date)) {
+                  setTransactionDate(date);
+                }
+              }}
               required
             />
           </div>
