@@ -10,7 +10,6 @@ import { useUserProfile } from '@/context/UserProfileContext';
 
 interface UserProfile {
   id: string;
-  id?: string;
   name: string;
   email: string;
   profilePictureBase64?: string;
