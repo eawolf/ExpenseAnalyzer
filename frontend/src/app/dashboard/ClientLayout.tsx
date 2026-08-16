@@ -147,7 +147,7 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
                 <CustomDatePicker
                   selected={new Date(selectedYear, selectedMonth - 1, 1)}
                   onChange={(date) => {
-                    if (date) {
+                    if (date && !Array.isArray(date)) {
                       setDateFilter(date.getFullYear(), date.getMonth() + 1);
                     }
                   }}
