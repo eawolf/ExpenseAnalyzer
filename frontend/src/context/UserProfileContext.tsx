@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
 interface UserProfile {
+  id?: string;
   name: string;
   email: string;
   profilePictureBase64?: string;

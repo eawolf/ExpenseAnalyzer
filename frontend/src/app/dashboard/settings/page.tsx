@@ -10,6 +10,7 @@ import { useUserProfile } from '@/context/UserProfileContext';
 
 interface UserProfile {
   id: string;
+  id?: string;
   name: string;
   email: string;
   profilePictureBase64?: string;
@@ -40,7 +41,6 @@ export default function SettingsPage() {
         email: profile.email,
         age: profile.age?.toString() || '',
         gender: profile.gender || '',
-        occupation: profile.occupation || '',
         occupation: profile.occupation || '',
         primarySourceOfIncome: profile.primarySourceOfIncome || '',
         aiConsent: profile.aiConsent || false
