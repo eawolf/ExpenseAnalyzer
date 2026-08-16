@@ -269,7 +269,7 @@ export default function Expenses() {
                 <label className="block text-sm font-medium text-foreground mb-1">{t('date', 'Date')}</label>
                 <CustomDatePicker 
                   selected={editFormData.transactionDate} 
-                  onChange={(date) => setEditFormData({...editFormData, transactionDate: date})}
+                  onChange={(date) => setEditFormData({...editFormData, transactionDate: date as Date | null})}
                 />
               </div>
               <div>

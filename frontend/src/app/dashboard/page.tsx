@@ -17,6 +17,8 @@ interface Transaction {
   amount: number;
   title: string;
   date: string;
+  merchant?: string;
+  source?: string;
 }
 
 interface CategorySummary {
@@ -188,7 +190,7 @@ export default function Dashboard() {
                 <div className="w-44">
                   <CustomDatePicker
                     selected={chartStartDate}
-                    onChange={(date: Date) => setChartStartDate(date)}
+                    onChange={(date) => setChartStartDate(date as Date | null)}
                     selectsStart
                     startDate={chartStartDate}
                     endDate={chartEndDate}
@@ -200,7 +202,7 @@ export default function Dashboard() {
                 <div className="w-44">
                   <CustomDatePicker
                     selected={chartEndDate}
-                    onChange={(date: Date) => setChartEndDate(date)}
+                    onChange={(date) => setChartEndDate(date as Date | null)}
                     selectsEnd
                     startDate={chartStartDate}
                     endDate={chartEndDate}
