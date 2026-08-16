@@ -1,0 +1,122 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: prod-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: expense_db
+    ports:
+      - "5433:5432" # Map to 5433 so it doesn't conflict with local dev DB on 5432
+    volumes:
+      - prod-postgres-data:/var/lib/postgresql/data
+    networks:
+      - prod-network
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: prod-jenkins
+    user: root # Needed to run Docker inside Jenkins
+    environment:
+      - JAVA_OPTS=-Xmx1024m
+    ports:
+      - "9090:8080" # Access Jenkins UI on http://localhost:9090
+      - "50000:50000"
+    volumes:
+      - jenkins-data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock # Allows Jenkins to build Docker containers
+    networks:
+      - prod-network
+
+  config-server:
+    build: ./config-server
+    container_name: prod-config-server
+    environment:
+      - JAVA_OPTS=-Xmx256m
+    networks:
+      - prod-network
+
+  discovery-server:
+    build: ./discovery-server
+    container_name: prod-discovery-server
+    environment:
+      - JAVA_OPTS=-Xmx256m
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+    depends_on:
+      - config-server
+    networks:
+      - prod-network
+
+  auth-service:
+    build: ./auth-service
+    container_name: prod-auth-service
+    environment:
+      - JAVA_OPTS=-Xmx512m
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/expense_db
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+    depends_on:
+      - postgres
+      - discovery-server
+    networks:
+      - prod-network
+
+  expense-service:
+    build: ./expense-service
+    container_name: prod-expense-service
+    environment:
+      - JAVA_OPTS=-Xmx512m
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/expense_db
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+    depends_on:
+      - postgres
+      - discovery-server
+    networks:
+      - prod-network
+
+  notification-service:
+    build: ./notification-service
+    container_name: prod-notification-service
+    environment:
+      - JAVA_OPTS=-Xmx256m
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+    depends_on:
+      - discovery-server
+    networks:
+      - prod-network
+
+  vision-service:
+    build: ./vision-service
+    container_name: prod-vision-service
+    environment:
+      - JAVA_OPTS=-Xmx256m
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+    depends_on:
+      - discovery-server
+    networks:
+      - prod-network
+
+  frontend:
+    build: ./frontend
+    container_name: prod-frontend
+    environment:
+      - AUTH_SERVICE_URL=http://auth-service:8081
+      - EXPENSE_SERVICE_URL=http://expense-service:8080
+    ports:
+      - "4000:3000" # Map to 4000 so it doesn't conflict with local dev frontend
+    depends_on:
+      - auth-service
+      - expense-service
+    networks:
+      - prod-network
+
+networks:
+  prod-network:
+    driver: bridge
+
+volumes:
+  prod-postgres-data:
+  jenkins-data:
