@@ -38,6 +38,7 @@ export default function CustomDatePicker({
 }: CustomDatePickerProps) {
   return (
     <div className="relative w-full">
+      {/* @ts-ignore - react-datepicker types struggle with conditional selectsRange boolean */}
       <DatePicker
         selected={selected}
         startDate={startDate}
