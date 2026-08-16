@@ -45,7 +45,7 @@ export default function CustomDatePicker({
         selectsRange={selectsRange}
         selectsStart={selectsStart}
         selectsEnd={selectsEnd}
-        minDate={minDate}
+        minDate={minDate || undefined}
         onChange={onChange as any}
         showTimeSelect={showTimeSelect}
         showMonthYearPicker={showMonthYearPicker}
