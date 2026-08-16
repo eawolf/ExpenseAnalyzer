@@ -28,7 +28,6 @@ export default function SettingsPage() {
     age: '',
     gender: '',
     occupation: '',
-    occupation: '',
     primarySourceOfIncome: '',
     aiConsent: false
   });
