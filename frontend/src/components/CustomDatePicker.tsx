@@ -10,6 +10,7 @@ interface CustomDatePickerProps {
   selectsRange?: boolean;
   selectsStart?: boolean;
   selectsEnd?: boolean;
+  minDate?: Date | null;
   onChange: (date: Date | null | [Date | null, Date | null]) => void;
   showTimeSelect?: boolean;
   showMonthYearPicker?: boolean;
@@ -26,6 +27,7 @@ export default function CustomDatePicker({
   selectsRange = false,
   selectsStart = false,
   selectsEnd = false,
+  minDate,
   onChange,
   showTimeSelect = false,
   showMonthYearPicker = false,
@@ -43,6 +45,7 @@ export default function CustomDatePicker({
         selectsRange={selectsRange}
         selectsStart={selectsStart}
         selectsEnd={selectsEnd}
+        minDate={minDate}
         onChange={onChange as any}
         showTimeSelect={showTimeSelect}
         showMonthYearPicker={showMonthYearPicker}
