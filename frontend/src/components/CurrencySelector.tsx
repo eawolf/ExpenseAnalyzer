@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Loader2, DollarSign, Euro, PoundSterling, IndianRupee, JapaneseYen, ChevronDown } from 'lucide-react';
-import api from '@/utils/api';
+import api, { authApi } from '@/utils/api';
 import { useUserProfile } from '@/context/UserProfileContext';
 
 const CURRENCIES = [
@@ -49,9 +49,7 @@ export default function CurrencySelector() {
     setLoadingCurrency(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await api.put('/api-proxy/auth/auth/me/currency', { currency: newCurrency }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await authApi.put('/auth/me/currency', { currency: newCurrency });
       setUserProfile(res.data);
     } catch (err) {
       console.error('Failed to update currency', err);

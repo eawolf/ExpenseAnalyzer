@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { Camera, Loader2, X } from 'lucide-react';
-import api from '@/utils/api';
+import api, { authApi } from '@/utils/api';
 import { useUserProfile } from '@/context/UserProfileContext';
 import { DEFAULT_AVATARS } from '@/utils/avatars';
 
@@ -44,9 +44,7 @@ export default function ProfileSettingsModal({ isOpen, onClose }: ProfileSetting
     setLoadingPic(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await api.put('/api-proxy/auth/auth/me/picture', { base64Image: base64Str }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await authApi.put('/auth/me/picture', { base64Image: base64Str });
       setUserProfile(res.data);
     } catch (err) {
       console.error('Failed to upload picture', err);
@@ -60,9 +58,7 @@ export default function ProfileSettingsModal({ isOpen, onClose }: ProfileSetting
     setLoadingPic(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await api.delete('/api-proxy/auth/auth/me/picture', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await authApi.delete('/auth/me/picture');
       setUserProfile(res.data);
     } catch (err) {
       console.error('Failed to remove picture', err);

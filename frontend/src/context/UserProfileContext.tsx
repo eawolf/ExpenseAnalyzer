@@ -1,7 +1,7 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { authApi } from '@/utils/api';
 import { useRouter } from 'next/navigation';
 
 interface UserProfile {
@@ -45,9 +45,7 @@ export const UserProfileProvider = ({ children }: { children: React.ReactNode })
         return;
       }
       try {
-        const res = await axios.get('/api-proxy/auth/auth/me', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const res = await authApi.get('/auth/me');
         setUserProfile(res.data);
       } catch (err: any) {
         console.error('Failed to load user profile', err);

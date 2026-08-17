@@ -34,6 +34,16 @@ export const authApi = axios.create({
   baseURL: '/api-proxy/auth', // For auth-service
 });
 
+authApi.interceptors.request.use((config) => {
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = 'Bearer ' + token;
+    }
+  }
+  return config;
+});
+
 authApi.interceptors.response.use(
   (response) => response,
   (error) => {

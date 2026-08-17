@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useUserProfile } from '@/context/UserProfileContext';
 import { Loader2 } from 'lucide-react';
-import api from '@/utils/api';
+import { authApi } from '@/utils/api';
 
 export default function ConsentModal() {
   const { userProfile, setUserProfile, loading } = useUserProfile();
@@ -29,16 +29,13 @@ export default function ConsentModal() {
     }
 
     setSaving(true);
-    const token = localStorage.getItem('token');
     try {
-      const res = await api.put('/api-proxy/auth/auth/me/consent', {
+      const res = await authApi.put('/auth/me/consent', {
         age: parseInt(form.age, 10),
         gender: form.gender,
         occupation: form.occupation,
         primarySourceOfIncome: form.primarySourceOfIncome,
         aiConsent: form.aiConsent
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
       setUserProfile(res.data);
     } catch (err: any) {

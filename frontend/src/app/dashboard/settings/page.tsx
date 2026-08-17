@@ -2,9 +2,8 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import api from '@/utils/api';
+import api, { authApi } from '@/utils/api';
 import { Loader2, User as UserIcon, Camera } from 'lucide-react';
-import axios from 'axios';
 import { DEFAULT_AVATARS } from '@/utils/avatars';
 import { useUserProfile } from '@/context/UserProfileContext';
 
@@ -74,10 +73,7 @@ export default function SettingsPage() {
     if (!token) return;
     setUploading(true);
     try {
-      const res = await axios.put('/api-proxy/auth/auth/me/picture', 
-        { base64Image: base64Str }, 
-        { headers: { Authorization: `Bearer ${token}` }}
-      );
+      const res = await authApi.put('/auth/me/picture', { base64Image: base64Str });
       setUserProfile(res.data);
       alert('Profile picture updated successfully! Please refresh the page to see changes everywhere.');
     } catch (err) {
@@ -93,9 +89,7 @@ export default function SettingsPage() {
     if (!token) return;
     setUploading(true);
     try {
-      const res = await axios.delete('/api-proxy/auth/auth/me/picture', 
-        { headers: { Authorization: `Bearer ${token}` }}
-      );
+      const res = await authApi.delete('/auth/me/picture');
       setUserProfile(res.data);
       alert('Profile picture removed successfully!');
     } catch (err) {
@@ -115,9 +109,7 @@ export default function SettingsPage() {
         ...editForm,
         age: editForm.age ? parseInt(editForm.age, 10) : null
       };
-      const res = await api.put('/api-proxy/auth/auth/me/profile', payload, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await authApi.put('/auth/me/profile', payload);
       setUserProfile(res.data);
       setIsEditing(false);
     } catch (err: any) {
