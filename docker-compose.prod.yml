@@ -36,6 +36,9 @@ services:
     container_name: prod-config-server
     environment:
       - JAVA_OPTS=-Xmx256m
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/expense_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=password
     networks:
       - prod-network
 
@@ -57,6 +60,7 @@ services:
       - JAVA_OPTS=-Xmx512m
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/expense_db
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
     depends_on:
       - postgres
@@ -71,6 +75,7 @@ services:
       - JAVA_OPTS=-Xmx512m
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/expense_db
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
     depends_on:
       - postgres

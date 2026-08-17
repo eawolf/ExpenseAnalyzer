@@ -26,7 +26,15 @@ public class LiveViewerController {
         emitters.add(emitter);
 
         int currentCount = activeViewers.incrementAndGet();
-        broadcastCount(currentCount);
+        
+        java.util.concurrent.CompletableFuture.runAsync(() -> {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            broadcastCount(currentCount);
+        });
 
         emitter.onCompletion(() -> removeAndBroadcast(emitter));
         emitter.onTimeout(() -> removeAndBroadcast(emitter));

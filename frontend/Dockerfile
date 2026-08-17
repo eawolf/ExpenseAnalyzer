@@ -12,6 +12,12 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+
+ARG AUTH_SERVICE_URL=http://auth-service:8081
+ARG EXPENSE_SERVICE_URL=http://expense-service:8080
+ENV AUTH_SERVICE_URL=$AUTH_SERVICE_URL
+ENV EXPENSE_SERVICE_URL=$EXPENSE_SERVICE_URL
+
 RUN npm run build
 
 # Production image, copy all the files and run next
