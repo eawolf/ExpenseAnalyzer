@@ -17,7 +17,7 @@ services:
       - prod-network
 
   jenkins:
-    image: jenkins/jenkins:lts
+    build: ./jenkins
     container_name: prod-jenkins
     user: root # Needed to run Docker inside Jenkins
     environment:
