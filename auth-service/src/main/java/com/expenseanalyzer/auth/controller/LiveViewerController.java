@@ -1,76 +1,93 @@
 package com.expenseanalyzer.auth.controller;
 
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import com.expenseanalyzer.auth.repository.UserRepository;
+import com.expenseanalyzer.auth.security.JwtService;
+import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "${app.cors.allowed-origins:http://localhost:3000}") // Externalized for deployment
 public class LiveViewerController {
 
-    private final CopyOnWriteArrayList<SseEmitter> emitters = new CopyOnWriteArrayList<>();
-    private final AtomicInteger activeViewers = new AtomicInteger(0);
+    private final UserRepository userRepository;
+    private final JwtService jwtService;
 
-    @GetMapping(value = "/live-viewers", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter subscribe() {
-        // Timeout set to 30 minutes. The client will reconnect if it drops.
-        SseEmitter emitter = new SseEmitter(1800000L);
-        emitters.add(emitter);
+    // Track logged-in users: userId -> last heartbeat timestamp
+    private final ConcurrentHashMap<String, Long> activeUsers = new ConcurrentHashMap<>();
 
-        int currentCount = activeViewers.incrementAndGet();
-        
-        java.util.concurrent.CompletableFuture.runAsync(() -> {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-            broadcastCount(currentCount);
-        });
+    // Sessions expire after 60 seconds of no heartbeat
+    private static final long SESSION_TIMEOUT_MS = 60_000;
 
-        emitter.onCompletion(() -> removeAndBroadcast(emitter));
-        emitter.onTimeout(() -> removeAndBroadcast(emitter));
-        emitter.onError(e -> removeAndBroadcast(emitter));
-
-        return emitter;
+    public LiveViewerController(UserRepository userRepository, JwtService jwtService) {
+        this.userRepository = userRepository;
+        this.jwtService = jwtService;
     }
 
-    private void removeAndBroadcast(SseEmitter emitter) {
-        if (emitters.remove(emitter)) {
-            int currentCount = activeViewers.decrementAndGet();
-            broadcastCount(currentCount);
+    /**
+     * Heartbeat from a logged-in user. Tracks by userId so same user
+     * in multiple tabs = 1 live user.
+     */
+    @PostMapping("/live-viewers/heartbeat")
+    public Map<String, Object> heartbeat(@RequestHeader(value = "Authorization", required = false) String authHeader) {
+        String userId = extractUserId(authHeader);
+        if (userId != null) {
+            activeUsers.put(userId, System.currentTimeMillis());
+        }
+        cleanupExpiredSessions();
+        return buildResponse();
+    }
+
+    /**
+     * Called when user logs out or closes the tab.
+     */
+    @PostMapping("/live-viewers/unregister")
+    public Map<String, String> unregisterSession(@RequestBody Map<String, String> body) {
+        String userId = body.get("userId");
+        if (userId != null) {
+            activeUsers.remove(userId);
+        }
+        return Map.of("status", "ok");
+    }
+
+    /**
+     * Public GET — works without auth for landing page display.
+     */
+    @GetMapping("/live-viewers/stats")
+    public Map<String, Object> getStats() {
+        cleanupExpiredSessions();
+        return buildResponse();
+    }
+
+    private String extractUserId(String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return null;
+        }
+        try {
+            String token = authHeader.substring(7);
+            if (!jwtService.isTokenValid(token)) {
+                return null;
+            }
+            return jwtService.extractUserId(token);
+        } catch (Exception e) {
+            return null;
         }
     }
 
-    private void broadcastCount(int count) {
-        // Create an array of dead emitters to clean up
-        java.util.List<SseEmitter> deadEmitters = new java.util.ArrayList<>();
-        
-        emitters.forEach(emitter -> {
-            try {
-                emitter.send(SseEmitter.event()
-                        .name("viewer-count")
-                        .data(count));
-            } catch (IOException e) {
-                deadEmitters.add(emitter);
-            }
-        });
-        
-        if (!deadEmitters.isEmpty()) {
-            emitters.removeAll(deadEmitters);
-            int newCount = activeViewers.addAndGet(-deadEmitters.size());
-            // Recursive broadcast if some died during this broadcast
-            if (activeViewers.get() != count) {
-                broadcastCount(newCount);
-            }
-        }
+    private void cleanupExpiredSessions() {
+        long now = System.currentTimeMillis();
+        activeUsers.entrySet().removeIf(entry ->
+                (now - entry.getValue()) > SESSION_TIMEOUT_MS
+        );
+    }
+
+    private Map<String, Object> buildResponse() {
+        long totalUsers = userRepository.count();
+        int liveCount = activeUsers.size();
+        return Map.of(
+                "totalRegisteredUsers", totalUsers,
+                "liveViewers", liveCount
+        );
     }
 }

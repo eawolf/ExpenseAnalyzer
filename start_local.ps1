@@ -2,6 +2,9 @@ Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host "   Starting ExpenseAnalyzer Local Env" -ForegroundColor Cyan
 Write-Host "==========================================" -ForegroundColor Cyan
 
+# Set global log directory for local execution
+$env:LOG_DIR="D:\DevStorage\Logs"
+
 # Ensure clean slate for local Java and Node processes
 Write-Host "Cleaning up any dangling Java/Node processes to prevent port conflicts..." -ForegroundColor Yellow
 Get-Process java, node -ErrorAction SilentlyContinue | Stop-Process -Force
@@ -54,9 +57,9 @@ Write-Host "`nStarting Expense Service (Port 8080)..." -ForegroundColor Cyan
 Start-Process -FilePath "cmd.exe" -ArgumentList "/c title Expense Service && mvnw.cmd spring-boot:run" -WorkingDirectory ".\expense-service"
 Wait-ForPort 8080 "Expense Service"
 
-Write-Host "`nStarting Notification Service (Port 8082)..." -ForegroundColor Cyan
+Write-Host "`nStarting Notification Service (Port 8083)..." -ForegroundColor Cyan
 Start-Process -FilePath "cmd.exe" -ArgumentList "/c title Notification Service && mvnw.cmd spring-boot:run" -WorkingDirectory ".\notification-service"
-Wait-ForPort 8082 "Notification Service"
+Wait-ForPort 8083 "Notification Service"
 
 Write-Host "`nStarting Vision Service (Port 8000)..." -ForegroundColor Cyan
 Start-Process -FilePath "cmd.exe" -ArgumentList "/c title Vision Service && uvicorn main:app --host 0.0.0.0 --port 8000 --reload" -WorkingDirectory ".\vision-service"

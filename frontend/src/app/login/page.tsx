@@ -64,7 +64,7 @@ function LoginForm() {
     <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row font-sans selection:bg-primary/30">
       
       {/* Left Column: Interactive Quotes */}
-      <div className="hidden md:flex flex-1 relative bg-card items-center justify-center p-12 overflow-hidden perspective-1000">
+      <div className="flex order-last md:order-first flex-1 relative bg-card items-center justify-center p-8 md:p-12 overflow-hidden perspective-1000 min-h-[40vh] md:min-h-0">
         
         {/* Unified Background Gradients */}
         <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-purple-500/10 rounded-full blur-[120px] -translate-y-1/3 -translate-x-1/4 z-0"></div>
@@ -117,7 +117,7 @@ function LoginForm() {
       </div>
 
       {/* Right Column: Login Form */}
-      <div className="flex-1 flex flex-col justify-center px-8 sm:px-12 lg:px-20 relative z-10 bg-background">
+      <div className="flex-1 flex flex-col justify-center py-12 md:py-0 px-8 sm:px-12 lg:px-20 relative z-10 bg-background">
         <div className="absolute top-6 right-6 z-50">
           <ThemeToggle />
         </div>

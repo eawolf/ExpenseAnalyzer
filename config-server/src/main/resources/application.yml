@@ -24,3 +24,7 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
+
+logging:
+  file:
+    name: ${LOG_DIR:logs}/${spring.application.name}.log

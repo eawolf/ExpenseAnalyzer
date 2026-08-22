@@ -8,6 +8,9 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - "2181:2181"
+    networks:
+      - default
+      - prod-network
 
   kafka:
     image: confluentinc/cp-kafka:7.3.3
@@ -18,11 +21,22 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - default
+      - prod-network
 
   redis:
     image: redis:7-alpine
     ports:
       - "6379:6379"
     command: redis-server --appendonly yes
+    networks:
+      - default
+      - prod-network
+
+networks:
+  prod-network:
+    name: expenseanalyzer_prod-network
+    external: true

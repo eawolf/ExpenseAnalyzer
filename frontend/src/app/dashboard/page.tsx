@@ -142,13 +142,7 @@ export default function Dashboard() {
              <p className="text-muted-foreground text-sm font-medium mb-1">{t('totalIncome')}</p>
              <h2 className="text-2xl font-bold text-foreground">{currencySymbol}{data.totalIncome.toFixed(2)}</h2>
            </div>
-           <div className="flex flex-col items-end justify-center relative z-10">
-             <div className="flex items-center gap-1 bg-emerald-500/10 text-emerald-500 px-2.5 py-1 rounded-full text-sm font-medium">
-               <TrendingUp className="w-4 h-4" />
-               +12.5%
-             </div>
-             <span className="text-xs text-muted-foreground mt-2">vs last month</span>
-           </div>
+
            <div className="absolute -right-8 -bottom-8 opacity-5 dark:opacity-10 pointer-events-none z-0">
              <div className="animate-float-icon">
                <Coins className="w-40 h-40 text-emerald-500" strokeWidth={1.5} />
@@ -164,13 +158,7 @@ export default function Dashboard() {
              <p className="text-muted-foreground text-sm font-medium mb-1">{t('totalExpenses')}</p>
              <h2 className="text-2xl font-bold text-foreground">{currencySymbol}{data.totalExpense.toFixed(2)}</h2>
            </div>
-           <div className="flex flex-col items-end justify-center relative z-10">
-             <div className="flex items-center gap-1 bg-rose-500/10 text-rose-500 px-2.5 py-1 rounded-full text-sm font-medium">
-               <TrendingDown className="w-4 h-4" />
-               -4.2%
-             </div>
-             <span className="text-xs text-muted-foreground mt-2">vs last month</span>
-           </div>
+
            <div className="absolute -right-8 -bottom-8 opacity-5 dark:opacity-10 pointer-events-none z-0">
              <div className="animate-float-icon-delayed">
                <Receipt className="w-40 h-40 text-rose-500" strokeWidth={1.5} />

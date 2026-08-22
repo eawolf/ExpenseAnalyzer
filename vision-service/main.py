@@ -12,6 +12,21 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+import logging
+import sys
+
+log_dir = os.environ.get("LOG_DIR", "logs")
+os.makedirs(log_dir, exist_ok=True)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler(os.path.join(log_dir, "vision-service.log")),
+        logging.StreamHandler(sys.stdout)
+    ]
+)
+logger = logging.getLogger("vision-service")
+
 app = FastAPI(title="Vision Service for Expense Analyzer")
 
 # Configure CORS so the frontend can call this service

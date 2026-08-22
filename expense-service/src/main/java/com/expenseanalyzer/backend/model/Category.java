@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "categories")
+@Table(schema = "finance", name = "categories")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

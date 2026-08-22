@@ -34,20 +34,30 @@ services:
   config-server:
     build: ./config-server
     container_name: prod-config-server
+    restart: on-failure
     environment:
       - JAVA_OPTS=-Xmx256m
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/expense_db
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=password
+      - LOG_DIR=/logs
+    volumes:
+      - D:/DevStorage/Logs:/logs
     networks:
       - prod-network
 
   discovery-server:
     build: ./discovery-server
     container_name: prod-discovery-server
+    ports:
+      - "8761:8761"
+    restart: on-failure
     environment:
       - JAVA_OPTS=-Xmx256m
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - LOG_DIR=/logs
+    volumes:
+      - D:/DevStorage/Logs:/logs
     depends_on:
       - config-server
     networks:
@@ -56,12 +66,16 @@ services:
   auth-service:
     build: ./auth-service
     container_name: prod-auth-service
+    restart: on-failure
     environment:
       - JAVA_OPTS=-Xmx512m
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/expense_db
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - LOG_DIR=/logs
+    volumes:
+      - D:/DevStorage/Logs:/logs
     depends_on:
       - postgres
       - discovery-server
@@ -71,12 +85,16 @@ services:
   expense-service:
     build: ./expense-service
     container_name: prod-expense-service
+    restart: on-failure
     environment:
       - JAVA_OPTS=-Xmx512m
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/expense_db
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - LOG_DIR=/logs
+    volumes:
+      - D:/DevStorage/Logs:/logs
     depends_on:
       - postgres
       - discovery-server
@@ -86,9 +104,14 @@ services:
   notification-service:
     build: ./notification-service
     container_name: prod-notification-service
+    restart: on-failure
     environment:
       - JAVA_OPTS=-Xmx256m
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - LOG_DIR=/logs
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    volumes:
+      - D:/DevStorage/Logs:/logs
     depends_on:
       - discovery-server
     networks:
@@ -97,9 +120,13 @@ services:
   vision-service:
     build: ./vision-service
     container_name: prod-vision-service
+    restart: on-failure
     environment:
       - JAVA_OPTS=-Xmx256m
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - LOG_DIR=/logs
+    volumes:
+      - D:/DevStorage/Logs:/logs
     depends_on:
       - discovery-server
     networks:
