@@ -71,7 +71,7 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex relative overflow-hidden">
+    <div className="min-h-screen bg-background text-foreground flex relative">
       {/* Dynamic Background Gradients */}
       <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] -translate-y-1/2 -translate-x-1/2 pointer-events-none z-0"></div>
       <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-[120px] translate-y-1/3 translate-x-1/3 pointer-events-none z-0"></div>
@@ -138,7 +138,7 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Main Content */}
-      <main className={`flex-1 w-full p-4 md:p-8 transition-all duration-300 relative z-10 md:${isSidebarCollapsed ? 'ml-20' : 'ml-64'}`}>
+      <main className={`flex-1 w-full p-4 md:p-8 transition-all duration-300 relative z-10 ${isSidebarCollapsed ? 'md:ml-20' : 'md:ml-64'}`}>
         <header className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8 pb-4 border-b border-border relative z-40 gap-4">
           <div className="flex items-center justify-between w-full md:w-auto">
             <div className="flex items-center gap-2">
