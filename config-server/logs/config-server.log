@@ -1,0 +1,17 @@
+2026-08-22T21:18:30.451+05:30  INFO 19272 --- [config-server] [main] c.e.config.ConfigServerApplication       : Starting ConfigServerApplication using Java 17.0.8.1 with PID 19272 (D:\Workbench\ExpenseAnalyzer\config-server\target\classes started by coder in D:\Workbench\ExpenseAnalyzer\config-server)
+2026-08-22T21:18:30.459+05:30  INFO 19272 --- [config-server] [main] c.e.config.ConfigServerApplication       : The following 1 profile is active: "jdbc"
+2026-08-22T21:18:31.065+05:30  INFO 19272 --- [config-server] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+2026-08-22T21:18:31.082+05:30  INFO 19272 --- [config-server] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 10 ms. Found 0 JDBC repository interfaces.
+2026-08-22T21:18:31.215+05:30  INFO 19272 --- [config-server] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=b39d9587-d396-3f9e-bfec-9ce88bc5540a
+2026-08-22T21:18:31.535+05:30  INFO 19272 --- [config-server] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8888 (http)
+2026-08-22T21:18:31.549+05:30  INFO 19272 --- [config-server] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-08-22T21:18:31.549+05:30  INFO 19272 --- [config-server] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-08-22T21:18:31.613+05:30  INFO 19272 --- [config-server] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1107 ms
+2026-08-22T21:18:32.045+05:30  INFO 19272 --- [config-server] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-08-22T21:18:32.196+05:30  INFO 19272 --- [config-server] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4a1dda83
+2026-08-22T21:18:32.199+05:30  INFO 19272 --- [config-server] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-08-22T21:18:32.728+05:30  INFO 19272 --- [config-server] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8888 (http) with context path '/'
+2026-08-22T21:18:32.848+05:30  INFO 19272 --- [config-server] [main] c.e.config.ConfigServerApplication       : Started ConfigServerApplication in 2.961 seconds (process running for 3.325)
+2026-08-22T21:18:56.375+05:30  INFO 19272 --- [config-server] [http-nio-8888-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-08-22T21:18:56.376+05:30  INFO 19272 --- [config-server] [http-nio-8888-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-08-22T21:18:56.379+05:30  INFO 19272 --- [config-server] [http-nio-8888-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, PlusCircle, Settings, LogOut, ArrowLeft, ArrowRight, LayoutDashboard, Receipt, TrendingUp, Loader2, ChevronLeft, ChevronRight, Target, Upload, DollarSign, Euro, PoundSterling, IndianRupee, JapaneseYen } from 'lucide-react';
+import { Home, PlusCircle, Settings, LogOut, ArrowLeft, ArrowRight, LayoutDashboard, Receipt, TrendingUp, Loader2, ChevronLeft, ChevronRight, Target, Upload, DollarSign, Euro, PoundSterling, IndianRupee, JapaneseYen, Menu, X } from 'lucide-react';
 import ProfileSettingsModal from '@/components/ProfileSettingsModal';
 import CurrencySelector from '@/components/CurrencySelector';
 import { LanguageSelector } from '@/components/LanguageSelector';
@@ -22,6 +22,7 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
   const { selectedYear, selectedMonth, setDateFilter } = useDateFilter();
   const [isProfileModalOpen, setProfileModalOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -75,8 +76,15 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
       <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] -translate-y-1/2 -translate-x-1/2 pointer-events-none z-0"></div>
       <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-[120px] translate-y-1/3 translate-x-1/3 pointer-events-none z-0"></div>
 
+      {/* Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 md:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
       {/* Sidebar */}
-      <aside className={`border-r border-border bg-card/60 backdrop-blur-xl flex flex-col p-4 fixed h-full transition-all duration-300 z-20 ${isSidebarCollapsed ? 'w-20' : 'w-64'}`}>
+      <aside className={`border-r border-border bg-card/95 backdrop-blur-xl flex flex-col p-4 fixed h-full transition-all duration-300 z-50 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 ${isSidebarCollapsed ? 'w-20' : 'w-64'}`}>
         <div className={`flex items-center ${isSidebarCollapsed ? 'justify-center' : 'justify-between'} mb-8 px-2`}>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white shadow-lg shrink-0">
@@ -104,6 +112,7 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => setIsMobileMenuOpen(false)}
                 title={isSidebarCollapsed ? item.name : undefined}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${
                   isActive ? "bg-primary/10 text-primary font-medium border border-primary/20" : "text-muted-foreground hover:text-foreground hover:bg-accent"
@@ -129,20 +138,25 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Main Content */}
-      <main className={`flex-1 p-8 transition-all duration-300 relative z-10 ${isSidebarCollapsed ? 'ml-20' : 'ml-64'}`}>
-        <header className="flex items-center justify-between mb-8 pb-4 border-b border-border relative z-50">
-          <div className="flex items-center gap-2">
-            <button onClick={() => router.back()} className="p-2 rounded-lg bg-card border border-border hover:bg-accent transition-colors text-muted-foreground hover:text-foreground" title="Go Back">
-              <ArrowLeft className="w-4 h-4" />
-            </button>
-            <button onClick={() => router.forward()} className="p-2 rounded-lg bg-card border border-border hover:bg-accent transition-colors text-muted-foreground hover:text-foreground" title="Go Forward">
-              <ArrowRight className="w-4 h-4" />
-            </button>
-            <h1 className="text-2xl font-bold ml-4 capitalize">
-                {getPageTitle(pathname)}
-            </h1>
+      <main className={`flex-1 w-full p-4 md:p-8 transition-all duration-300 relative z-10 md:${isSidebarCollapsed ? 'ml-20' : 'ml-64'}`}>
+        <header className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8 pb-4 border-b border-border relative z-40 gap-4">
+          <div className="flex items-center justify-between w-full md:w-auto">
+            <div className="flex items-center gap-2">
+              <button onClick={() => setIsMobileMenuOpen(true)} className="md:hidden p-2 rounded-lg bg-card border border-border hover:bg-accent transition-colors text-muted-foreground hover:text-foreground">
+                <Menu className="w-5 h-5" />
+              </button>
+              <button onClick={() => router.back()} className="hidden md:block p-2 rounded-lg bg-card border border-border hover:bg-accent transition-colors text-muted-foreground hover:text-foreground" title="Go Back">
+                <ArrowLeft className="w-4 h-4" />
+              </button>
+              <button onClick={() => router.forward()} className="hidden md:block p-2 rounded-lg bg-card border border-border hover:bg-accent transition-colors text-muted-foreground hover:text-foreground" title="Go Forward">
+                <ArrowRight className="w-4 h-4" />
+              </button>
+              <h1 className="text-xl md:text-2xl font-bold ml-2 md:ml-4 capitalize truncate">
+                  {getPageTitle(pathname)}
+              </h1>
+            </div>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-2 md:gap-4 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
               <div className="flex items-center gap-2 bg-card border border-border rounded-xl w-48">
                 <CustomDatePicker
                   selected={new Date(selectedYear, selectedMonth - 1, 1)}

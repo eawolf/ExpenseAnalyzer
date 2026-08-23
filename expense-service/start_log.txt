@@ -1,0 +1,253 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------< com.expenseanalyzer:backend >---------------------
+[INFO] Building backend 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:4.1.0:run (default-cli) > test-compile @ backend >>>
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ backend ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ backend ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ backend ---
+[INFO] skip non existing resourceDirectory D:\Workbench\ExpenseAnalyzer\expense-service\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ backend ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< spring-boot:4.1.0:run (default-cli) < test-compile @ backend <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:4.1.0:run (default-cli) @ backend ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.0)
+
+2026-08-17T23:31:05.434+05:30  INFO 14472 --- [expense-service] [           main] c.e.backend.BackendApplication           : Starting BackendApplication using Java 17.0.8.1 with PID 14472 (D:\Workbench\ExpenseAnalyzer\expense-service\target\classes started by coder in D:\Workbench\ExpenseAnalyzer\expense-service)
+2026-08-17T23:31:05.437+05:30  INFO 14472 --- [expense-service] [           main] c.e.backend.BackendApplication           : No active profile set, falling back to 1 default profile: "default"
+2026-08-17T23:31:05.481+05:30  INFO 14472 --- [expense-service] [           main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-08-17T23:31:05.482+05:30  INFO 14472 --- [expense-service] [           main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=expense-service, profiles=[default], label=null, version=null, state=null
+2026-08-17T23:31:06.276+05:30  INFO 14472 --- [expense-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-08-17T23:31:06.393+05:30  INFO 14472 --- [expense-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 107 ms. Found 4 JPA repository interfaces.
+2026-08-17T23:31:06.584+05:30  INFO 14472 --- [expense-service] [           main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=7fc2e4d6-0976-3beb-bb45-58c2fbbfa537
+2026-08-17T23:31:07.002+05:30  INFO 14472 --- [expense-service] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-08-17T23:31:07.018+05:30  INFO 14472 --- [expense-service] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-08-17T23:31:07.018+05:30  INFO 14472 --- [expense-service] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-08-17T23:31:07.079+05:30  INFO 14472 --- [expense-service] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1595 ms
+2026-08-17T23:31:07.268+05:30  INFO 14472 --- [expense-service] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-08-17T23:31:07.333+05:30  INFO 14472 --- [expense-service] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.4.1.Final
+2026-08-17T23:31:07.723+05:30  INFO 14472 --- [expense-service] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-08-17T23:31:07.759+05:30  INFO 14472 --- [expense-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-08-17T23:31:07.873+05:30  INFO 14472 --- [expense-service] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@e88e14
+2026-08-17T23:31:07.874+05:30  INFO 14472 --- [expense-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-08-17T23:31:07.948+05:30  INFO 14472 --- [expense-service] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://localhost:5432/postgres]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 17.5
+	Default catalog/schema: postgres/unknown
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-08-17T23:31:08.941+05:30  INFO 14472 --- [expense-service] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: create table categories (id varchar(255) not null, name varchar(255), type varchar(255), primary key (id))
+2026-08-17T23:31:09.110+05:30  WARN 14472 --- [expense-service] [           main] o.h.t.s.i.ExceptionHandlerLoggedImpl     : GenerationTarget encountered exception accepting command : Error executing DDL "create table categories (id varchar(255) not null, name varchar(255), type varchar(255), primary key (id))" via JDBC [ERROR: no schema has been selected to create in
+  Position: 14]
+
+org.hibernate.tool.schema.spi.CommandAcceptanceException: Error executing DDL "create table categories (id varchar(255) not null, name varchar(255), type varchar(255), primary key (id))" via JDBC [ERROR: no schema has been selected to create in
+  Position: 14]
+	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:91) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlString(AbstractSchemaMigrator.java:566) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlStrings(AbstractSchemaMigrator.java:506) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.createTable(AbstractSchemaMigrator.java:305) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.hibernate.tool.schema.internal.GroupedSchemaMigratorImpl.performTablesMigration(GroupedSchemaMigratorImpl.java:80) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.performMigration(AbstractSchemaMigrator.java:220) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.doMigration(AbstractSchemaMigrator.java:96) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:269) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$1(SchemaManagementToolCoordinator.java:101) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at java.base/java.util.HashMap.forEach(HashMap.java:1421) ~[na:na]
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:100) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:35) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:33) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:327) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.hibernate.internal.SessionFactoryRegistry.instantiateSessionFactory(SessionFactoryRegistry.java:64) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:458) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1452) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:93) ~[spring-orm-7.0.8.jar:7.0.8]
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:443) ~[spring-orm-7.0.8.jar:7.0.8]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:436) ~[spring-orm-7.0.8.jar:7.0.8]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:411) ~[spring-orm-7.0.8.jar:7.0.8]
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:419) ~[spring-orm-7.0.8.jar:7.0.8]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1862) ~[spring-beans-7.0.8.jar:7.0.8]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1811) ~[spring-beans-7.0.8.jar:7.0.8]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:603) ~[spring-beans-7.0.8.jar:7.0.8]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525) ~[spring-beans-7.0.8.jar:7.0.8]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333) ~[spring-beans-7.0.8.jar:7.0.8]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371) ~[spring-beans-7.0.8.jar:7.0.8]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331) ~[spring-beans-7.0.8.jar:7.0.8]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:201) ~[spring-beans-7.0.8.jar:7.0.8]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:977) ~[spring-context-7.0.8.jar:7.0.8]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621) ~[spring-context-7.0.8.jar:7.0.8]
+	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143) ~[spring-boot-web-server-4.1.0.jar:4.1.0]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756) ~[spring-boot-4.1.0.jar:4.1.0]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445) ~[spring-boot-4.1.0.jar:4.1.0]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321) ~[spring-boot-4.1.0.jar:4.1.0]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365) ~[spring-boot-4.1.0.jar:4.1.0]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-4.1.0.jar:4.1.0]
+	at com.expenseanalyzer.backend.BackendApplication.main(BackendApplication.java:12) ~[classes/:na]
+Caused by: org.postgresql.util.PSQLException: ERROR: no schema has been selected to create in
+  Position: 14
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2904) ~[postgresql-42.7.11.jar:42.7.11]
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2589) ~[postgresql-42.7.11.jar:42.7.11]
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:431) ~[postgresql-42.7.11.jar:42.7.11]
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:534) ~[postgresql-42.7.11.jar:42.7.11]
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:437) ~[postgresql-42.7.11.jar:42.7.11]
+	at org.postgresql.jdbc.PgStatement.executeWithFlags(PgStatement.java:359) ~[postgresql-42.7.11.jar:42.7.11]
+	at org.postgresql.jdbc.PgStatement.executeCachedSql(PgStatement.java:344) ~[postgresql-42.7.11.jar:42.7.11]
+	at org.postgresql.jdbc.PgStatement.executeWithFlags(PgStatement.java:320) ~[postgresql-42.7.11.jar:42.7.11]
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:315) ~[postgresql-42.7.11.jar:42.7.11]
+	at com.zaxxer.hikari.pool.ProxyStatement.execute(ProxyStatement.java:95) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariProxyStatement.execute(HikariProxyStatement.java) ~[HikariCP-7.0.2.jar:na]
+	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:86) ~[hibernate-core-7.4.1.Final.jar:7.4.1.Final]
+	... 38 common frames omitted
+
+2026-08-17T23:31:09.146+05:30  INFO 14472 --- [expense-service] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-08-17T23:31:09.229+05:30  INFO 14472 --- [expense-service] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-08-17T23:31:09.534+05:30  WARN 14472 --- [expense-service] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-08-17T23:31:09.653+05:30  WARN 14472 --- [expense-service] [           main] .s.a.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 18e37e24-11af-4063-ac00-48646b812ab9
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-08-17T23:31:09.662+05:30  INFO 14472 --- [expense-service] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-08-17T23:31:10.500+05:30  INFO 14472 --- [expense-service] [           main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestClient.
+2026-08-17T23:31:10.586+05:30  INFO 14472 --- [expense-service] [           main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-08-17T23:31:10.613+05:30  INFO 14472 --- [expense-service] [           main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-08-17T23:31:10.617+05:30  INFO 14472 --- [expense-service] [           main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-08-17T23:31:10.627+05:30  INFO 14472 --- [expense-service] [           main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-08-17T23:31:10.627+05:30  INFO 14472 --- [expense-service] [           main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-08-17T23:31:10.627+05:30  INFO 14472 --- [expense-service] [           main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-08-17T23:31:10.627+05:30  INFO 14472 --- [expense-service] [           main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-08-17T23:31:10.627+05:30  INFO 14472 --- [expense-service] [           main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-08-17T23:31:10.628+05:30  INFO 14472 --- [expense-service] [           main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-08-17T23:31:10.628+05:30  INFO 14472 --- [expense-service] [           main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-08-17T23:31:11.101+05:30  INFO 14472 --- [expense-service] [           main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-08-17T23:31:11.103+05:30  INFO 14472 --- [expense-service] [           main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-08-17T23:31:11.105+05:30  INFO 14472 --- [expense-service] [           main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-08-17T23:31:11.108+05:30  INFO 14472 --- [expense-service] [           main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1786989671107 with initial instances count: 0
+2026-08-17T23:31:11.113+05:30  INFO 14472 --- [expense-service] [           main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application EXPENSE-SERVICE with eureka with status UP
+2026-08-17T23:31:11.114+05:30  INFO 14472 --- [expense-service] [           main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1786989671114, current=UP, previous=STARTING]
+2026-08-17T23:31:11.116+05:30  INFO 14472 --- [expense-service] [foReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_EXPENSE-SERVICE/USER:expense-service:8080: registering service...
+2026-08-17T23:31:11.145+05:30  INFO 14472 --- [expense-service] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-08-17T23:31:11.145+05:30  INFO 14472 --- [expense-service] [           main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8080
+2026-08-17T23:31:11.266+05:30  INFO 14472 --- [expense-service] [foReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_EXPENSE-SERVICE/USER:expense-service:8080 - registration status: 204
+2026-08-17T23:31:11.310+05:30  INFO 14472 --- [expense-service] [           main] c.e.backend.BackendApplication           : Started BackendApplication in 6.937 seconds (process running for 7.604)
+2026-08-17T23:31:41.111+05:30  INFO 14472 --- [expense-service] [reshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-08-17T23:31:41.111+05:30  INFO 14472 --- [expense-service] [reshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-08-17T23:31:41.111+05:30  INFO 14472 --- [expense-service] [reshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-08-17T23:31:41.111+05:30  INFO 14472 --- [expense-service] [reshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-08-17T23:31:41.111+05:30  INFO 14472 --- [expense-service] [reshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-08-17T23:31:41.111+05:30  INFO 14472 --- [expense-service] [reshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Application version is -1: false
+2026-08-17T23:31:41.111+05:30  INFO 14472 --- [expense-service] [reshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-08-17T23:31:41.139+05:30  INFO 14472 --- [expense-service] [reshExecutor-%d] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-08-17T23:32:43.655+05:30  INFO 14472 --- [expense-service] [nio-8080-exec-3] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-08-17T23:32:43.656+05:30  INFO 14472 --- [expense-service] [nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-08-17T23:32:43.657+05:30  INFO 14472 --- [expense-service] [nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+Hibernate: select e1_0.id,e1_0.amount,e1_0.category,e1_0.merchant,e1_0.notes,e1_0.transaction_date,e1_0.user_id from finance.expenses e1_0 where e1_0.user_id=? and e1_0.transaction_date between ? and ? order by e1_0.transaction_date desc
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select i1_0.id,i1_0.amount,i1_0.source,i1_0.transaction_date,i1_0.user_id from finance.incomes i1_0 where i1_0.user_id=? and i1_0.transaction_date between ? and ? order by i1_0.transaction_date desc
+Hibernate: select e1_0.id,e1_0.amount,e1_0.category,e1_0.merchant,e1_0.notes,e1_0.transaction_date,e1_0.user_id from finance.expenses e1_0 where e1_0.user_id=? and e1_0.transaction_date between ? and ? order by e1_0.transaction_date desc
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select c1_0.expense_id,c1_0.category from finance.expense_categories c1_0 where c1_0.expense_id=?
+Hibernate: select i1_0.id,i1_0.amount,i1_0.source,i1_0.transaction_date,i1_0.user_id from finance.incomes i1_0 where i1_0.user_id=? and i1_0.transaction_date between ? and ? order by i1_0.transaction_date desc
+2026-08-17T23:36:10.644+05:30  INFO 14472 --- [expense-service] [rap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-08-17T23:41:10.654+05:30  INFO 14472 --- [expense-service] [rap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-08-17T23:46:10.661+05:30  INFO 14472 --- [expense-service] [rap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-08-17T23:51:10.663+05:30  INFO 14472 --- [expense-service] [rap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-08-17T23:56:10.669+05:30  INFO 14472 --- [expense-service] [rap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-08-18T00:01:10.672+05:30  INFO 14472 --- [expense-service] [rap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-08-18T00:06:10.675+05:30  INFO 14472 --- [expense-service] [rap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-08-18T00:11:10.686+05:30  INFO 14472 --- [expense-service] [rap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-08-18T00:16:10.700+05:30  INFO 14472 --- [expense-service] [rap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-08-18T00:21:10.711+05:30  INFO 14472 --- [expense-service] [rap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-08-18T00:26:10.722+05:30  INFO 14472 --- [expense-service] [rap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-08-18T00:31:10.729+05:30  INFO 14472 --- [expense-service] [rap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-08-18T00:36:10.742+05:30  INFO 14472 --- [expense-service] [rap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-08-18T00:41:10.752+05:30  INFO 14472 --- [expense-service] [rap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-08-18T00:46:10.766+05:30  INFO 14472 --- [expense-service] [rap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-08-18T00:51:10.779+05:30  INFO 14472 --- [expense-service] [rap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-08-18T00:56:10.781+05:30  INFO 14472 --- [expense-service] [rap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-08-18T01:01:10.789+05:30  INFO 14472 --- [expense-service] [rap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration

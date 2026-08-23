@@ -1,0 +1,85 @@
+2026-08-23T00:00:09.441+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 11ms
+2026-08-23T00:01:09.444+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2026-08-23T00:02:09.455+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 10ms
+2026-08-23T00:03:08.300+05:30  INFO 18480 --- [discovery-server] [ReplicaAwareInstanceRegistry - RenewalThresholdUpdater] c.n.e.r.PeerAwareInstanceRegistryImpl    : Current renewal threshold is : 5
+2026-08-23T00:03:09.455+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-08-23T00:04:09.470+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 14ms
+2026-08-23T00:05:09.470+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-08-23T00:06:09.474+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2026-08-23T00:07:09.486+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 11ms
+2026-08-23T00:08:08.358+05:30  WARN 18480 --- [discovery-server] [Eureka-PeerNodesUpdater] c.n.eureka.cluster.PeerEurekaNodes       : The replica size seems to be empty. Check the route 53 DNS Registry
+2026-08-23T00:08:09.493+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 7ms
+2026-08-23T00:09:09.499+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2026-08-23T00:10:09.514+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 15ms
+2026-08-23T00:11:09.527+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 12ms
+2026-08-23T00:12:09.529+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 1ms
+2026-08-23T00:13:09.542+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 13ms
+2026-08-23T00:14:09.548+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2026-08-23T00:15:09.549+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-08-23T00:16:09.552+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 2ms
+2026-08-23T00:17:09.559+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 7ms
+2026-08-23T00:18:08.300+05:30  INFO 18480 --- [discovery-server] [ReplicaAwareInstanceRegistry - RenewalThresholdUpdater] c.n.e.r.PeerAwareInstanceRegistryImpl    : Current renewal threshold is : 5
+2026-08-23T00:18:08.362+05:30  WARN 18480 --- [discovery-server] [Eureka-PeerNodesUpdater] c.n.eureka.cluster.PeerEurekaNodes       : The replica size seems to be empty. Check the route 53 DNS Registry
+2026-08-23T00:18:09.567+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 7ms
+2026-08-23T00:19:09.582+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 14ms
+2026-08-23T00:20:09.584+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 2ms
+2026-08-23T00:21:09.597+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 12ms
+2026-08-23T00:22:09.599+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 2ms
+2026-08-23T00:23:09.614+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 14ms
+2026-08-23T00:24:09.616+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 2ms
+2026-08-23T00:25:09.622+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2026-08-23T00:26:09.635+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 13ms
+2026-08-23T00:27:09.635+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-08-23T00:28:08.370+05:30  WARN 18480 --- [discovery-server] [Eureka-PeerNodesUpdater] c.n.eureka.cluster.PeerEurekaNodes       : The replica size seems to be empty. Check the route 53 DNS Registry
+2026-08-23T00:28:09.635+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-08-23T00:29:09.650+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 14ms
+2026-08-23T00:30:09.663+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 12ms
+2026-08-23T00:31:09.673+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 9ms
+2026-08-23T00:32:09.673+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2026-08-23T00:33:08.305+05:30  INFO 18480 --- [discovery-server] [ReplicaAwareInstanceRegistry - RenewalThresholdUpdater] c.n.e.r.PeerAwareInstanceRegistryImpl    : Current renewal threshold is : 5
+2026-08-23T00:33:09.686+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 12ms
+2026-08-23T00:34:09.687+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 1ms
+2026-08-23T00:35:09.699+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 12ms
+2026-08-23T00:36:09.708+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 9ms
+2026-08-23T00:37:09.720+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 11ms
+2026-08-23T00:38:08.384+05:30  WARN 18480 --- [discovery-server] [Eureka-PeerNodesUpdater] c.n.eureka.cluster.PeerEurekaNodes       : The replica size seems to be empty. Check the route 53 DNS Registry
+2026-08-23T00:38:09.734+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 13ms
+2026-08-23T00:39:09.735+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 1ms
+2026-08-23T00:40:09.738+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 2ms
+2026-08-23T00:41:09.753+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 14ms
+2026-08-23T00:42:09.756+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2026-08-23T00:43:09.758+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 1ms
+2026-08-23T00:44:09.762+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2026-08-23T00:45:09.775+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 13ms
+2026-08-23T00:46:09.789+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 13ms
+2026-08-23T00:47:09.804+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 15ms
+2026-08-23T00:48:08.322+05:30  INFO 18480 --- [discovery-server] [ReplicaAwareInstanceRegistry - RenewalThresholdUpdater] c.n.e.r.PeerAwareInstanceRegistryImpl    : Current renewal threshold is : 5
+2026-08-23T00:48:08.396+05:30  WARN 18480 --- [discovery-server] [Eureka-PeerNodesUpdater] c.n.eureka.cluster.PeerEurekaNodes       : The replica size seems to be empty. Check the route 53 DNS Registry
+2026-08-23T00:48:09.809+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2026-08-23T00:49:09.812+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 2ms
+2026-08-23T00:50:09.819+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 7ms
+2026-08-23T00:51:09.830+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 11ms
+2026-08-23T00:52:09.842+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 11ms
+2026-08-23T00:53:09.848+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2026-08-23T00:54:09.856+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 8ms
+2026-08-23T00:55:09.862+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2026-08-23T00:56:09.872+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 10ms
+2026-08-23T00:57:09.880+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 7ms
+2026-08-23T00:58:08.403+05:30  WARN 18480 --- [discovery-server] [Eureka-PeerNodesUpdater] c.n.eureka.cluster.PeerEurekaNodes       : The replica size seems to be empty. Check the route 53 DNS Registry
+2026-08-23T00:58:09.888+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 8ms
+2026-08-23T00:59:09.890+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 2ms
+2026-08-23T01:00:09.893+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 2ms
+2026-08-23T01:01:09.903+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 10ms
+2026-08-23T01:02:09.904+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 1ms
+2026-08-23T01:03:08.336+05:30  INFO 18480 --- [discovery-server] [ReplicaAwareInstanceRegistry - RenewalThresholdUpdater] c.n.e.r.PeerAwareInstanceRegistryImpl    : Current renewal threshold is : 5
+2026-08-23T01:03:09.916+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 12ms
+2026-08-23T01:04:09.924+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 7ms
+2026-08-23T01:05:09.932+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 7ms
+2026-08-23T01:06:09.937+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 5ms
+2026-08-23T01:07:09.950+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 12ms
+2026-08-23T01:08:08.412+05:30  WARN 18480 --- [discovery-server] [Eureka-PeerNodesUpdater] c.n.eureka.cluster.PeerEurekaNodes       : The replica size seems to be empty. Check the route 53 DNS Registry
+2026-08-23T01:08:09.962+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 11ms
+2026-08-23T01:09:09.967+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 4ms
+2026-08-23T01:10:09.979+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 12ms
+2026-08-23T01:11:09.991+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 11ms
+2026-08-23T01:12:10.001+05:30  INFO 18480 --- [discovery-server] [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 10ms

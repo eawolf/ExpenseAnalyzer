@@ -64,7 +64,7 @@ function LoginForm() {
     <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row font-sans selection:bg-primary/30">
       
       {/* Left Column: Interactive Quotes */}
-      <div className="flex order-last md:order-first flex-1 relative bg-card items-center justify-center p-8 md:p-12 overflow-hidden perspective-1000 min-h-[40vh] md:min-h-0">
+      <div className="flex order-last md:order-first flex-1 relative bg-card items-center justify-center p-8 md:p-12 overflow-hidden perspective-1000 min-h-[50vh] md:min-h-0 py-16">
         
         {/* Unified Background Gradients */}
         <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-purple-500/10 rounded-full blur-[120px] -translate-y-1/3 -translate-x-1/4 z-0"></div>
@@ -99,7 +99,7 @@ function LoginForm() {
                   "{quote.question}"
                 </p>
                 
-                <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-in-out opacity-0 group-hover:opacity-100 mt-2">
+                <div className="grid grid-rows-[1fr] md:grid-rows-[0fr] md:group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-in-out opacity-100 md:opacity-0 md:group-hover:opacity-100 mt-2">
                   <div className="overflow-hidden">
                     <p className="text-xl text-primary mt-2 font-medium italic">
                       {quote.answer}

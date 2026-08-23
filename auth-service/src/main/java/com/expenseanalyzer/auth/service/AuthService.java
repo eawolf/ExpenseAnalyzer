@@ -186,6 +186,7 @@ public class AuthService {
                 .build();
     }
 
+    @CacheEvict(value = "userProfile", key = "#userId")
     public com.expenseanalyzer.auth.dto.UserProfileDto updateConsent(java.util.UUID userId, com.expenseanalyzer.auth.dto.ConsentRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
