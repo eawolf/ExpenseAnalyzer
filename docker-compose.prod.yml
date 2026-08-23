@@ -34,7 +34,7 @@ services:
   config-server:
     build: ./config-server
     container_name: prod-config-server
-    restart: on-failure:10
+    restart: always
     environment:
       - JAVA_OPTS=-Xmx256m
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/expense_db
@@ -51,7 +51,7 @@ services:
     container_name: prod-discovery-server
     ports:
       - "8761:8761"
-    restart: on-failure
+    restart: always
     environment:
       - JAVA_OPTS=-Xmx256m
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
@@ -66,7 +66,7 @@ services:
   auth-service:
     build: ./auth-service
     container_name: prod-auth-service
-    restart: on-failure:10
+    restart: always
     environment:
       - JAVA_OPTS=-Xmx512m
       - SPRING_PROFILES_ACTIVE=prod
@@ -86,7 +86,7 @@ services:
   expense-service:
     build: ./expense-service
     container_name: prod-expense-service
-    restart: on-failure:10
+    restart: always
     environment:
       - JAVA_OPTS=-Xmx512m
       - SPRING_PROFILES_ACTIVE=prod
@@ -106,7 +106,7 @@ services:
   notification-service:
     build: ./notification-service
     container_name: prod-notification-service
-    restart: on-failure:10
+    restart: always
     environment:
       - JAVA_OPTS=-Xmx256m
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
@@ -122,7 +122,7 @@ services:
   vision-service:
     build: ./vision-service
     container_name: prod-vision-service
-    restart: on-failure:10
+    restart: always
     environment:
       - JAVA_OPTS=-Xmx256m
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
