@@ -53,8 +53,8 @@ function LoginForm() {
       document.cookie = `token=${data.token}; path=/; max-age=86400`;
 
       router.push('/dashboard');
-    } catch (err) {
-      setError('Unable to connect to server. Please try again.');
+    } catch (err: any) {
+      setError(`Unable to connect to server. Error: ${err.message || err}`);
     } finally {
       setLoading(false);
     }
