@@ -156,7 +156,7 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
               </h1>
             </div>
           </div>
-          <div className="flex flex-wrap items-center gap-2 md:gap-4 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
+          <div className="flex flex-wrap items-center gap-2 md:gap-4 w-full md:w-auto pb-2 md:pb-0">
               <div className="flex items-center gap-2 bg-card border border-border rounded-xl w-48">
                 <CustomDatePicker
                   selected={new Date(selectedYear, selectedMonth - 1, 1)}
