@@ -23,7 +23,7 @@ export default function ForgotPasswordPage() {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('http://localhost:8081/api/auth/forgot-password/request', {
+      const res = await fetch('/api-proxy/auth/auth/forgot-password/request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ emailOrPhone: identifier, method })
@@ -43,7 +43,7 @@ export default function ForgotPasswordPage() {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('http://localhost:8081/api/auth/forgot-password/request', {
+      const res = await fetch('/api-proxy/auth/auth/forgot-password/request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -88,7 +88,7 @@ export default function ForgotPasswordPage() {
 
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:8081/api/auth/forgot-password/reset', {
+      const res = await fetch('/api-proxy/auth/auth/forgot-password/reset', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
