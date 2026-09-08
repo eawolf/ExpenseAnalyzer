@@ -49,8 +49,7 @@ services:
   discovery-server:
     build: ./discovery-server
     container_name: prod-discovery-server
-    ports:
-      - "8761:8761"
+
     restart: always
     environment:
       - JAVA_OPTS=-Xmx256m
