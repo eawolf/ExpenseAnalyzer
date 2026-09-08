@@ -282,18 +282,23 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover {
   }
 }
 
-/* Floating Animations */
-@keyframes float-icon {
-  0% { transform: translateY(0px) rotate(0deg) scale(1); }
-  50% { transform: translateY(-8px) rotate(3deg) scale(1.05); }
-  100% { transform: translateY(0px) rotate(0deg) scale(1); }
+/* Mobile App Classes */
+.mobile-app-wrapper {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--background);
+  overflow-x: hidden;
 }
 
-.animate-float-icon {
-  animation: float-icon 4s ease-in-out infinite;
-}
-
-.animate-float-icon-delayed {
-  animation: float-icon 5s ease-in-out infinite;
-  animation-delay: 1.5s;
+.mobile-app-nav {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: space-around;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
 }

@@ -4,7 +4,12 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, PlusCircle, Settings, LogOut, ArrowLeft, ArrowRight, LayoutDashboard, Receipt, TrendingUp, Loader2, ChevronLeft, ChevronRight, Target, Upload, DollarSign, Euro, PoundSterling, IndianRupee, JapaneseYen, Menu, X } from 'lucide-react';
+import { 
+  Home, PlusCircle, Settings, LogOut, ArrowLeft, ArrowRight, 
+  LayoutDashboard, Receipt, TrendingUp, Loader2, ChevronLeft, 
+  ChevronRight, Target, Upload, DollarSign, Euro, PoundSterling, 
+  IndianRupee, JapaneseYen, Menu, X, Sparkles 
+} from 'lucide-react';
 import ProfileSettingsModal from '@/components/ProfileSettingsModal';
 import CurrencySelector from '@/components/CurrencySelector';
 import { LanguageSelector } from '@/components/LanguageSelector';
@@ -22,7 +27,7 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
   const { selectedYear, selectedMonth, setDateFilter } = useDateFilter();
   const [isProfileModalOpen, setProfileModalOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isQuickActionOpen, setIsQuickActionOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -71,20 +76,13 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex relative">
+    <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row relative overflow-x-hidden">
       {/* Dynamic Background Gradients */}
-      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] -translate-y-1/2 -translate-x-1/2 pointer-events-none z-0"></div>
-      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-[120px] translate-y-1/3 translate-x-1/3 pointer-events-none z-0"></div>
+      <div className="fixed top-0 left-0 w-[350px] md:w-[500px] h-[350px] md:h-[500px] bg-primary/5 rounded-full blur-[100px] -translate-y-1/2 -translate-x-1/2 pointer-events-none z-0"></div>
+      <div className="fixed bottom-0 right-0 w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-purple-500/5 rounded-full blur-[120px] translate-y-1/3 translate-x-1/3 pointer-events-none z-0"></div>
 
-      {/* Mobile Overlay */}
-      {isMobileMenuOpen && (
-        <div 
-          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 md:hidden"
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
-      )}
-      {/* Sidebar */}
-      <aside className={`border-r border-border bg-card/95 backdrop-blur-xl flex flex-col p-4 fixed h-full transition-all duration-300 z-50 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 ${isSidebarCollapsed ? 'w-20' : 'w-64'}`}>
+      {/* Desktop Sidebar (>= 768px) */}
+      <aside className={`hidden md:flex border-r border-border bg-card/95 backdrop-blur-xl flex-col p-4 fixed h-full transition-all duration-300 z-50 ${isSidebarCollapsed ? 'w-20' : 'w-64'}`}>
         <div className={`flex items-center ${isSidebarCollapsed ? 'justify-center' : 'justify-between'} mb-8 px-2`}>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white shadow-lg shrink-0">
@@ -112,7 +110,6 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
               <Link
                 key={item.href}
                 href={item.href}
-                onClick={() => setIsMobileMenuOpen(false)}
                 title={isSidebarCollapsed ? item.name : undefined}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${
                   isActive ? "bg-primary/10 text-primary font-medium border border-primary/20" : "text-muted-foreground hover:text-foreground hover:bg-accent"
@@ -125,7 +122,7 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
           })}
         </nav>
 
-        <div className="pt-4 border-t border-white/5 mt-auto">
+        <div className="pt-4 border-t border-border/40 mt-auto">
             <button
               onClick={handleLogout}
               title={isSidebarCollapsed ? "Logout" : undefined}
@@ -137,27 +134,42 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className={`flex-1 w-full p-4 md:p-8 transition-all duration-300 relative z-10 ${isSidebarCollapsed ? 'md:ml-20' : 'md:ml-64'}`}>
-        <header className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8 pb-4 border-b border-border relative z-40 gap-4">
-          <div className="flex items-center justify-between w-full md:w-auto">
+      {/* Main Content Area */}
+      <main className={`flex-1 w-full p-3 sm:p-4 md:p-8 transition-all duration-300 relative z-10 pb-24 md:pb-8 ${isSidebarCollapsed ? 'md:ml-20' : 'md:ml-64'}`}>
+        
+        {/* Top Header Bar */}
+        <header className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 md:mb-8 pb-3 border-b border-border relative z-40 gap-3">
+          <div className="flex items-center justify-between w-full sm:w-auto">
             <div className="flex items-center gap-2">
-              <button onClick={() => setIsMobileMenuOpen(true)} className="md:hidden p-2 rounded-lg bg-card border border-border hover:bg-accent transition-colors text-muted-foreground hover:text-foreground">
-                <Menu className="w-5 h-5" />
-              </button>
+              <div className="md:hidden w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white shadow-md shrink-0">
+                E
+              </div>
               <button onClick={() => router.back()} className="hidden md:block p-2 rounded-lg bg-card border border-border hover:bg-accent transition-colors text-muted-foreground hover:text-foreground" title="Go Back">
                 <ArrowLeft className="w-4 h-4" />
               </button>
               <button onClick={() => router.forward()} className="hidden md:block p-2 rounded-lg bg-card border border-border hover:bg-accent transition-colors text-muted-foreground hover:text-foreground" title="Go Forward">
                 <ArrowRight className="w-4 h-4" />
               </button>
-              <h1 className="text-xl md:text-2xl font-bold ml-2 md:ml-4 capitalize truncate">
+              <h1 className="text-lg sm:text-xl md:text-2xl font-bold capitalize truncate">
                   {getPageTitle(pathname)}
               </h1>
             </div>
+
+            {/* Mobile Profile Avatar */}
+            <button 
+              onClick={() => setProfileModalOpen(true)}
+              className="md:hidden w-9 h-9 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center overflow-hidden active:scale-95 transition-transform"
+            >
+              {userProfile?.profilePictureBase64 ? (
+                  <img src={userProfile.profilePictureBase64} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                  <span className="text-xs font-bold text-indigo-400">{getInitials(userProfile?.name || '')}</span>
+              )}
+            </button>
           </div>
-          <div className="flex flex-wrap items-center gap-2 md:gap-4 w-full md:w-auto pb-2 md:pb-0">
-              <div className="flex items-center gap-2 bg-card border border-border rounded-xl w-48">
+
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+              <div className="flex items-center gap-1.5 bg-card border border-border rounded-xl px-2 py-1 max-w-[170px] sm:max-w-none">
                 <CustomDatePicker
                   selected={new Date(selectedYear, selectedMonth - 1, 1)}
                   onChange={(date) => {
@@ -166,25 +178,27 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
                     }
                   }}
                   showMonthYearPicker
-                  className="bg-transparent border-none py-1.5 pl-10 text-sm focus:ring-0 shadow-none"
+                  className="bg-transparent border-none py-1 text-xs sm:text-sm focus:ring-0 shadow-none"
                 />
               </div>
-              <LanguageSelector />
-              <CurrencySelector />
-              <ThemeToggle />
-              {userProfile && <span className="text-sm font-medium text-muted-foreground">{userProfile.name}</span>}
-              <button 
-                onClick={() => setProfileModalOpen(true)}
-                className="w-10 h-10 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center overflow-hidden hover:opacity-80 transition-opacity"
-              >
-                {userProfile?.profilePictureBase64 ? (
-                    <img src={userProfile.profilePictureBase64} alt="Avatar" className="w-full h-full object-cover" />
-                ) : (
-                    <span className="text-sm font-bold text-indigo-400">{getInitials(userProfile?.name || '')}</span>
-                )}
-              </button>
+              <div className="flex items-center gap-2">
+                <LanguageSelector />
+                <CurrencySelector />
+                <ThemeToggle />
+                <button 
+                  onClick={() => setProfileModalOpen(true)}
+                  className="hidden md:flex w-10 h-10 rounded-full bg-indigo-500/20 border border-indigo-500/30 items-center justify-center overflow-hidden hover:opacity-80 transition-opacity"
+                >
+                  {userProfile?.profilePictureBase64 ? (
+                      <img src={userProfile.profilePictureBase64} alt="Avatar" className="w-full h-full object-cover" />
+                  ) : (
+                      <span className="text-sm font-bold text-indigo-400">{getInitials(userProfile?.name || '')}</span>
+                  )}
+                </button>
+              </div>
           </div>
         </header>
+
         {children}
       </main>
 
@@ -194,8 +208,111 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
       />
       <ConsentModal />
 
-      {/* Floating Action Button (Speed Dial) */}
-      <div className="fixed bottom-8 right-8 z-50 group flex flex-col items-center justify-end">
+      {/* Mobile Quick Action Sheet / Modal */}
+      {isQuickActionOpen && (
+        <div 
+          className="fixed inset-0 bg-background/80 backdrop-blur-md z-50 md:hidden flex flex-col justify-end p-4 animate-in fade-in duration-200"
+          onClick={() => setIsQuickActionOpen(false)}
+        >
+          <div 
+            className="bg-card border border-border rounded-3xl p-6 flex flex-col gap-4 shadow-2xl animate-in slide-in-from-bottom duration-300"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-2 border-b border-border">
+              <h3 className="font-bold text-lg">Quick Actions</h3>
+              <button 
+                onClick={() => setIsQuickActionOpen(false)}
+                className="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-muted-foreground hover:text-foreground"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            
+            <Link 
+              href="/dashboard/upload-transactions" 
+              onClick={() => setIsQuickActionOpen(false)}
+              className="flex items-center gap-4 p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 active:scale-98 transition-transform"
+            >
+              <div className="w-12 h-12 rounded-xl bg-indigo-500 text-white flex items-center justify-center shadow-md shrink-0">
+                <Upload className="w-6 h-6" />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-semibold text-foreground">Scan Receipt (AI OCR)</span>
+                <span className="text-xs text-muted-foreground">Upload receipt image to parse expenses</span>
+              </div>
+            </Link>
+
+            <Link 
+              href="/dashboard/add" 
+              onClick={() => setIsQuickActionOpen(false)}
+              className="flex items-center gap-4 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 active:scale-98 transition-transform"
+            >
+              <div className="w-12 h-12 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-md shrink-0">
+                <PlusCircle className="w-6 h-6" />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-semibold text-foreground">Manual Entry</span>
+                <span className="text-xs text-muted-foreground">Add new expense or income record</span>
+              </div>
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Glassmorphism Bottom Tab Bar (< 768px) */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-card/90 backdrop-blur-2xl border-t border-border px-3 py-2 flex items-center justify-around shadow-2xl">
+        <Link 
+          href="/dashboard"
+          className={`flex flex-col items-center gap-1 text-xs font-medium py-1 px-3 rounded-xl transition-all ${
+            pathname === '/dashboard' ? 'text-primary scale-105' : 'text-muted-foreground'
+          }`}
+        >
+          <LayoutDashboard className="w-5 h-5" />
+          <span>{t('dashboard')}</span>
+        </Link>
+
+        <Link 
+          href="/dashboard/expenses"
+          className={`flex flex-col items-center gap-1 text-xs font-medium py-1 px-3 rounded-xl transition-all ${
+            pathname === '/dashboard/expenses' ? 'text-primary scale-105' : 'text-muted-foreground'
+          }`}
+        >
+          <Receipt className="w-5 h-5" />
+          <span>{t('expenses')}</span>
+        </Link>
+
+        {/* Center Floating Action Button */}
+        <button 
+          onClick={() => setIsQuickActionOpen(true)}
+          className="relative -top-4 w-13 h-13 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center shadow-[0_8px_25px_rgba(99,102,241,0.5)] active:scale-90 transition-all border-2 border-background"
+          aria-label="Add transaction"
+        >
+          <PlusCircle className="w-7 h-7" />
+        </button>
+
+        <Link 
+          href="/dashboard/incomes"
+          className={`flex flex-col items-center gap-1 text-xs font-medium py-1 px-3 rounded-xl transition-all ${
+            pathname === '/dashboard/incomes' ? 'text-primary scale-105' : 'text-muted-foreground'
+          }`}
+        >
+          <TrendingUp className="w-5 h-5" />
+          <span>{t('incomes')}</span>
+        </Link>
+
+        <Link 
+          href="/dashboard/savings"
+          className={`flex flex-col items-center gap-1 text-xs font-medium py-1 px-3 rounded-xl transition-all ${
+            pathname === '/dashboard/savings' ? 'text-primary scale-105' : 'text-muted-foreground'
+          }`}
+        >
+          <Target className="w-5 h-5" />
+          <span>{t('savings')}</span>
+        </Link>
+      </nav>
+
+      {/* Desktop Floating Action Button (>= 768px) */}
+      <div className="hidden md:flex fixed bottom-8 right-8 z-50 group flex-col items-center justify-end">
         <div className="absolute bottom-14 flex flex-col items-center gap-3 pb-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto">
           <Link href="/dashboard/upload-transactions" className="flex items-center gap-3 group/item relative" title="Scan Receipt">
             <span className="absolute right-14 whitespace-nowrap bg-card border border-border text-card-foreground px-2 py-1 rounded text-xs font-medium shadow-md opacity-0 group-hover/item:opacity-100 transition-opacity translate-x-2 group-hover/item:translate-x-0">

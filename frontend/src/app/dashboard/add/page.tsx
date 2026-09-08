@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/utils/api';
 import { format } from 'date-fns';
-import { Loader2, GripVertical, X, Banknote, Wallet } from 'lucide-react';
+import { Loader2, GripVertical, X, Banknote, Wallet, Plus, Check } from 'lucide-react';
 import { useUserProfile } from '@/context/UserProfileContext';
 import CustomDatePicker from '@/components/CustomDatePicker';
 
@@ -26,10 +26,6 @@ export default function AddTransaction() {
   const [notes, setNotes] = useState('');
   const [transactionDate, setTransactionDate] = useState<Date | null>(new Date());
 
-  useEffect(() => {
-    // Already defaults to now
-  }, []);
-  
   const [incomeSource, setIncomeSource] = useState('');
   
   const [availableCategories, setAvailableCategories] = useState<string[]>(PREDEFINED_CATEGORIES);
@@ -64,6 +60,18 @@ export default function AddTransaction() {
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault(); 
+  };
+
+  const toggleCategory = (category: string) => {
+    if (selectedCategories.includes(category)) {
+      setSelectedCategories(prev => prev.filter(c => c !== category));
+      if (!availableCategories.includes(category)) {
+        setAvailableCategories(prev => [...prev, category]);
+      }
+    } else {
+      setAvailableCategories(prev => prev.filter(c => c !== category));
+      setSelectedCategories(prev => [...prev, category]);
+    }
   };
 
   const addCustomCategory = () => {
@@ -121,7 +129,7 @@ export default function AddTransaction() {
         setTimeout(() => {
           router.push('/dashboard');
         }, 1500);
-        return; // prevent immediate routing
+        return;
       }
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to add transaction.');
@@ -131,7 +139,7 @@ export default function AddTransaction() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto bg-card border border-border rounded-2xl p-8 relative overflow-hidden">
+    <div className="max-w-4xl mx-auto bg-card border border-border rounded-2xl p-4 sm:p-8 relative overflow-hidden shadow-xl">
       <style>{`
         @keyframes drop-in {
           0% { transform: translateY(-50px) scale(1.2); opacity: 0; }
@@ -148,193 +156,196 @@ export default function AddTransaction() {
       `}</style>
 
       {animationType && (
-        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-background/90 backdrop-blur-sm rounded-2xl">
-          <div className="relative w-32 h-40 flex flex-col items-center justify-end">
-            <div className={`absolute top-0 ${animationType === 'INCOME' ? 'animate-[drop-in_1s_ease-in-out_forwards]' : 'animate-[fly-out_1s_ease-in-out_forwards]'}`}>
-              <Banknote className={`w-16 h-16 ${animationType === 'INCOME' ? 'text-emerald-500' : 'text-rose-500'} drop-shadow-xl`} strokeWidth={1.5} />
-            </div>
-            <div className="relative z-10 animate-bounce">
-              <Wallet className="w-24 h-24 text-amber-600 drop-shadow-2xl" strokeWidth={1.5} />
-            </div>
+        <div className="absolute inset-0 bg-background/90 backdrop-blur-md z-50 flex flex-col items-center justify-center pointer-events-none">
+          <div className="relative flex flex-col items-center">
+            {animationType === 'EXPENSE' ? (
+              <div style={{ animation: 'drop-in 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}>
+                <Banknote className="w-20 h-20 text-rose-500" />
+              </div>
+            ) : (
+              <div style={{ animation: 'fly-out 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}>
+                <Banknote className="w-20 h-20 text-emerald-500" />
+              </div>
+            )}
+            <Wallet className="w-24 h-24 text-primary mt-2" />
+            <p className="mt-4 text-lg font-bold text-foreground">
+              {animationType === 'EXPENSE' ? 'Expense Recorded!' : 'Income Recorded!'}
+            </p>
           </div>
-          <h3 className={`text-2xl font-bold mt-6 animate-pulse ${animationType === 'INCOME' ? 'text-emerald-400' : 'text-rose-400'}`}>
-            {animationType === 'INCOME' ? 'Income Secured!' : 'Expense Logged!'}
-          </h3>
         </div>
       )}
 
-      <h2 className="text-2xl font-bold mb-6">Add New Transaction</h2>
-      
-      <div className="flex bg-background p-1 rounded-xl mb-8 border border-border">
-        <button
-          className={"flex-1 py-2 text-sm font-medium rounded-lg transition-colors " + (type === 'EXPENSE' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground')}
+      {/* Segmented Type Selector */}
+      <div className="flex bg-accent/50 p-1 rounded-xl mb-6 sm:mb-8 border border-border/50">
+        <button 
+          type="button"
           onClick={() => setType('EXPENSE')}
+          className={`flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+            type === 'EXPENSE' 
+              ? 'bg-card text-rose-500 shadow-md border border-rose-500/20' 
+              : 'text-muted-foreground hover:text-foreground'
+          }`}
         >
           Expense
         </button>
-        <button
-          className={"flex-1 py-2 text-sm font-medium rounded-lg transition-colors " + (type === 'INCOME' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground')}
+        <button 
+          type="button"
           onClick={() => setType('INCOME')}
+          className={`flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+            type === 'INCOME' 
+              ? 'bg-card text-emerald-500 shadow-md border border-emerald-500/20' 
+              : 'text-muted-foreground hover:text-foreground'
+          }`}
         >
           Income
         </button>
       </div>
 
-      {error && <div className="bg-red-500/10 text-red-500 p-4 rounded-xl mb-6 text-sm">{error}</div>}
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/20 text-red-500 px-4 py-3 rounded-xl text-sm font-medium mb-6 text-center">
+          {error}
+        </div>
+      )}
 
-      <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-8">
-        
-        {/* Left Side: Basic Form */}
-        <div className="flex-1 flex flex-col gap-6">
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">Amount ({currencySymbol})</label>
-            <input
-              type="number"
-              step="0.01"
-              required
-              min="0.01"
-              className="w-full bg-input border border-border rounded-xl p-3 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="0.00"
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5 sm:gap-6">
+        {/* Amount Input */}
+        <div>
+          <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Amount</label>
+          <div className="relative">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-foreground text-xl">{currencySymbol}</span>
+            <input 
+              type="number" step="0.01" required placeholder="0.00"
+              value={amount} onChange={(e) => setAmount(e.target.value)}
+              className="w-full bg-input border border-border rounded-xl pl-10 pr-4 py-3 text-2xl font-bold text-foreground focus:outline-none focus:border-primary shadow-inner"
             />
           </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">Date (Defaults to Today)</label>
-            <CustomDatePicker
-              selected={transactionDate}
-              onChange={(date) => {
-                if (!Array.isArray(date)) {
-                  setTransactionDate(date);
-                }
-              }}
-              required
-            />
-          </div>
-
-          {type === 'INCOME' ? (
-            <div>
-              <label className="block text-sm font-medium text-muted-foreground mb-2">Income Source</label>
-              <input
-                type="text"
-                required
-                className="w-full bg-input border border-border rounded-xl p-3 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-                value={incomeSource}
-                onChange={(e) => setIncomeSource(e.target.value)}
-                placeholder="e.g., 💼 Salary, 👨‍💻 Freelance"
-              />
-            </div>
-          ) : (
-            <>
-              <div>
-                <label className="block text-sm font-medium text-muted-foreground mb-2">Merchant (Optional)</label>
-                <input
-                  type="text"
-                  className="w-full bg-input border border-border rounded-xl p-3 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-                  value={merchant}
-                  onChange={(e) => setMerchant(e.target.value)}
-                  placeholder="e.g., Amazon, Starbucks"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-muted-foreground mb-2">Notes (Optional)</label>
-                <textarea
-                  className="w-full bg-input border border-border rounded-xl p-3 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  rows={3}
-                  placeholder="Any extra details..."
-                />
-              </div>
-            </>
-          )}
-          
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-primary text-primary-foreground font-medium py-3 rounded-xl hover:opacity-90 transition-colors flex justify-center items-center mt-2"
-          >
-            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Add " + (type === 'EXPENSE' ? 'Expense' : 'Income')}
-          </button>
         </div>
 
-        {/* Right Side: Category Drag & Drop */}
-        {type === 'EXPENSE' && (
-          <div className="flex-1 flex flex-col gap-6">
-            
-            {/* Selected Zone */}
-            <div 
-              className="bg-indigo-500/5 border-2 border-dashed border-indigo-500/30 rounded-2xl p-4 flex flex-col min-h-[120px]"
-              onDrop={(e) => handleDrop(e, 'selected')}
-              onDragOver={handleDragOver}
-            >
-              <h3 className="text-sm font-medium text-primary mb-3">Selected Categories (Drop here)</h3>
-              <div className="flex flex-wrap gap-2">
-                {selectedCategories.length === 0 && (
-                   <p className="text-xs text-muted-foreground italic">Drag categories here...</p>
-                )}
-                {selectedCategories.map(cat => (
-                  <div 
-                    key={cat}
-                    draggable
-                    onDragStart={(e) => handleDragStart(e, cat, 'selected')}
-                    className="flex items-center gap-1 bg-primary text-primary-foreground px-3 py-1.5 rounded-full text-sm font-medium shadow-sm cursor-grab active:cursor-grabbing hover:opacity-90 transition-colors"
-                  >
-                    <GripVertical className="w-3 h-3 opacity-50" />
-                    {cat}
-                    <button type="button" onClick={() => removeSelectedCategory(cat)} className="ml-1 opacity-70 hover:opacity-100">
-                      <X className="w-3 h-3" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
+        {/* Date Selector */}
+        <div>
+          <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Transaction Date</label>
+          <CustomDatePicker 
+            selected={transactionDate} 
+            onChange={(date) => setTransactionDate(date as Date | null)}
+          />
+        </div>
 
-            {/* Custom Category Input */}
-            <div className="flex gap-2">
-              <input
-                type="text"
-                className="flex-1 bg-input border border-border rounded-xl px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-                value={customCategory}
-                onChange={(e) => setCustomCategory(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addCustomCategory())}
-                placeholder="Type custom category (e.g. 🐶 Pets)..."
+        {type === 'EXPENSE' ? (
+          <>
+            <div>
+              <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Merchant (Optional)</label>
+              <input 
+                type="text" placeholder="e.g. Starbucks, Amazon"
+                value={merchant} onChange={(e) => setMerchant(e.target.value)}
+                className="w-full bg-input border border-border rounded-xl px-4 py-2.5 text-foreground focus:outline-none focus:border-primary text-sm"
               />
-              <button 
-                type="button" 
-                onClick={addCustomCategory}
-                className="bg-accent text-accent-foreground border border-border px-4 py-2 rounded-xl text-sm hover:opacity-80 transition-colors"
-              >
-                Add
-              </button>
             </div>
 
-            {/* Available Zone */}
-            <div 
-              className="bg-background border border-border rounded-2xl p-4 flex flex-col flex-1"
-              onDrop={(e) => handleDrop(e, 'available')}
-              onDragOver={handleDragOver}
-            >
-              <h3 className="text-sm font-medium text-muted-foreground mb-3">Available Categories</h3>
-              <div className="flex flex-wrap gap-2">
+            {/* Categories Section (Tap or Drag-and-Drop) */}
+            <div>
+              <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                Categories (Tap or Drag items to select)
+              </label>
+
+              {/* Selected Categories Dropzone */}
+              <div 
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, 'selected')}
+                className="min-h-[64px] bg-primary/5 border-2 border-dashed border-primary/30 rounded-xl p-3 flex flex-wrap gap-2 items-center mb-3 transition-colors"
+              >
+                {selectedCategories.length === 0 ? (
+                  <span className="text-xs text-muted-foreground italic">Tap or drag categories below to assign...</span>
+                ) : (
+                  selectedCategories.map(cat => (
+                    <span 
+                      key={cat}
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, cat, 'selected')}
+                      onClick={() => removeSelectedCategory(cat)}
+                      className="inline-flex items-center gap-1.5 bg-primary text-primary-foreground px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer shadow-sm active:scale-95 transition-transform"
+                    >
+                      <GripVertical className="w-3.5 h-3.5 opacity-60" />
+                      {cat}
+                      <X className="w-3.5 h-3.5 hover:text-red-200" />
+                    </span>
+                  ))
+                )}
+              </div>
+
+              {/* Available Categories Chips */}
+              <div 
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, 'available')}
+                className="flex flex-wrap gap-2 p-3 bg-accent/30 rounded-xl border border-border/50 max-h-48 overflow-y-auto"
+              >
                 {availableCategories.map(cat => (
-                  <div 
+                  <span 
                     key={cat}
                     draggable
                     onDragStart={(e) => handleDragStart(e, cat, 'available')}
-                    className="flex items-center gap-1 bg-accent text-accent-foreground px-3 py-1.5 rounded-full text-sm cursor-grab active:cursor-grabbing hover:opacity-80 transition-colors border border-border"
+                    onClick={() => toggleCategory(cat)}
+                    className="inline-flex items-center gap-1.5 bg-card hover:bg-primary/20 hover:text-primary text-foreground border border-border px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-all active:scale-95"
                   >
-                    <GripVertical className="w-3 h-3 opacity-50" />
+                    <Plus className="w-3 h-3 opacity-60" />
                     {cat}
-                  </div>
+                  </span>
                 ))}
+              </div>
+
+              {/* Custom Category Input */}
+              <div className="flex gap-2 mt-3">
+                <input 
+                  type="text" placeholder="Add custom category..."
+                  value={customCategory} onChange={(e) => setCustomCategory(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addCustomCategory(); } }}
+                  className="flex-1 bg-input border border-border rounded-xl px-3 py-2 text-xs text-foreground focus:outline-none focus:border-primary"
+                />
+                <button 
+                  type="button" onClick={addCustomCategory}
+                  className="px-4 py-2 bg-accent text-accent-foreground text-xs font-semibold rounded-xl hover:bg-accent/80 transition-colors"
+                >
+                  Add
+                </button>
               </div>
             </div>
 
+            <div>
+              <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Notes (Optional)</label>
+              <textarea 
+                placeholder="Additional details..."
+                value={notes} onChange={(e) => setNotes(e.target.value)}
+                className="w-full bg-input border border-border rounded-xl px-4 py-2.5 text-foreground focus:outline-none focus:border-primary text-sm min-h-[80px]"
+              />
+            </div>
+          </>
+        ) : (
+          <div>
+            <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Income Source</label>
+            <input 
+              type="text" required placeholder="e.g. Salary, Freelance, Dividend"
+              value={incomeSource} onChange={(e) => setIncomeSource(e.target.value)}
+              className="w-full bg-input border border-border rounded-xl px-4 py-2.5 text-foreground focus:outline-none focus:border-primary text-sm"
+            />
           </div>
         )}
 
+        <div className="flex items-center justify-end gap-3 mt-4">
+          <button 
+            type="button" onClick={() => router.back()}
+            className="px-5 py-3 rounded-xl text-sm font-medium text-foreground hover:bg-accent transition-colors"
+          >
+            Cancel
+          </button>
+          <button 
+            type="submit" disabled={loading}
+            className={`px-8 py-3 rounded-xl text-sm font-bold text-white shadow-xl transition-all flex items-center gap-2 active:scale-95 ${
+              type === 'EXPENSE' ? 'bg-rose-500 hover:bg-rose-600' : 'bg-emerald-500 hover:bg-emerald-600'
+            }`}
+          >
+            {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+            {type === 'EXPENSE' ? 'Save Expense' : 'Save Income'}
+          </button>
+        </div>
       </form>
     </div>
   );
