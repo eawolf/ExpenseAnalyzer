@@ -41,20 +41,20 @@ export function LanguageSelector() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={toggleDropdown}
-        className="p-2 rounded-full bg-[var(--card)] border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--border)] transition-colors"
+        className="p-2 rounded-xl bg-card border border-border text-foreground hover:bg-accent transition-colors flex items-center justify-center"
         aria-label="Select Language"
       >
-        <Globe size={20} />
+        <Globe className="w-4 h-4" />
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-32 bg-[var(--card)] border border-[var(--border)] rounded-md shadow-lg z-50">
-          <ul className="py-1">
+        <div className="absolute left-0 sm:left-auto sm:right-0 mt-2 w-36 glass-popup border border-border rounded-xl shadow-2xl z-[100] py-1">
+          <ul>
             {languages.map((lng) => (
               <li key={lng.code}>
                 <button
                   onClick={() => changeLanguage(lng.code)}
-                  className={`w-full text-left px-4 py-2 text-sm hover:bg-[var(--background)] transition-colors ${i18n.resolvedLanguage === lng.code ? 'font-bold text-[var(--primary)]' : 'text-[var(--foreground)]'}`}
+                  className={`w-full text-left px-3 py-1.5 text-xs sm:text-sm hover:bg-accent transition-colors ${i18n.resolvedLanguage === lng.code ? 'font-bold text-primary bg-primary/10' : 'text-foreground'}`}
                 >
                   {lng.name}
                 </button>

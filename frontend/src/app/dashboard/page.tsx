@@ -167,72 +167,66 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10 items-start">
-        {/* Chart */}
-        <div className="lg:col-span-2 p-6 rounded-2xl glass-panel sticky top-24">
-          <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
-            <h3 className="text-lg font-semibold text-foreground">{t('activityOverview', 'Activity Overview')}</h3>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <div className="w-44">
-                  <CustomDatePicker
-                    selected={chartStartDate}
-                    onChange={(date) => setChartStartDate(date as Date | null)}
-                    selectsStart
-                    startDate={chartStartDate}
-                    endDate={chartEndDate}
-                    placeholderText="From"
-                    className="bg-background border-border py-1.5 pl-9 text-sm shadow-sm w-full"
-                  />
-                </div>
-                <span className="text-muted-foreground text-sm">-</span>
-                <div className="w-44">
-                  <CustomDatePicker
-                    selected={chartEndDate}
-                    onChange={(date) => setChartEndDate(date as Date | null)}
-                    selectsEnd
-                    startDate={chartStartDate}
-                    endDate={chartEndDate}
-                    minDate={chartStartDate}
-                    placeholderText="To"
-                    className="bg-background border-border py-1.5 pl-9 text-sm shadow-sm w-full"
-                  />
-                </div>
+      {/* Activity Overview & Recent Transactions */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Activity Overview Panel */}
+        <div className="lg:col-span-2 p-4 sm:p-6 rounded-2xl glass-panel flex flex-col gap-4 min-h-[420px]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <h3 className="text-lg font-semibold text-foreground whitespace-nowrap">{t('activityOverview')}</h3>
+            
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="flex items-center gap-1.5 flex-1 sm:flex-initial min-w-0">
+                <CustomDatePicker
+                  selected={chartStartDate}
+                  onChange={(date) => {
+                    const d = Array.isArray(date) ? date[0] : date;
+                    setChartStartDate(d);
+                  }}
+                  placeholderText="From"
+                  className="w-full sm:w-28 text-xs bg-background/50 border border-border/50 rounded-lg px-2 py-1.5 text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+                <span className="text-muted-foreground text-xs font-medium">-</span>
+                <CustomDatePicker
+                  selected={chartEndDate}
+                  onChange={(date) => {
+                    const d = Array.isArray(date) ? date[0] : date;
+                    setChartEndDate(d);
+                  }}
+                  placeholderText="To"
+                  className="w-full sm:w-28 text-xs bg-background/50 border border-border/50 rounded-lg px-2 py-1.5 text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                />
               </div>
-              <div className="flex items-center gap-1 bg-background p-1 rounded-lg border border-border shadow-sm">
-              <button 
-                onClick={() => setChartType('bar')} 
-                className={`p-1.5 rounded-md transition-colors ${chartType === 'bar' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-accent'}`}
-                title="Bar Chart (Recent Trend)"
-              >
-                <BarChart2 className="w-4 h-4" />
-              </button>
-              <button 
-                onClick={() => setChartType('line')} 
-                className={`p-1.5 rounded-md transition-colors ${chartType === 'line' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-accent'}`}
-                title="Line Chart (Activity Trajectory)"
-              >
-                <LineChartIcon className="w-4 h-4" />
-              </button>
-              <button 
-                onClick={() => setChartType('pie')} 
-                className={`p-1.5 rounded-md transition-colors ${chartType === 'pie' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-accent'}`}
-                title="Pie Chart (Income vs Expense)"
-              >
-                <PieChartIcon className="w-4 h-4" />
-              </button>
-              <button 
-                onClick={() => setChartType('pie-categories')} 
-                className={`p-1.5 rounded-md transition-colors ${chartType === 'pie-categories' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-accent'}`}
-                title="Pie Chart (Top Categories)"
-              >
-                <PieChartIcon className="w-4 h-4 text-rose-500" />
-              </button>
+
+              <div className="flex items-center bg-accent/40 rounded-lg p-0.5 border border-border/40">
+                <button
+                  onClick={() => setChartType('bar')}
+                  className={`px-2 py-1 text-xs rounded-md font-medium transition-all ${chartType === 'bar' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                >
+                  Bar
+                </button>
+                <button
+                  onClick={() => setChartType('line')}
+                  className={`px-2 py-1 text-xs rounded-md font-medium transition-all ${chartType === 'line' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                >
+                  Line
+                </button>
+                <button
+                  onClick={() => setChartType('pie-categories')}
+                  className={`px-2 py-1 text-xs rounded-md font-medium transition-all ${chartType === 'pie-categories' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                >
+                  Category
+                </button>
+                <button
+                  onClick={() => setChartType('pie')}
+                  className={`px-2 py-1 text-xs rounded-md font-medium transition-all ${chartType === 'pie' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                >
+                  Ratio
+                </button>
               </div>
             </div>
           </div>
-          <div className="h-72 w-full relative">
+
+          <div className="flex-1 relative">
             {loadingChart && (
               <div className="absolute inset-0 bg-background/50 flex items-center justify-center z-10 rounded-xl backdrop-blur-sm">
                 <Loader2 className="w-6 h-6 text-primary animate-spin" />

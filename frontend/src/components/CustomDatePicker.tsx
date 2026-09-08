@@ -36,6 +36,10 @@ export default function CustomDatePicker({
   required = false,
   dateFormat
 }: CustomDatePickerProps) {
+  const isCompact = className.includes('py-1') || className.includes('text-xs') || className.includes('px-2');
+  const defaultPadding = isCompact ? 'pl-7 pr-2 py-1.5' : 'pl-11 pr-4 py-3.5';
+  const iconClasses = isCompact ? 'left-2 w-3.5 h-3.5' : 'left-4 w-5 h-5';
+
   return (
     <div className="relative w-full">
       {/* @ts-ignore - react-datepicker types struggle with conditional selectsRange boolean */}
@@ -61,11 +65,11 @@ export default function CustomDatePicker({
         }
         placeholderText={placeholderText}
         required={required}
-        className={`block w-full rounded-xl border border-border bg-input px-4 py-3.5 pl-12 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors ${className}`}
+        className={`block w-full rounded-xl border border-border bg-input text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors ${defaultPadding} ${className}`}
         calendarClassName="custom-calendar-popup"
         popperClassName="custom-calendar-popper"
       />
-      <CalendarIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
+      <CalendarIcon className={`absolute ${iconClasses} top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none`} />
     </div>
   );
 }

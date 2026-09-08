@@ -8,7 +8,7 @@ import {
   Home, PlusCircle, Settings, LogOut, ArrowLeft, ArrowRight, 
   LayoutDashboard, Receipt, TrendingUp, Loader2, ChevronLeft, 
   ChevronRight, Target, Upload, DollarSign, Euro, PoundSterling, 
-  IndianRupee, JapaneseYen, Menu, X, Sparkles 
+  IndianRupee, JapaneseYen, Menu, X, Sparkles, User 
 } from 'lucide-react';
 import ProfileSettingsModal from '@/components/ProfileSettingsModal';
 import CurrencySelector from '@/components/CurrencySelector';
@@ -138,9 +138,11 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
       <main className={`flex-1 w-full p-3 sm:p-4 md:p-8 transition-all duration-300 relative z-10 pb-24 md:pb-8 ${isSidebarCollapsed ? 'md:ml-20' : 'md:ml-64'}`}>
         
         {/* Top Header Bar */}
-        <header className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 md:mb-8 pb-3 border-b border-border relative z-40 gap-3">
-          <div className="flex items-center justify-between w-full sm:w-auto">
-            <div className="flex items-center gap-2">
+        <header className="flex flex-col gap-3 mb-4 md:mb-8 pb-3 border-b border-border relative z-40">
+          
+          {/* Top Header Row: Brand Logo, Title & Profile Settings Avatar */}
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-2 min-w-0">
               <div className="md:hidden w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white shadow-md shrink-0">
                 E
               </div>
@@ -155,21 +157,26 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
               </h1>
             </div>
 
-            {/* Mobile Profile Avatar */}
+            {/* Profile Settings Avatar Button (Desktop & Mobile) */}
             <button 
               onClick={() => setProfileModalOpen(true)}
-              className="md:hidden w-9 h-9 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center overflow-hidden active:scale-95 transition-transform"
+              className="flex items-center gap-2 p-1 sm:p-1.5 rounded-full bg-card border border-border hover:bg-accent transition-all shrink-0 active:scale-95"
+              title="Profile & Settings"
             >
-              {userProfile?.profilePictureBase64 ? (
-                  <img src={userProfile.profilePictureBase64} alt="Avatar" className="w-full h-full object-cover" />
-              ) : (
-                  <span className="text-xs font-bold text-indigo-400">{getInitials(userProfile?.name || '')}</span>
-              )}
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center overflow-hidden">
+                {userProfile?.profilePictureBase64 ? (
+                    <img src={userProfile.profilePictureBase64} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                    <span className="text-xs sm:text-sm font-bold text-indigo-400">{getInitials(userProfile?.name || '')}</span>
+                )}
+              </div>
+              {userProfile && <span className="hidden sm:inline text-xs font-semibold px-1">{userProfile.name}</span>}
             </button>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
-              <div className="flex items-center gap-1.5 bg-card border border-border rounded-xl px-2 py-1 max-w-[170px] sm:max-w-none">
+          {/* Second Header Row: Controls (Date Filter, Language, Currency, Theme) */}
+          <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2 w-full">
+              <div className="flex items-center gap-1 bg-card border border-border rounded-xl px-2 py-1 flex-1 sm:flex-none">
                 <CustomDatePicker
                   selected={new Date(selectedYear, selectedMonth - 1, 1)}
                   onChange={(date) => {
@@ -178,23 +185,13 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
                     }
                   }}
                   showMonthYearPicker
-                  className="bg-transparent border-none py-1 text-xs sm:text-sm focus:ring-0 shadow-none"
+                  className="bg-transparent border-none py-1 text-xs sm:text-sm focus:ring-0 shadow-none w-full"
                 />
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 shrink-0">
                 <LanguageSelector />
                 <CurrencySelector />
                 <ThemeToggle />
-                <button 
-                  onClick={() => setProfileModalOpen(true)}
-                  className="hidden md:flex w-10 h-10 rounded-full bg-indigo-500/20 border border-indigo-500/30 items-center justify-center overflow-hidden hover:opacity-80 transition-opacity"
-                >
-                  {userProfile?.profilePictureBase64 ? (
-                      <img src={userProfile.profilePictureBase64} alt="Avatar" className="w-full h-full object-cover" />
-                  ) : (
-                      <span className="text-sm font-bold text-indigo-400">{getInitials(userProfile?.name || '')}</span>
-                  )}
-                </button>
               </div>
           </div>
         </header>
@@ -215,14 +212,14 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
           onClick={() => setIsQuickActionOpen(false)}
         >
           <div 
-            className="bg-card border border-border rounded-3xl p-6 flex flex-col gap-4 shadow-2xl animate-in slide-in-from-bottom duration-300"
+            className="bg-card border border-border rounded-3xl p-5 flex flex-col gap-3 shadow-2xl animate-in slide-in-from-bottom duration-300"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between pb-2 border-b border-border">
-              <h3 className="font-bold text-lg">Quick Actions</h3>
+              <h3 className="font-bold text-base">Quick Actions</h3>
               <button 
                 onClick={() => setIsQuickActionOpen(false)}
-                className="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-muted-foreground hover:text-foreground"
+                className="w-7 h-7 rounded-full bg-accent flex items-center justify-center text-muted-foreground hover:text-foreground"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -231,28 +228,42 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
             <Link 
               href="/dashboard/upload-transactions" 
               onClick={() => setIsQuickActionOpen(false)}
-              className="flex items-center gap-4 p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 active:scale-98 transition-transform"
+              className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 active:scale-98 transition-transform"
             >
-              <div className="w-12 h-12 rounded-xl bg-indigo-500 text-white flex items-center justify-center shadow-md shrink-0">
-                <Upload className="w-6 h-6" />
+              <div className="w-11 h-11 rounded-xl bg-indigo-500 text-white flex items-center justify-center shadow-md shrink-0">
+                <Upload className="w-5 h-5" />
               </div>
               <div className="flex flex-col">
-                <span className="font-semibold text-foreground">Scan Receipt (AI OCR)</span>
-                <span className="text-xs text-muted-foreground">Upload receipt image to parse expenses</span>
+                <span className="font-semibold text-sm text-foreground">Scan Receipt (AI OCR)</span>
+                <span className="text-[11px] text-muted-foreground">Upload receipt image to parse expenses</span>
               </div>
             </Link>
 
             <Link 
               href="/dashboard/add" 
               onClick={() => setIsQuickActionOpen(false)}
-              className="flex items-center gap-4 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 active:scale-98 transition-transform"
+              className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 active:scale-98 transition-transform"
             >
-              <div className="w-12 h-12 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-md shrink-0">
-                <PlusCircle className="w-6 h-6" />
+              <div className="w-11 h-11 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-md shrink-0">
+                <PlusCircle className="w-5 h-5" />
               </div>
               <div className="flex flex-col">
-                <span className="font-semibold text-foreground">Manual Entry</span>
-                <span className="text-xs text-muted-foreground">Add new expense or income record</span>
+                <span className="font-semibold text-sm text-foreground">Manual Entry</span>
+                <span className="text-[11px] text-muted-foreground">Add new expense or income record</span>
+              </div>
+            </Link>
+
+            <Link 
+              href="/dashboard/savings" 
+              onClick={() => setIsQuickActionOpen(false)}
+              className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 active:scale-98 transition-transform"
+            >
+              <div className="w-11 h-11 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-md shrink-0">
+                <Target className="w-5 h-5" />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-semibold text-sm text-foreground">Savings Goal</span>
+                <span className="text-[11px] text-muted-foreground">Set and track monthly savings targets</span>
               </div>
             </Link>
           </div>
@@ -260,11 +271,11 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
       )}
 
       {/* Mobile Glassmorphism Bottom Tab Bar (< 768px) */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-card/90 backdrop-blur-2xl border-t border-border px-3 py-2 flex items-center justify-around shadow-2xl">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-card/95 backdrop-blur-2xl border-t border-border px-2 py-1.5 flex items-center justify-around shadow-2xl">
         <Link 
           href="/dashboard"
-          className={`flex flex-col items-center gap-1 text-xs font-medium py-1 px-3 rounded-xl transition-all ${
-            pathname === '/dashboard' ? 'text-primary scale-105' : 'text-muted-foreground'
+          className={`flex flex-col items-center gap-0.5 text-[10px] font-medium py-1 px-2.5 rounded-xl transition-all ${
+            pathname === '/dashboard' ? 'text-primary scale-105 font-bold' : 'text-muted-foreground'
           }`}
         >
           <LayoutDashboard className="w-5 h-5" />
@@ -273,8 +284,8 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
 
         <Link 
           href="/dashboard/expenses"
-          className={`flex flex-col items-center gap-1 text-xs font-medium py-1 px-3 rounded-xl transition-all ${
-            pathname === '/dashboard/expenses' ? 'text-primary scale-105' : 'text-muted-foreground'
+          className={`flex flex-col items-center gap-0.5 text-[10px] font-medium py-1 px-2.5 rounded-xl transition-all ${
+            pathname === '/dashboard/expenses' ? 'text-primary scale-105 font-bold' : 'text-muted-foreground'
           }`}
         >
           <Receipt className="w-5 h-5" />
@@ -284,16 +295,16 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
         {/* Center Floating Action Button */}
         <button 
           onClick={() => setIsQuickActionOpen(true)}
-          className="relative -top-4 w-13 h-13 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center shadow-[0_8px_25px_rgba(99,102,241,0.5)] active:scale-90 transition-all border-2 border-background"
+          className="relative -top-3 w-12 h-12 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center shadow-[0_6px_20px_rgba(99,102,241,0.5)] active:scale-90 transition-all border-2 border-background"
           aria-label="Add transaction"
         >
-          <PlusCircle className="w-7 h-7" />
+          <PlusCircle className="w-6 h-6" />
         </button>
 
         <Link 
           href="/dashboard/incomes"
-          className={`flex flex-col items-center gap-1 text-xs font-medium py-1 px-3 rounded-xl transition-all ${
-            pathname === '/dashboard/incomes' ? 'text-primary scale-105' : 'text-muted-foreground'
+          className={`flex flex-col items-center gap-0.5 text-[10px] font-medium py-1 px-2.5 rounded-xl transition-all ${
+            pathname === '/dashboard/incomes' ? 'text-primary scale-105 font-bold' : 'text-muted-foreground'
           }`}
         >
           <TrendingUp className="w-5 h-5" />
@@ -301,13 +312,13 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
         </Link>
 
         <Link 
-          href="/dashboard/savings"
-          className={`flex flex-col items-center gap-1 text-xs font-medium py-1 px-3 rounded-xl transition-all ${
-            pathname === '/dashboard/savings' ? 'text-primary scale-105' : 'text-muted-foreground'
+          href="/dashboard/settings"
+          className={`flex flex-col items-center gap-0.5 text-[10px] font-medium py-1 px-2.5 rounded-xl transition-all ${
+            pathname === '/dashboard/settings' ? 'text-primary scale-105 font-bold' : 'text-muted-foreground'
           }`}
         >
-          <Target className="w-5 h-5" />
-          <span>{t('savings')}</span>
+          <Settings className="w-5 h-5" />
+          <span>{t('settings')}</span>
         </Link>
       </nav>
 

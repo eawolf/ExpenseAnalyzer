@@ -48,7 +48,6 @@ export default function CurrencySelector() {
     setPreviousCurrency(userProfile.currency);
     setLoadingCurrency(true);
     try {
-      const token = localStorage.getItem('token');
       const res = await authApi.put('/auth/me/currency', { currency: newCurrency });
       setUserProfile(res.data);
     } catch (err) {
@@ -64,9 +63,9 @@ export default function CurrencySelector() {
   const reverseRate = showConversion ? (MOCK_EXCHANGE_RATES[previousCurrency] / MOCK_EXCHANGE_RATES[userProfile.currency]).toFixed(4) : null;
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2">
       {showConversion && (
-        <div className="hidden md:flex items-center gap-2 bg-primary/10 border border-primary/20 px-3 py-1.5 rounded-lg text-xs font-medium text-primary animate-in fade-in slide-in-from-right-2">
+        <div className="hidden lg:flex items-center gap-2 bg-primary/10 border border-primary/20 px-3 py-1.5 rounded-lg text-xs font-medium text-primary animate-in fade-in">
           <span>1 {getCurrencyLabel(previousCurrency)} = {conversionRate} {getCurrencyLabel(userProfile.currency)}</span>
           <span className="text-primary/30">|</span>
           <span>1 {getCurrencyLabel(userProfile.currency)} = {reverseRate} {getCurrencyLabel(previousCurrency)}</span>
@@ -76,30 +75,30 @@ export default function CurrencySelector() {
         <button
           onClick={() => setIsOpen(!isOpen)}
           disabled={loadingCurrency}
-          className="flex items-center gap-2 glass-panel rounded-xl px-3 py-2 hover:bg-accent transition-colors disabled:opacity-50"
+          className="flex items-center gap-1.5 glass-panel rounded-xl px-2.5 py-1.5 hover:bg-accent transition-colors disabled:opacity-50 text-xs sm:text-sm"
         >
           {loadingCurrency ? (
-            <Loader2 className="w-4 h-4 text-muted-foreground animate-spin" />
+            <Loader2 className="w-3.5 h-3.5 text-muted-foreground animate-spin" />
           ) : (
-            <span className="text-muted-foreground font-medium text-sm">{userProfile.currency}</span>
+            <span className="text-muted-foreground font-medium">{userProfile.currency}</span>
           )}
-          <span className="text-sm text-foreground font-medium flex items-center gap-1">
+          <span className="text-foreground font-medium flex items-center gap-0.5">
             {getCurrencyLabel(userProfile.currency)}
             <ChevronDown className="w-3 h-3 opacity-50" />
           </span>
         </button>
 
         {isOpen && (
-          <div className="absolute right-0 top-full mt-2 w-40 glass-popup rounded-xl py-2 z-[100] animate-in fade-in slide-in-from-top-2">
+          <div className="absolute left-0 sm:left-auto sm:right-0 top-full mt-2 w-36 sm:w-40 glass-popup rounded-xl py-1.5 z-[100] animate-in fade-in slide-in-from-top-2 shadow-2xl">
             {CURRENCIES.map(c => (
               <button
                 key={c.symbol}
                 onClick={() => changeCurrency(c.symbol)}
-                className={`w-full flex items-center justify-between px-4 py-2 text-sm transition-colors hover:bg-accent
-                  ${userProfile.currency === c.symbol ? 'bg-primary/10 text-primary font-medium' : 'text-foreground'}`}
+                className={`w-full flex items-center justify-between px-3 py-2 text-xs sm:text-sm transition-colors hover:bg-accent
+                  ${userProfile.currency === c.symbol ? 'bg-primary/10 text-primary font-bold' : 'text-foreground'}`}
               >
                 <span>{c.label}</span>
-                <span className="text-muted-foreground">{c.symbol}</span>
+                <span className="text-muted-foreground font-semibold">{c.symbol}</span>
               </button>
             ))}
           </div>
