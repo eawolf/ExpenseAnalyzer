@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EmailService {
 
-    private final JavaMailSender javaMailSender;
+    private final JavaMailSender javaMailSender = null;
 
     public void sendOtpEmail(String recipient, String otpCode) {
         try {
@@ -42,7 +42,7 @@ public class EmailService {
             helper.setText(htmlContent, true); // true indicates HTML
 
             javaMailSender.send(message);
-            log.info("Successfully sent OTP email to: {}", recipient);
+//            log.info("Successfully sent OTP email to: {}", recipient);
         } catch (MessagingException e) {
             log.error("Failed to send OTP email to: {}", recipient, e);
         }

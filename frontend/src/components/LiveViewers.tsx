@@ -14,7 +14,7 @@ export default function LiveViewers() {
     if (token) {
       // Logged-in user: send heartbeat with JWT
       try {
-        const res = await fetch('/api-proxy/auth/auth/live-viewers/heartbeat', {
+        const res = await fetch('http://localhost:8081/api/auth/live-viewers/heartbeat', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ export default function LiveViewers() {
 
     // Not logged in or heartbeat failed: use public stats endpoint
     try {
-      const res = await fetch('/api-proxy/auth/auth/live-viewers/stats');
+      const res = await fetch('http://localhost:8081/api/auth/live-viewers/stats');
       if (res.ok) {
         const data = await res.json();
         setLiveCount(data.liveViewers);
@@ -56,7 +56,7 @@ export default function LiveViewers() {
           [JSON.stringify({ userId })],
           { type: 'application/json' }
         );
-        navigator.sendBeacon('/api-proxy/auth/auth/live-viewers/unregister', blob);
+        navigator.sendBeacon('http://localhost:8081/api/auth/live-viewers/unregister', blob);
       }
     };
 
