@@ -122,14 +122,12 @@ services:
     build: ./vision-service
     container_name: prod-vision-service
     restart: always
+    env_file:
+      - ./vision-service/.env
     environment:
-      - JAVA_OPTS=-Xmx256m
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
       - LOG_DIR=/logs
     volumes:
       - D:/DevStorage/Logs:/logs
-    depends_on:
-      - discovery-server
     networks:
       - prod-network
 
@@ -139,11 +137,13 @@ services:
     environment:
       - AUTH_SERVICE_URL=http://auth-service:8081
       - EXPENSE_SERVICE_URL=http://expense-service:8080
+      - VISION_SERVICE_URL=http://vision-service:5000
     ports:
       - "4000:3000" # Map to 4000 so it doesn't conflict with local dev frontend
     depends_on:
       - auth-service
       - expense-service
+      - vision-service
     networks:
       - prod-network
 

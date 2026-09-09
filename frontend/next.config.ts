@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
         source: '/api-proxy/expenses/:path*',
         destination: `${process.env.EXPENSE_SERVICE_URL || 'http://localhost:8080'}/api/:path*`, 
       },
+      {
+        source: '/api-proxy/vision/:path*',
+        destination: `${process.env.VISION_SERVICE_URL || 'http://localhost:5000'}/api/vision/:path*`, 
+      },
     ];
   },
 };

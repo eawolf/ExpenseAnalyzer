@@ -69,8 +69,8 @@ export default function UploadTransactionsPage() {
     formData.append('file', file);
     
     try {
-      // Call our new Python vision-service directly (port 8000)
-      const res = await fetch('http://localhost:8000/api/vision/extract-transactions', {
+      // Call vision-service through Next.js rewrite proxy
+      const res = await fetch('/api-proxy/vision/extract-transactions', {
         method: 'POST',
         body: formData,
       });
