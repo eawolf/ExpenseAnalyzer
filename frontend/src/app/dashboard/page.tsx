@@ -172,7 +172,7 @@ export default function Dashboard() {
         {/* Activity Overview Panel */}
         <div className="lg:col-span-2 p-4 sm:p-6 rounded-2xl glass-panel flex flex-col gap-4 min-h-[420px]">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <h3 className="text-lg font-semibold text-foreground whitespace-nowrap">{t('activityOverview')}</h3>
+            <h3 className="text-lg font-semibold text-foreground whitespace-nowrap">{t('activityOverview', 'Activity Overview')}</h3>
             
             <div className="flex flex-wrap items-center gap-2">
               <div className="flex items-center gap-1.5 flex-1 sm:flex-initial min-w-0">
@@ -197,30 +197,34 @@ export default function Dashboard() {
                 />
               </div>
 
-              <div className="flex items-center bg-accent/40 rounded-lg p-0.5 border border-border/40">
+              <div className="flex items-center bg-accent/40 rounded-lg p-1 border border-border/40 shrink-0">
                 <button
                   onClick={() => setChartType('bar')}
-                  className={`px-2 py-1 text-xs rounded-md font-medium transition-all ${chartType === 'bar' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                  className={`p-1.5 sm:p-2 text-xs rounded-md transition-all ${chartType === 'bar' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-background/50'}`}
+                  title="Bar Chart (Recent Trend)"
                 >
-                  Bar
+                  <BarChart2 className="w-4 h-4 sm:w-4 sm:h-4" />
                 </button>
                 <button
                   onClick={() => setChartType('line')}
-                  className={`px-2 py-1 text-xs rounded-md font-medium transition-all ${chartType === 'line' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                  className={`p-1.5 sm:p-2 text-xs rounded-md transition-all ${chartType === 'line' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-background/50'}`}
+                  title="Line Chart (Activity Trajectory)"
                 >
-                  Line
+                  <LineChartIcon className="w-4 h-4 sm:w-4 sm:h-4" />
                 </button>
                 <button
                   onClick={() => setChartType('pie-categories')}
-                  className={`px-2 py-1 text-xs rounded-md font-medium transition-all ${chartType === 'pie-categories' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                  className={`p-1.5 sm:p-2 text-xs rounded-md transition-all ${chartType === 'pie-categories' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-background/50'}`}
+                  title="Pie Chart (Top Categories)"
                 >
-                  Category
+                  <PieChartIcon className="w-4 h-4 sm:w-4 sm:h-4" />
                 </button>
                 <button
                   onClick={() => setChartType('pie')}
-                  className={`px-2 py-1 text-xs rounded-md font-medium transition-all ${chartType === 'pie' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                  className={`p-1.5 sm:p-2 text-xs rounded-md transition-all ${chartType === 'pie' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-background/50'}`}
+                  title="Pie Chart (Income vs Expense)"
                 >
-                  Ratio
+                  <PieChartIcon className="w-4 h-4 sm:w-4 sm:h-4" />
                 </button>
               </div>
             </div>

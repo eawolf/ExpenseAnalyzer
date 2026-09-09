@@ -138,10 +138,10 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
       <main className={`flex-1 w-full p-3 sm:p-4 md:p-8 transition-all duration-300 relative z-10 pb-24 md:pb-8 ${isSidebarCollapsed ? 'md:ml-20' : 'md:ml-64'}`}>
         
         {/* Top Header Bar */}
-        <header className="flex flex-col gap-3 mb-4 md:mb-8 pb-3 border-b border-border relative z-40">
+        <header className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4 mb-4 md:mb-8 pb-3 md:pb-4 border-b border-border relative z-40">
           
-          {/* Top Header Row: Brand Logo, Title & Profile Settings Avatar */}
-          <div className="flex items-center justify-between w-full">
+          {/* Top Header Row: Brand Logo, Title & Mobile Avatar */}
+          <div className="flex items-center justify-between w-full md:w-auto">
             <div className="flex items-center gap-2 min-w-0">
               <div className="md:hidden w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white shadow-md shrink-0">
                 E
@@ -157,10 +157,10 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
               </h1>
             </div>
 
-            {/* Profile Settings Avatar Button (Desktop & Mobile) */}
+            {/* Profile Settings Avatar Button (Mobile Only) */}
             <button 
               onClick={() => setProfileModalOpen(true)}
-              className="flex items-center gap-2 p-1 sm:p-1.5 rounded-full bg-card border border-border hover:bg-accent transition-all shrink-0 active:scale-95"
+              className="md:hidden flex items-center gap-2 p-1 sm:p-1.5 rounded-full bg-card border border-border hover:bg-accent transition-all shrink-0 active:scale-95"
               title="Profile & Settings"
             >
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center overflow-hidden">
@@ -174,8 +174,8 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
             </button>
           </div>
 
-          {/* Second Header Row: Controls (Date Filter, Language, Currency, Theme) */}
-          <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2 w-full">
+          {/* Controls (Date Filter, Language, Currency, Theme) */}
+          <div className="flex flex-wrap items-center justify-between md:justify-end gap-2 w-full md:w-auto">
               <div className="flex items-center gap-1 bg-card border border-border rounded-xl px-2 py-1 flex-1 sm:flex-none">
                 <CustomDatePicker
                   selected={new Date(selectedYear, selectedMonth - 1, 1)}
@@ -193,6 +193,22 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
                 <CurrencySelector />
                 <ThemeToggle />
               </div>
+
+              {/* Profile Settings Avatar Button (Desktop Only) */}
+              <button 
+                onClick={() => setProfileModalOpen(true)}
+                className="hidden md:flex items-center gap-2 p-1.5 rounded-full bg-card border border-border hover:bg-accent transition-all shrink-0 active:scale-95 ml-2"
+                title="Profile & Settings"
+              >
+                <div className="w-9 h-9 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center overflow-hidden">
+                  {userProfile?.profilePictureBase64 ? (
+                      <img src={userProfile.profilePictureBase64} alt="Avatar" className="w-full h-full object-cover" />
+                  ) : (
+                      <span className="text-sm font-bold text-indigo-400">{getInitials(userProfile?.name || '')}</span>
+                  )}
+                </div>
+                {userProfile && <span className="hidden lg:inline text-sm font-semibold px-1 pr-2">{userProfile.name}</span>}
+              </button>
           </div>
         </header>
 
