@@ -122,10 +122,9 @@ services:
     build: ./vision-service
     container_name: prod-vision-service
     restart: always
-    env_file:
-      - ./vision-service/.env
     environment:
       - LOG_DIR=/logs
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
     volumes:
       - D:/DevStorage/Logs:/logs
     networks:
