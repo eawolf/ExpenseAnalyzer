@@ -76,7 +76,14 @@ export default function UploadTransactionsPage() {
       });
       
       if (!res.ok) {
-        throw new Error('Failed to extract transactions. Ensure the Vision Service is running and GEMINI_API_KEY is valid.');
+        let errorMessage = 'Failed to extract transactions.';
+        try {
+          const errorData = await res.json();
+          errorMessage = errorData.detail || errorMessage;
+        } catch (e) {
+          // If response isn't JSON, just use the generic message
+        }
+        throw new Error(errorMessage);
       }
       
       const data = await res.json();
